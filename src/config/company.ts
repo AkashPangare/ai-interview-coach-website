@@ -14,7 +14,7 @@ export interface PricingTier {
 
 export const COMPANY_CONFIG = {
   brandName: "PrepVisor",
-  legalEntity: "PrepVisor (Proprietor: Divya Almelkar)",
+  legalEntity: "PrepVisor (Operated by Divya Almelkar, Individual)",
   proprietorName: "Divya Almelkar",
   businessType: "Individual",
   industry: "EdTech & Interactive Educational SaaS Software",

@@ -16,15 +16,42 @@ export const ContactPage: React.FC = () => {
   const [category, setCategory] = useState("General Question")
   const [message, setMessage] = useState("")
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [ticketId, setTicketId] = useState("")
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!name || !email || !message) return
 
+    setIsSubmitting(true)
     const generatedId = `PV-${Math.floor(10000 + Math.random() * 90000)}`
     setTicketId(generatedId)
-    setIsSubmitted(true)
+
+    try {
+      await fetch(`https://formsubmit.co/ajax/${COMPANY_CONFIG.contact.email}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          _subject: `[Support Ticket #${generatedId}] ${category} - from ${name}`,
+          _template: "table",
+          _captcha: "false",
+          "Ticket ID": generatedId,
+          "Customer Name": name,
+          "Customer Email": email,
+          "Inquiry Subject": category,
+          "Message": message,
+          "Submission Time": new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+        }),
+      })
+    } catch (err) {
+      console.error("Failed to send contact inquiry:", err)
+    } finally {
+      setIsSubmitting(false)
+      setIsSubmitted(true)
+    }
   }
 
   return (
@@ -194,10 +221,11 @@ export const ContactPage: React.FC = () => {
 
                   <button
                     type="submit"
-                    className="w-full flex items-center justify-center gap-1.5 rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-blue-700 transition-colors"
+                    disabled={isSubmitting}
+                    className="w-full flex items-center justify-center gap-1.5 rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-blue-700 transition-colors disabled:opacity-75 disabled:cursor-not-allowed"
                   >
                     <Send className="h-4 w-4" />
-                    <span>Send Message</span>
+                    <span>{isSubmitting ? "Sending Message..." : "Send Message"}</span>
                   </button>
                 </form>
               ) : (

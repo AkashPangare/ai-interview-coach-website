@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { X, Sparkles, CheckCircle2, ArrowRight, ShieldCheck, Gift } from "lucide-react"
+import { X, CheckCircle2, ArrowRight, ShieldCheck, Zap, CreditCard, Lock } from "lucide-react"
 import { COMPANY_CONFIG } from "@/config/company"
 
 interface EarlyAccessModalProps {
@@ -15,40 +15,73 @@ export const EarlyAccessModal: React.FC<EarlyAccessModalProps> = ({
 }) => {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
+  const [phone, setPhone] = useState("")
   const [targetRole, setTargetRole] = useState("Software Engineer")
-  const [targetCompany, setTargetCompany] = useState("")
-  const [timeline, setTimeline] = useState("14-30 Days")
+  const [customRole, setCustomRole] = useState("")
   const [isSubmitted, setIsSubmitted] = useState(false)
-  const [waitlistNumber, setWaitlistNumber] = useState(1842)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [orderId, setOrderId] = useState("PV-84291")
 
   if (!isOpen) return null
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!email || !name) return
+  const selectedTier =
+    COMPANY_CONFIG.pricing.find((p) => p.id === selectedPlanId) || COMPANY_CONFIG.pricing[1]
 
-    const baseNumber = 1840 + Math.floor(Math.random() * 25) + 1
-    setWaitlistNumber(baseNumber)
-    setIsSubmitted(true)
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!email || !name || !phone) return
+
+    const effectiveRole =
+      targetRole === "Other" && customRole.trim() ? customRole.trim() : targetRole
+
+    setIsSubmitting(true)
+    const generatedOrderId = `PV-${Math.floor(10000 + Math.random() * 90000)}`
+    setOrderId(generatedOrderId)
 
     try {
-      const waitlistRecord = {
+      const orderRecord = {
         name,
         email,
-        targetRole,
-        targetCompany,
-        timeline,
+        phone: `+91 ${phone}`,
+        targetRole: effectiveRole,
         selectedPlanId,
-        joinedAt: new Date().toISOString(),
-        waitlistNumber: baseNumber,
+        orderId: generatedOrderId,
+        amountINR: selectedTier.priceINR,
+        submittedAt: new Date().toISOString(),
       }
-      localStorage.setItem("prepvisor_waitlist", JSON.stringify(waitlistRecord))
+      localStorage.setItem("prepvisor_order", JSON.stringify(orderRecord))
     } catch {
       // ignore storage error
     }
-  }
 
-  const selectedTier = COMPANY_CONFIG.pricing.find((p) => p.id === selectedPlanId) || COMPANY_CONFIG.pricing[1]
+    try {
+      await fetch(`https://formsubmit.co/ajax/${COMPANY_CONFIG.contact.email}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          _subject: `[New Order #${generatedOrderId}] ${selectedTier.name} - ${name}`,
+          _template: "table",
+          _captcha: "false",
+          "Order ID": generatedOrderId,
+          "Customer Name": name,
+          "Email Address": email,
+          "Mobile Number": `+91 ${phone}`,
+          "Selected Plan": `${selectedTier.name} (${selectedTier.days} Days)`,
+          "Payable Amount": `₹${selectedTier.priceINR} (All taxes incl.)`,
+          "Target Role": effectiveRole,
+          "Submission Time": new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+        }),
+      })
+    } catch (err) {
+      console.error("Order notification error:", err)
+    } finally {
+      setIsSubmitting(false)
+      setIsSubmitted(true)
+    }
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-150">
@@ -66,30 +99,38 @@ export const EarlyAccessModal: React.FC<EarlyAccessModalProps> = ({
           <div>
             {/* Header */}
             <div className="flex items-center gap-2 text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1.5">
-              <Sparkles className="h-4 w-4 text-amber-500" />
-              <span>Priority Access</span>
+              <CreditCard className="h-4 w-4 text-blue-600" />
+              <span>Checkout & Activation</span>
             </div>
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-2">
-              Join the Early Access List
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-1.5">
+              Order Summary & Registration
             </h2>
-            <p className="text-sm text-slate-500 mb-5">
-              Reserve your spot today to secure early access and lock in our founding member rate.
+            <p className="text-xs text-slate-500 mb-5">
+              Complete your registration below to proceed with your selected preparation pass.
             </p>
 
             {/* Selected Plan Summary Pill */}
-            <div className="mb-5 rounded-xl border border-blue-200 bg-blue-50/60 p-3.5 flex items-center justify-between">
+            <div className="mb-5 rounded-xl border border-blue-200 bg-blue-50/60 p-4 flex items-center justify-between">
               <div>
-                <span className="text-xs font-medium text-slate-600">Selected Plan:</span>
-                <p className="text-sm font-bold text-slate-900">{selectedTier.name} ({selectedTier.days} Days)</p>
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-blue-700">Selected Plan:</span>
+                <p className="text-sm font-bold text-slate-900 mt-0.5">
+                  {selectedTier.name} ({selectedTier.days} Days)
+                </p>
+                <p className="text-[11px] text-slate-500 mt-0.5">
+                  One-time payment · Instant digital access
+                </p>
               </div>
               <div className="text-right">
-                <p className="text-base font-extrabold text-blue-700">
+                <p className="text-xl font-extrabold text-blue-700">
                   ₹{selectedTier.priceINR}
                 </p>
+                <span className="text-[10px] text-emerald-700 font-medium">
+                  (Incl. of all taxes)
+                </span>
               </div>
             </div>
 
-            {/* Waitlist Form */}
+            {/* Registration Form */}
             <form onSubmit={handleSubmit} className="space-y-3.5">
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1">
@@ -119,115 +160,135 @@ export const EarlyAccessModal: React.FC<EarlyAccessModalProps> = ({
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-medium text-slate-700 mb-1">
-                    Target Role
-                  </label>
-                  <select
-                    value={targetRole}
-                    onChange={(e) => setTargetRole(e.target.value)}
-                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:border-blue-600 focus:outline-none"
-                  >
-                    <option value="Software Engineer">Software Engineer</option>
-                    <option value="Backend Engineer">Backend Engineer</option>
-                    <option value="Frontend Engineer">Frontend Engineer</option>
-                    <option value="Full Stack Engineer">Full Stack Engineer</option>
-                    <option value="Engineering Lead / Manager">Engineering Lead / Manager</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-slate-700 mb-1">
-                    Preparation Timeline
-                  </label>
-                  <select
-                    value={timeline}
-                    onChange={(e) => setTimeline(e.target.value)}
-                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:border-blue-600 focus:outline-none"
-                  >
-                    <option value="7 Days (Urgent)">7 Days (Urgent)</option>
-                    <option value="14 Days (Accelerated)">14 Days (Accelerated)</option>
-                    <option value="30 Days (Standard)">30 Days (Standard)</option>
-                    <option value="60+ Days (Comprehensive)">60+ Days (Comprehensive)</option>
-                  </select>
+              <div>
+                <label className="block text-xs font-medium text-slate-700 mb-1">
+                  Mobile Number (for Order & Access OTP) *
+                </label>
+                <div className="flex rounded-lg border border-slate-300 bg-white overflow-hidden focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                  <span className="inline-flex items-center px-3 bg-slate-50 text-slate-500 text-xs font-medium border-r border-slate-200">
+                    +91
+                  </span>
+                  <input
+                    type="tel"
+                    required
+                    pattern="[0-9]{10}"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                    placeholder="9876543210"
+                    className="w-full px-3.5 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none"
+                  />
                 </div>
               </div>
 
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1">
-                  Target Company (Optional)
+                  Target Role / Primary Track
                 </label>
-                <input
-                  type="text"
-                  value={targetCompany}
-                  onChange={(e) => setTargetCompany(e.target.value)}
-                  placeholder="e.g. Google, Amazon, Startup"
-                  className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:border-blue-600 focus:outline-none"
-                />
+                <select
+                  value={targetRole}
+                  onChange={(e) => setTargetRole(e.target.value)}
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:border-blue-600 focus:outline-none"
+                >
+                  <option value="Software Engineer">Software Engineer (General)</option>
+                  <option value="Backend Engineer">Backend Engineer (Java / Python / Node)</option>
+                  <option value="Frontend Engineer">Frontend Engineer (React / Next.js / TypeScript)</option>
+                  <option value="Full Stack Engineer">Full Stack Engineer</option>
+                  <option value="Engineering Lead / Manager">Engineering Lead / Technical Architect</option>
+                  <option value="Other">Other (Specify Custom Role)</option>
+                </select>
               </div>
+
+              {targetRole === "Other" && (
+                <div>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">
+                    Specify Your Custom Role *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={customRole}
+                    onChange={(e) => setCustomRole(e.target.value)}
+                    placeholder="e.g. DevOps / SRE, Data Engineer, iOS / Android Developer"
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600"
+                  />
+                </div>
+              )}
 
               <div className="pt-2">
                 <button
                   type="submit"
-                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 text-sm font-bold text-white shadow-md hover:bg-blue-700 active:scale-98 transition-all"
+                  disabled={isSubmitting}
+                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 text-sm font-bold text-white shadow-md hover:bg-blue-700 active:scale-98 transition-all disabled:opacity-75 disabled:cursor-not-allowed"
                 >
-                  <span>Claim Early Access</span>
-                  <ArrowRight className="h-4 w-4" />
+                  <Lock className="h-4 w-4" />
+                  <span>
+                    {isSubmitting
+                      ? "Processing Registration..."
+                      : `Proceed to Payment (₹${selectedTier.priceINR})`}
+                  </span>
+                  {!isSubmitting && <ArrowRight className="h-4 w-4" />}
                 </button>
               </div>
 
               <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-500 pt-1">
                 <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
-                <span>Zero spam. We’ll notify you as soon as your spot opens.</span>
+                <span>100% Secure Checkout · Instant Access · 7-Day Refund Guarantee</span>
               </div>
             </form>
           </div>
         ) : (
-          /* Confirmation Screen */
-          <div className="text-center py-4 space-y-4">
+          /* Order Confirmation Screen */
+          <div className="text-center py-3 space-y-4">
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600">
               <CheckCircle2 className="h-8 w-8" />
             </div>
 
             <div className="space-y-1">
               <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 border border-blue-200">
-                Early Access Reserved
+                Order Registered
               </span>
               <h3 className="text-2xl font-bold text-slate-900 mt-2">
-                You’re on the List, {name}!
+                Thank You, {name}!
               </h3>
-              <p className="text-sm text-slate-600">
-                Your waitlist priority spot is:
+              <p className="text-xs text-slate-600">
+                Your order registration has been received successfully.
               </p>
             </div>
 
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 max-w-xs mx-auto">
-              <span className="text-3xl font-extrabold text-blue-600">
-                #{waitlistNumber}
-              </span>
-              <p className="text-xs text-slate-500 mt-1">
-                We'll reach out to {email}
-              </p>
-            </div>
-
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left space-y-2 text-xs text-slate-700">
-              <div className="flex items-center gap-2 font-semibold text-emerald-700">
-                <Gift className="h-4 w-4" />
-                <span>Early Access Benefits:</span>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 max-w-sm mx-auto text-left space-y-2 text-xs">
+              <div className="flex justify-between border-b border-slate-200 pb-2">
+                <span className="text-slate-500">Order ID:</span>
+                <span className="font-mono font-bold text-blue-700">#{orderId}</span>
               </div>
-              <ul className="space-y-1 text-slate-600 list-disc list-inside">
-                <li>Locked-in discounted price on {selectedTier.name}</li>
-                <li>Free initial study plan generation</li>
-                <li>Priority email invitation</li>
-              </ul>
+              <div className="flex justify-between border-b border-slate-200 pb-2">
+                <span className="text-slate-500">Plan & Validity:</span>
+                <span className="font-semibold text-slate-800">{selectedTier.name} ({selectedTier.days} Days)</span>
+              </div>
+              <div className="flex justify-between border-b border-slate-200 pb-2">
+                <span className="text-slate-500">Amount:</span>
+                <span className="font-bold text-slate-900">₹{selectedTier.priceINR} (All taxes incl.)</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Customer Contact:</span>
+                <span className="font-medium text-slate-800">{email}</span>
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-blue-100 bg-blue-50/70 p-3.5 text-left text-xs text-slate-700 space-y-1.5">
+              <div className="flex items-center gap-1.5 font-semibold text-blue-900">
+                <Zap className="h-4 w-4 text-blue-600" />
+                <span>Instant Digital Fulfillment:</span>
+              </div>
+              <p className="text-slate-600 leading-relaxed text-[11px]">
+                Your tax invoice and direct activation link have been generated and queued for <strong>{email}</strong>. Access is provisioned instantly within 0 to 15 minutes.
+              </p>
             </div>
 
             <button
               onClick={onClose}
-              className="w-full rounded-xl bg-slate-100 hover:bg-slate-200 py-2.5 text-sm font-semibold text-slate-800 transition-colors"
+              className="w-full rounded-xl bg-slate-900 hover:bg-slate-800 py-2.5 text-sm font-semibold text-white transition-colors"
             >
-              Continue Exploring
+              Return to Website
             </button>
           </div>
         )}
@@ -235,3 +296,5 @@ export const EarlyAccessModal: React.FC<EarlyAccessModalProps> = ({
     </div>
   )
 }
+
+export default EarlyAccessModal

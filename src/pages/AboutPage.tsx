@@ -1,12 +1,13 @@
 import React from "react"
+import { Link } from "react-router-dom"
 import { Target, Award, Code, Sparkles, ArrowRight } from "lucide-react"
 import { COMPANY_CONFIG } from "@/config/company"
 
 interface AboutPageProps {
-  onOpenWaitlist: () => void
+  onOpenWaitlist?: () => void
 }
 
-export const AboutPage: React.FC<AboutPageProps> = ({ onOpenWaitlist }) => {
+export const AboutPage: React.FC<AboutPageProps> = () => {
   return (
     <div className="py-14 sm:py-20 bg-white min-h-screen text-slate-700">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 space-y-12">
@@ -41,7 +42,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenWaitlist }) => {
           {/* Founder Box */}
           <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5 flex flex-col sm:flex-row items-center gap-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-white font-bold text-lg shrink-0">
-              AP
+              DA
             </div>
             <div className="space-y-0.5 text-center sm:text-left">
               <h3 className="text-sm font-bold text-slate-900">{COMPANY_CONFIG.proprietorName}</h3>
@@ -93,19 +94,19 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenWaitlist }) => {
         {/* Bottom CTA */}
         <div className="rounded-2xl border border-slate-200 bg-slate-50 p-8 text-center space-y-4">
           <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
-            Join Our Early Access List
+            Start Your Interview Preparation Today
           </h3>
           <p className="text-xs text-slate-600 max-w-md mx-auto">
-            Reserve your early access pass today and lock in our discounted founding rates.
+            Choose a structured preparation pass that fits your upcoming interview timeline.
           </p>
-          <button
-            onClick={onOpenWaitlist}
+          <Link
+            to="/pricing"
             className="inline-flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 px-6 py-2.5 text-sm font-semibold text-white shadow-xs transition-colors"
           >
             <Sparkles className="h-4 w-4 text-amber-300" />
-            <span>Claim Early Access</span>
+            <span>Get Started</span>
             <ArrowRight className="h-4 w-4" />
-          </button>
+          </Link>
         </div>
       </div>
     </div>

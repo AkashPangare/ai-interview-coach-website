@@ -38,14 +38,14 @@ export const PrivacyPolicyPage: React.FC = () => {
           <section className="space-y-2">
             <h2 className="text-base font-bold text-slate-900">1. Data Fiduciary & Controller</h2>
             <p>
-              This Privacy Policy explains how <strong className="text-slate-900">{COMPANY_CONFIG.brandName}</strong>, operated by individual proprietor <strong className="text-slate-900">{COMPANY_CONFIG.proprietorName}</strong> ({COMPANY_CONFIG.businessType}), manages personal data on <a href={COMPANY_CONFIG.websiteUrl} className="text-blue-600 underline">{COMPANY_CONFIG.websiteUrl}</a>.
+              This Privacy Policy explains how <strong className="text-slate-900">{COMPANY_CONFIG.brandName}</strong>, operated by individual founder <strong className="text-slate-900">{COMPANY_CONFIG.proprietorName}</strong> ({COMPANY_CONFIG.businessType}), manages personal data on <a href={COMPANY_CONFIG.websiteUrl} className="text-blue-600 underline">{COMPANY_CONFIG.websiteUrl}</a>.
             </p>
           </section>
 
           <section className="space-y-2">
             <h2 className="text-base font-bold text-slate-900">2. Information We Collect</h2>
             <ul className="space-y-1.5 list-disc list-inside text-slate-600">
-              <li><strong>Contact Info:</strong> Name, email address, and optional phone number.</li>
+              <li><strong>Contact Info:</strong> Name, email address, and mobile number.</li>
               <li><strong>Preparation Preferences:</strong> Target role, interview timeline, and daily hours available.</li>
               <li><strong>Practice Preferences:</strong> Your target role, timeline, and selected preparation plan.</li>
             </ul>
@@ -54,14 +54,14 @@ export const PrivacyPolicyPage: React.FC = () => {
           <section className="space-y-2">
             <h2 className="text-base font-bold text-slate-900">3. How We Use Your Data</h2>
             <p>
-              Your data is used solely to respond to your request, generate preparation guidance, and improve the service. We do not sell or share personal information with third-party advertising brokers.
+              Your data is used solely to activate your preparation pass, provide interview guidance, and deliver customer support. We do not sell or share personal information with third-party advertising brokers.
             </p>
           </section>
 
           <section className="space-y-2">
-            <h2 className="text-base font-bold text-slate-900">4. How We Protect Data</h2>
+            <h2 className="text-base font-bold text-slate-900">4. How We Protect Data & Payment Security</h2>
             <p>
-              We use reasonable technical and organizational safeguards to protect the information you provide. No payment details are collected through this early-access website.
+              We use industry-standard technical and organizational safeguards to protect your personal data. All online payment transactions are processed securely through certified, RBI-licensed payment aggregators (Cashfree / Razorpay) using 128-bit SSL encryption. We do not capture, process, or store your debit/credit card numbers, CVV, or net banking credentials on our servers.
             </p>
           </section>
 

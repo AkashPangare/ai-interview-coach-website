@@ -26,8 +26,11 @@ export const Footer: React.FC = () => (
         <Link to="/terms" className="hover:text-blue-600">Terms</Link>
       </div>
     </div>
-    <div className="border-t border-slate-100 py-4 text-center text-xs text-slate-400">
-      © {new Date().getFullYear()} {COMPANY_CONFIG.brandName}. All rights reserved.
+    <div className="border-t border-slate-100 py-4 text-center text-xs text-slate-500 space-y-1">
+      <p>© {new Date().getFullYear()} {COMPANY_CONFIG.brandName}. All rights reserved.</p>
+      <p className="text-[11px] text-slate-400">
+        Operated by {COMPANY_CONFIG.legalEntity} · Bengaluru, Karnataka 560068, India.
+      </p>
     </div>
   </footer>
 )
