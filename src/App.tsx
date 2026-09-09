@@ -7,7 +7,6 @@ import { HomePage } from "@/pages/HomePage"
 import { PricingPage } from "@/pages/PricingPage"
 import { ContactPage } from "@/pages/ContactPage"
 import { RefundPolicyPage } from "@/pages/RefundPolicyPage"
-import { DeliveryPolicyPage } from "@/pages/DeliveryPolicyPage"
 import { PrivacyPolicyPage } from "@/pages/PrivacyPolicyPage"
 import { TermsPage } from "@/pages/TermsPage"
 import { AboutPage } from "@/pages/AboutPage"
@@ -63,7 +62,6 @@ export function App() {
           />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/refund-policy" element={<RefundPolicyPage />} />
-          <Route path="/delivery-policy" element={<DeliveryPolicyPage />} />
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route

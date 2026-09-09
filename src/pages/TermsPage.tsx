@@ -30,21 +30,31 @@ export const TermsPage: React.FC = () => {
           </section>
 
           <section className="space-y-2">
-            <h2 className="text-base font-bold text-slate-900">2. Description of Service</h2>
+            <h2 className="text-base font-bold text-slate-900">2. Description of Service & Digital Delivery</h2>
             <p>
-              PrepVisor provides online tools for interview preparation, including custom study plans, coding practice, and system design learning.
+              PrepVisor is a cloud-based Software-as-a-Service (SaaS) platform providing online interview preparation tools, study plans, coding practice, and AI-assisted coaching. Access is delivered electronically and instantly through your web browser; no physical goods are shipped.
             </p>
           </section>
 
           <section className="space-y-2">
-            <h2 className="text-base font-bold text-slate-900">3. Early Access</h2>
+            <h2 className="text-base font-bold text-slate-900">3. Subscriptions & Cancellation Policy</h2>
             <p>
-              Joining our early-access list is free and does not create a purchase, subscription, or obligation. We will contact you when access becomes available.
+              Paid access to PrepVisor is provided via recurring subscriptions or fixed-duration access passes. Subscribers may cancel auto-renewal at any time prior to their next billing date. All refund requests, eligibility rules, and dispute timelines are governed by our dedicated{" "}
+              <a href="/refund-policy" className="text-blue-600 hover:underline font-medium">
+                Cancellation &amp; Refund Policy
+              </a>.
             </p>
           </section>
 
           <section className="space-y-2">
-            <h2 className="text-base font-bold text-slate-900">4. Educational Disclaimer</h2>
+            <h2 className="text-base font-bold text-slate-900">4. Early Access & Free Features</h2>
+            <p>
+              Joining our early-access list or using free practice tiers does not create a financial commitment. Commercial subscription terms apply only when paid checkout is completed.
+            </p>
+          </section>
+
+          <section className="space-y-2">
+            <h2 className="text-base font-bold text-slate-900">5. Educational Disclaimer</h2>
             <div className="rounded-lg border border-amber-200 bg-amber-50/70 p-4 space-y-1.5 text-xs text-slate-700">
               <div className="flex items-center gap-2 font-semibold text-amber-900">
                 <ShieldAlert className="h-4 w-4" />
@@ -57,9 +67,9 @@ export const TermsPage: React.FC = () => {
           </section>
 
           <section className="space-y-2">
-            <h2 className="text-base font-bold text-slate-900">5. Governing Law</h2>
+            <h2 className="text-base font-bold text-slate-900">6. Governing Law & Jurisdiction</h2>
             <p>
-              These Terms are governed by the laws of India. Any disputes shall be subject to the jurisdiction of the competent courts in {COMPANY_CONFIG.compliance.jurisdiction}.
+              These Terms are governed by the {COMPANY_CONFIG.compliance.governingLaw}. Any disputes shall be subject to the exclusive jurisdiction of the competent courts in {COMPANY_CONFIG.compliance.jurisdiction}.
             </p>
           </section>
         </div>

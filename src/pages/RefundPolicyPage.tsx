@@ -1,11 +1,11 @@
 import React from "react"
-import { RotateCcw, Clock } from "lucide-react"
+import { RotateCcw } from "lucide-react"
 import { COMPANY_CONFIG } from "@/config/company"
 
 export const RefundPolicyPage: React.FC = () => {
   return (
     <div className="py-14 sm:py-20 bg-white min-h-screen text-slate-700">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 space-y-10">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 space-y-8">
         {/* Header */}
         <div className="space-y-3 border-b border-slate-200 pb-6">
           <div className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
@@ -13,56 +13,94 @@ export const RefundPolicyPage: React.FC = () => {
             <span>Policy Document</span>
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-slate-900">
-            Early Access Policy
+            Cancellation & Refund Policy
           </h1>
           <p className="text-xs text-slate-500">
-            Last Updated: September 9, 2026
+            Last Updated: September 9, 2026 • Governed by the Laws of India
           </p>
         </div>
 
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50/70 p-5 flex items-start gap-3.5">
-          <Clock className="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" />
-          <div className="space-y-1 text-xs text-slate-700">
-            <h3 className="font-bold text-slate-900 text-sm">
-              No payment is collected during early access
-            </h3>
-            <p className="leading-relaxed">
-              Joining the PrepVisor early-access list is free. It does not create a purchase, subscription, or financial commitment.
-            </p>
-          </div>
+        {/* Highlight Summary */}
+        <div className="rounded-xl border border-blue-200 bg-blue-50/70 p-4 text-xs sm:text-sm text-slate-700 space-y-1">
+          <p className="font-bold text-slate-900">Summary at a Glance</p>
+          <p className="leading-relaxed">
+            You can cancel recurring subscriptions at any time. First-time purchases carry a <strong>7-day refund window</strong>. Approved refunds are returned to your original payment method within <strong>5 to 7 business days</strong>.
+          </p>
         </div>
 
-        {/* Content */}
+        {/* Core Policy Points */}
         <div className="space-y-6 text-xs sm:text-sm leading-relaxed text-slate-600">
           <section className="space-y-2">
-            <h2 className="text-base font-bold text-slate-900">1. Overview</h2>
+            <h2 className="text-base font-bold text-slate-900">1. Subscription Cancellation</h2>
             <p>
-              This policy applies to people who join the early-access list for <strong className="text-slate-900">{COMPANY_CONFIG.brandName}</strong> ({COMPANY_CONFIG.websiteUrl}).
+              You can cancel your subscription auto-renewal at any time through your account settings or by emailing{" "}
+              <a href={`mailto:${COMPANY_CONFIG.contact.email}`} className="text-blue-600 underline">
+                {COMPANY_CONFIG.contact.email}
+              </a>.
+            </p>
+            <p>
+              Once canceled, no further recurring charges will be made. You will retain full access to your plan until the end of your current paid billing period.
             </p>
           </section>
 
           <section className="space-y-2">
-            <h2 className="text-base font-bold text-slate-900">2. Leaving the List</h2>
+            <h2 className="text-base font-bold text-slate-900">2. Refund Eligibility (7-Day Window)</h2>
             <p>
-              You may ask us to remove your details from the early-access list at any time by emailing our support team.
+              First-time subscriptions and preparation passes are eligible for a full refund within <strong>{COMPANY_CONFIG.compliance.refundWindowDays} calendar days</strong> of purchase if:
+            </p>
+            <ul className="list-disc list-inside space-y-1.5 pl-1">
+              <li>You encounter technical issues preventing platform access that we cannot resolve.</li>
+              <li>You experienced an accidental duplicate payment.</li>
+              <li>You are dissatisfied under fair initial evaluation (fewer than 2 mock interviews conducted).</li>
+            </ul>
+            <p className="text-slate-500 text-xs">
+              *Subsequent recurring renewal charges are non-refundable once processed. Please cancel prior to your renewal date if you do not wish to continue.
             </p>
           </section>
 
           <section className="space-y-2">
-            <h2 className="text-base font-bold text-slate-900">3. Future Availability</h2>
+            <h2 className="text-base font-bold text-slate-900">3. Non-Refundable Cases</h2>
+            <ul className="list-disc list-inside space-y-1.5 pl-1">
+              <li>Requests submitted after 7 days from purchase.</li>
+              <li>Accounts with substantial usage (e.g., extensive mock interviews completed or bulk downloads).</li>
+              <li>External job interview results (PrepVisor is an educational practice tool and does not guarantee job placement).</li>
+              <li>Accounts suspended for violating our Terms of Service.</li>
+            </ul>
+          </section>
+
+          <section className="space-y-2">
+            <h2 className="text-base font-bold text-slate-900">4. Processing Time & Mode</h2>
             <p>
-              The prices shown on our site are for plan reference during early access. We will communicate any purchase terms separately before collecting a payment.
+              Approved refunds are processed <strong>exclusively back to the original payment method</strong> (Bank account, Credit/Debit Card, or UPI) within <strong>{COMPANY_CONFIG.compliance.refundProcessingDays}</strong>.
             </p>
           </section>
 
           <section className="space-y-2">
-            <h2 className="text-base font-bold text-slate-900">4. Questions</h2>
+            <h2 className="text-base font-bold text-slate-900">5. How to Request a Refund</h2>
             <p>
-              For questions about early access or your personal information, email <a href={`mailto:${COMPANY_CONFIG.contact.email}`} className="text-blue-600 underline">{COMPANY_CONFIG.contact.email}</a>.
+              Send an email to <a href={`mailto:${COMPANY_CONFIG.contact.email}`} className="text-blue-600 underline font-medium">{COMPANY_CONFIG.contact.email}</a> with your registered email, payment/order ID, and reason for the refund. We review and respond within {COMPANY_CONFIG.contact.tat.toLowerCase()}.
             </p>
+          </section>
+
+          <section className="space-y-2 border-t border-slate-200 pt-5">
+            <h2 className="text-base font-bold text-slate-900">6. Grievance & Statutory Details</h2>
+            <p>
+              Pursuant to the Consumer Protection (E-Commerce) Rules, 2020:
+            </p>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-1.5 text-xs text-slate-700">
+              <p><strong>Grievance Officer:</strong> {COMPANY_CONFIG.compliance.grievanceOfficer.name}</p>
+              <p><strong>Entity:</strong> {COMPANY_CONFIG.legalEntity}</p>
+              <p><strong>Address:</strong> {COMPANY_CONFIG.compliance.grievanceOfficer.address}</p>
+              <p><strong>Email:</strong> <a href={`mailto:${COMPANY_CONFIG.compliance.grievanceOfficer.email}`} className="text-blue-600 underline">{COMPANY_CONFIG.compliance.grievanceOfficer.email}</a></p>
+              <p><strong>Phone:</strong> {COMPANY_CONFIG.compliance.grievanceOfficer.phone}</p>
+              <p><strong>Jurisdiction:</strong> {COMPANY_CONFIG.compliance.jurisdiction}</p>
+            </div>
           </section>
         </div>
       </div>
     </div>
   )
 }
+
+export default RefundPolicyPage
+

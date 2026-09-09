@@ -34,8 +34,8 @@ export const COMPANY_CONFIG = {
   // Contact Details
   contact: {
     email: "support@prepvisor.in",
-    phone: "+91 9960789905",
-    displayPhone: "+91 9960789905",
+    phone: "+91 7249778116",
+    displayPhone: "+91 7249778116",
     hours: "Monday – Friday, 9:30 AM to 6:30 PM IST",
     tat: "Within 24 to 48 business hours",
   },
@@ -51,7 +51,7 @@ export const COMPANY_CONFIG = {
       name: "Divya Almelkar",
       title: "Grievance Officer & Founder",
       email: "grievance@prepvisor.in",
-      phone: "+91 9960789905",
+      phone: "+91 7249778116",
       address: "Flat 201,Aurum Residencies,Maruthi Nagar,BTM Layout stage 1, Bengaluru, Karnataka 560068, India",
     },
   },
