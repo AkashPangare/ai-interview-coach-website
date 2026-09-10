@@ -38,7 +38,7 @@ export const PrivacyPolicyPage: React.FC = () => {
           <section className="space-y-2">
             <h2 className="text-base font-bold text-slate-900">1. Data Fiduciary & Controller</h2>
             <p>
-              This Privacy Policy explains how <strong className="text-slate-900">{COMPANY_CONFIG.brandName}</strong>, operated by individual founder <strong className="text-slate-900">{COMPANY_CONFIG.proprietorName}</strong> ({COMPANY_CONFIG.businessType}), manages personal data on <a href={COMPANY_CONFIG.websiteUrl} className="text-blue-600 underline">{COMPANY_CONFIG.websiteUrl}</a>.
+              This Privacy Policy explains how <strong className="text-slate-900">{COMPANY_CONFIG.brandName}</strong>, operated by individual founder <strong className="text-slate-900">{COMPANY_CONFIG.proprietorName}</strong>, manages personal data on <a href={COMPANY_CONFIG.websiteUrl} className="text-blue-600 underline">{COMPANY_CONFIG.websiteUrl}</a>.
             </p>
           </section>
 

@@ -89,7 +89,7 @@ export const ContactPage: React.FC = () => {
                   <Building className="h-4 w-4 text-blue-600 shrink-0 mt-0.5" />
                   <div>
                     <span className="font-semibold text-slate-900 block">Operator Name</span>
-                    <span className="text-slate-600">{COMPANY_CONFIG.proprietorName} ({COMPANY_CONFIG.businessType})</span>
+                    <span className="text-slate-600">{COMPANY_CONFIG.proprietorName}</span>
                   </div>
                 </div>
 
@@ -104,12 +104,12 @@ export const ContactPage: React.FC = () => {
                 <div className="flex items-start gap-2.5">
                   <Mail className="h-4 w-4 text-blue-600 shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-semibold text-slate-900 block">Email Support</span>
+                    <span className="font-semibold text-slate-900 block">Email</span>
                     <a
-                      href={`mailto:${COMPANY_CONFIG.contact.email}`}
+                      href={`mailto:divya@prepvisor.in`}
                       className="text-blue-600 hover:underline"
                     >
-                      {COMPANY_CONFIG.contact.email}
+                      divya@prepvisor.in
                     </a>
                   </div>
                 </div>

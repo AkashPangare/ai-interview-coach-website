@@ -14,8 +14,8 @@ export interface PricingTier {
 
 export const COMPANY_CONFIG = {
   brandName: "PrepVisor",
-  legalEntity: "PrepVisor (Operated by Divya Almelkar, Individual)",
-  proprietorName: "Divya Almelkar",
+  legalEntity: "PrepVisor (Operated by Divya Rajkumar Almelkar, Individual)",
+  proprietorName: "Divya Rajkumar Almelkar",
   businessType: "Individual",
   industry: "EdTech & Interactive Educational SaaS Software",
   websiteUrl: "https://prepvisor.in",
@@ -48,7 +48,7 @@ export const COMPANY_CONFIG = {
     refundProcessingDays: "5 to 7 business working days",
     deliveryMode: "Instant Electronic Digital Access (within 0–15 minutes)",
     grievanceOfficer: {
-      name: "Divya Almelkar",
+      name: "Divya Rajkumar Almelkar",
       title: "Grievance Officer & Founder",
       email: "grievance@prepvisor.in",
       phone: "+91 7249778116",
