@@ -5,7 +5,7 @@ import { COMPANY_CONFIG } from "@/config/company"
 
 export const Footer: React.FC = () => (
   <footer className="border-t border-slate-200 bg-white">
-    <div className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-10 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-6">
+    <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-10 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
       <div>
         <Link to="/" className="flex items-center gap-2 font-bold text-slate-900">
           <span className="flex h-7 w-7 items-center justify-center rounded-md bg-blue-600 text-white">
@@ -24,6 +24,8 @@ export const Footer: React.FC = () => (
         <Link to="/refund-policy" className="hover:text-blue-600">Refund Policy</Link>
         <Link to="/privacy" className="hover:text-blue-600">Privacy</Link>
         <Link to="/terms" className="hover:text-blue-600">Terms</Link>
+        <a href={`${COMPANY_CONFIG.appUrl}/login`} className="hover:text-blue-600 font-semibold">Log In</a>
+        <a href={`${COMPANY_CONFIG.appUrl}/register`} className="hover:text-blue-600 font-semibold">Sign Up</a>
       </div>
     </div>
     <div className="border-t border-slate-100 py-4 text-center text-xs text-slate-500 space-y-1">
