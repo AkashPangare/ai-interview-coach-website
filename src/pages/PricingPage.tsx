@@ -151,10 +151,12 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
                         </span>
                       )}
                     </div>
-                    <p className="mt-1 text-[11px] font-medium text-slate-500">
-                      {isFree ? "No credit card needed" : `One-time · ${tier.days}-day access pass`}
-                    </p>
-                    <p className="mt-0.5 text-[10px] text-emerald-700 font-medium">
+                    {!isFree && (
+                      <p className="mt-1 text-[11px] font-medium text-slate-500">
+                        One-time · {tier.days}-day access pass
+                      </p>
+                    )}
+                    <p className={`${isFree ? "mt-1" : "mt-0.5"} text-[10px] text-emerald-700 font-medium`}>
                       {isFree ? "Full feature exploration" : "(Inclusive of all applicable taxes)"}
                     </p>
                   </div>

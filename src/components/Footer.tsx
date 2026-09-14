@@ -1,17 +1,19 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { Terminal } from "lucide-react"
+import { Sparkles } from "lucide-react"
 import { COMPANY_CONFIG } from "@/config/company"
 
 export const Footer: React.FC = () => (
   <footer className="border-t border-slate-200 bg-white">
     <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-10 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
       <div>
-        <Link to="/" className="flex items-center gap-2 font-bold text-slate-900">
-          <span className="flex h-7 w-7 items-center justify-center rounded-md bg-blue-600 text-white">
-            <Terminal className="h-4 w-4" />
+        <Link to="/" className="flex items-center gap-2.5 font-bold text-slate-900 group">
+          <div className="h-7 w-7 rounded-lg bg-gradient-to-tr from-blue-600 via-blue-500 to-sky-500 flex items-center justify-center text-white shadow-xs group-hover:scale-105 transition-transform">
+            <Sparkles className="h-4 w-4" />
+          </div>
+          <span className="font-extrabold text-base tracking-tight text-slate-900">
+            Prep<span className="text-blue-600">Visor</span>
           </span>
-          {COMPANY_CONFIG.brandName}
         </Link>
         <p className="mt-2 max-w-sm text-xs leading-relaxed text-slate-500">
           Clear, structured preparation for your next tech interview.
