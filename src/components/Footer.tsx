@@ -1,15 +1,15 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { Sparkles } from "lucide-react"
 import { COMPANY_CONFIG } from "@/config/company"
+import { WhistleIcon } from "./WhistleIcon"
 
 export const Footer: React.FC = () => (
   <footer className="border-t border-slate-200 bg-white">
     <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-10 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
       <div>
         <Link to="/" className="flex items-center gap-2.5 font-bold text-slate-900 group">
-          <div className="h-7 w-7 rounded-lg bg-gradient-to-tr from-blue-600 via-blue-500 to-sky-500 flex items-center justify-center text-white shadow-xs group-hover:scale-105 transition-transform">
-            <Sparkles className="h-4 w-4" />
+          <div className="h-7 w-7 rounded-lg bg-gradient-to-tr from-blue-600 via-blue-500 to-sky-500 flex items-center justify-center text-white shadow-xs group-hover:scale-105 transition-transform p-1">
+            <WhistleIcon className="w-full h-full text-white" />
           </div>
           <span className="font-extrabold text-base tracking-tight text-slate-900">
             Prep<span className="text-blue-600">Visor</span>

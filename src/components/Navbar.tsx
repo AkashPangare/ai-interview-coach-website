@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 import { Link, useLocation } from "react-router-dom"
-import { Menu, Sparkles, X, ArrowRight, LogIn } from "lucide-react"
+import { Menu, X, ArrowRight, LogIn } from "lucide-react"
 import { COMPANY_CONFIG } from "@/config/company"
+import { BrandLogo } from "./BrandLogo"
 
 interface NavbarProps {
   onOpenWaitlist?: () => void
@@ -22,14 +23,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Brand Logo */}
-        <Link to="/" className="flex items-center gap-2.5 group shrink-0">
-          <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-blue-600 via-blue-500 to-sky-500 flex items-center justify-center shadow-md shadow-blue-500/25 text-white group-hover:scale-105 transition-transform">
-            <Sparkles className="h-5 w-5" />
-          </div>
-          <span className="text-lg font-black tracking-tight text-slate-900">
-            Prep<span className="text-blue-600">Visor</span>
-          </span>
-        </Link>
+        <BrandLogo to="/" />
 
         {/* Desktop Nav Links */}
         <nav className="hidden items-center gap-7 md:flex">
