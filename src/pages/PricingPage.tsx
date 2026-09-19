@@ -14,6 +14,7 @@ import {
   PlusCircle,
 } from "lucide-react"
 import { COMPANY_CONFIG, type PricingTier, type AddOnPack } from "@/config/company"
+import { decorateUrlWithUtms, trackEvent } from "../lib/analytics"
 
 interface PricingPageProps {
   onOpenWaitlistWithPlan?: (planId: string) => void
@@ -103,9 +104,10 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 items-stretch">
           {COMPANY_CONFIG.pricing.map((tier: PricingTier) => {
             const isFree = tier.priceINR === 0
-            const registerUrl = isFree
+            const baseRegisterUrl = isFree
               ? `${COMPANY_CONFIG.appUrl}/register`
               : `${COMPANY_CONFIG.appUrl}/register?plan=${tier.id}`
+            const registerUrl = decorateUrlWithUtms(baseRegisterUrl)
 
             return (
               <article
@@ -176,6 +178,14 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
                 <div className="mt-6 pt-4 border-t border-slate-100">
                   <a
                     href={registerUrl}
+                    onClick={() =>
+                      trackEvent("pricing_plan_selected", {
+                        plan_id: tier.id,
+                        plan_name: tier.name,
+                        price_inr: tier.priceINR,
+                        is_free: isFree,
+                      })
+                    }
                     className={`inline-flex w-full items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-bold transition-all ${
                       tier.recommended
                         ? "bg-blue-600 text-white shadow-xs hover:bg-blue-700 active:scale-[0.99]"

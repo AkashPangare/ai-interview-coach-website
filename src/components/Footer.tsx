@@ -2,6 +2,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { COMPANY_CONFIG } from "@/config/company"
 import { WhistleIcon } from "./WhistleIcon"
+import { decorateUrlWithUtms, trackEvent } from "../lib/analytics"
 
 export const Footer: React.FC = () => (
   <footer className="border-t border-slate-200 bg-white">
@@ -26,8 +27,20 @@ export const Footer: React.FC = () => (
         <Link to="/refund-policy" className="hover:text-blue-600">Refund Policy</Link>
         <Link to="/privacy" className="hover:text-blue-600">Privacy</Link>
         <Link to="/terms" className="hover:text-blue-600">Terms</Link>
-        <a href={`${COMPANY_CONFIG.appUrl}/login`} className="hover:text-blue-600 font-semibold">Log In</a>
-        <a href={`${COMPANY_CONFIG.appUrl}/register`} className="hover:text-blue-600 font-semibold">Sign Up</a>
+        <a
+          href={decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/login`)}
+          onClick={() => trackEvent("landing_cta_clicked", { cta: "footer_login", location: "footer" })}
+          className="hover:text-blue-600 font-semibold"
+        >
+          Log In
+        </a>
+        <a
+          href={decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/register`)}
+          onClick={() => trackEvent("landing_cta_clicked", { cta: "footer_register", location: "footer" })}
+          className="hover:text-blue-600 font-semibold"
+        >
+          Sign Up
+        </a>
       </div>
     </div>
     <div className="border-t border-slate-100 py-4 text-center text-xs text-slate-500 space-y-1">

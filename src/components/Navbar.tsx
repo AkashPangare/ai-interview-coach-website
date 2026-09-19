@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom"
 import { Menu, X, ArrowRight, LogIn } from "lucide-react"
 import { COMPANY_CONFIG } from "@/config/company"
 import { BrandLogo } from "./BrandLogo"
+import { decorateUrlWithUtms, trackEvent } from "../lib/analytics"
 
 interface NavbarProps {
   onOpenWaitlist?: () => void
@@ -43,14 +44,16 @@ export const Navbar: React.FC<NavbarProps> = () => {
         {/* Desktop Auth Action Buttons */}
         <div className="hidden items-center gap-3 md:flex">
           <a
-            href={`${COMPANY_CONFIG.appUrl}/login`}
+            href={decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/login`)}
+            onClick={() => trackEvent("landing_cta_clicked", { cta: "navbar_login", location: "desktop_navbar" })}
             className="inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-slate-50 transition"
           >
             <LogIn className="h-4 w-4" />
             <span>Log In</span>
           </a>
           <a
-            href={`${COMPANY_CONFIG.appUrl}/register`}
+            href={decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/register`)}
+            onClick={() => trackEvent("landing_cta_clicked", { cta: "navbar_get_started", location: "desktop_navbar" })}
             className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-xs hover:bg-blue-700 transition"
           >
             <span>Get Started</span>
@@ -83,14 +86,22 @@ export const Navbar: React.FC<NavbarProps> = () => {
           ))}
           <div className="pt-3 mt-2 border-t border-slate-100 space-y-2">
             <a
-              href={`${COMPANY_CONFIG.appUrl}/login`}
+              href={decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/login`)}
+              onClick={() => {
+                setOpen(false)
+                trackEvent("landing_cta_clicked", { cta: "navbar_login", location: "mobile_drawer" })
+              }}
               className="flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50"
             >
               <LogIn className="h-4 w-4" />
               <span>Log In</span>
             </a>
             <a
-              href={`${COMPANY_CONFIG.appUrl}/register`}
+              href={decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/register`)}
+              onClick={() => {
+                setOpen(false)
+                trackEvent("landing_cta_clicked", { cta: "navbar_get_started", location: "mobile_drawer" })
+              }}
               className="flex items-center justify-center gap-1.5 rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-blue-700"
             >
               <span>Get Started</span>
