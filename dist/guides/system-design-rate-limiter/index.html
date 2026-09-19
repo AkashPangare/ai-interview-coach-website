@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>System Design: How to Design an API Rate Limiter | Token Bucket & Redis Architecture | PrepVisor</title>
+    <meta name="description" content="Comprehensive system design interview guide for an API Rate Limiter. Compare Token Bucket, Leaky Bucket, and Sliding Window with distributed Redis Lua scripts, memory sizing, and fail-open resilience." />
+    <meta name="keywords" content="tech interview preparation, coding practice, system design, interview study plan" />
+    <meta name="author" content="PrepVisor" />
+    
+    <!-- Open Graph / Facebook / LinkedIn -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="PrepVisor | Tech Interview Preparation" />
+    <meta property="og:description" content="A simple, structured way to prepare for your next tech interview." />
+    <meta property="og:site_name" content="PrepVisor" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PrepVisor | Tech Interview Preparation" />
+    <meta name="twitter:description" content="A simple, structured way to prepare for your next tech interview." />
+
+    <!-- Structured Data for Search Engines -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "PrepVisor",
+        "operatingSystem": "Web, Cloud",
+        "applicationCategory": "EducationalApplication",
+        "description": "A web-based study planner for coding and system design interview preparation."
+      }
+    </script>
+    <script type="module" crossorigin src="/assets/index-DI98TXVx.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-TsRviktK.css">
+  
+    <link rel="canonical" href="https://prepvisor.in/guides/system-design-rate-limiter" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="System Design: How to Design an API Rate Limiter (Token Bucket vs Leaky Bucket)" />
+    <meta property="og:description" content="Comprehensive system design interview guide for an API Rate Limiter. Compare Token Bucket, Leaky Bucket, and Sliding Window with distributed Redis Lua scripts, memory sizing, and fail-open resilience." />
+    <meta property="og:url" content="https://prepvisor.in/guides/system-design-rate-limiter" />
+    <meta name="twitter:title" content="System Design: How to Design an API Rate Limiter (Token Bucket vs Leaky Bucket)" />
+    <meta name="twitter:description" content="Comprehensive system design interview guide for an API Rate Limiter. Compare Token Bucket, Leaky Bucket, and Sliding Window with distributed Redis Lua scripts, memory sizing, and fail-open resilience." />
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"System Design: How to Design an API Rate Limiter (Token Bucket vs Leaky Bucket)","description":"Comprehensive system design interview guide for an API Rate Limiter. Compare Token Bucket, Leaky Bucket, and Sliding Window with distributed Redis Lua scripts, memory sizing, and fail-open resilience.","image":"https://prepvisor.in/logo.png","author":{"@type":"Organization","name":"PrepVisor Systems Engineering Team","url":"https://prepvisor.in"},"publisher":{"@type":"Organization","name":"PrepVisor","url":"https://prepvisor.in","logo":{"@type":"ImageObject","url":"https://prepvisor.in/logo.png"}},"datePublished":"2026-09-20T08:00:00+05:30","dateModified":"2026-09-20T08:00:00+05:30","mainEntityOfPage":{"@type":"WebPage","@id":"https://prepvisor.in/guides/system-design-rate-limiter"},"keywords":"how to design an api rate limiter, system design rate limiter interview, token bucket vs leaky bucket, redis rate limiter lua script, distributed rate limiting architecture, sliding window counter rate limit, api gateway rate limiting envoy kong"}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the primary difference between Token Bucket and Leaky Bucket?","acceptedAnswer":{"@type":"Answer","text":"Token Bucket allows controlled traffic bursts up to the bucket capacity while maintaining an average rate, making it ideal for general web APIs. Leaky Bucket flattens traffic into a strictly constant output rate without burst tolerance, making it ideal for egress traffic shaping toward fragile downstream services."}},{"@type":"Question","name":"How do you prevent race conditions in a distributed rate limiter?","acceptedAnswer":{"@type":"Answer","text":"Naive GET and SET operations in Redis suffer from check-then-act race conditions. In production, race conditions are eliminated by executing rate limit checks inside an atomic Redis Lua script, which runs to completion on Redis's single-threaded event loop without interleaving."}},{"@type":"Question","name":"Where should the rate limiter be positioned in modern microservices?","acceptedAnswer":{"@type":"Answer","text":"The rate limiter should be positioned at the edge API Gateway (e.g. Envoy, Kong, Cloudflare) rather than inside individual application microservices. This blocks unauthorized or throttled requests before they consume application server CPU, thread pools, or database connections."}},{"@type":"Question","name":"What HTTP status code and response headers should be returned when rate limited?","acceptedAnswer":{"@type":"Answer","text":"The server should return HTTP 429 (Too Many Requests) along with headers: X-RateLimit-Limit (total quota), X-RateLimit-Remaining (tokens left in current window), X-RateLimit-Reset (epoch timestamp when quota refreshes), and Retry-After (seconds until retry is permitted)."}},{"@type":"Question","name":"Should a rate limiter fail open or fail closed during a Redis outage?","acceptedAnswer":{"@type":"Answer","text":"For standard web and mobile applications, the rate limiter should fail open with an active circuit breaker. If Redis times out, requests are allowed through while alerting DevOps, avoiding a total platform outage. For strict financial transaction or security-critical endpoints, a fail-closed policy may be chosen."}},{"@type":"Question","name":"How do you handle clock drift across distributed rate limiting servers?","acceptedAnswer":{"@type":"Answer","text":"Server clocks drift due to NTP synchronization intervals. To eliminate skew, never use client or gateway application timestamps; instead, obtain the canonical time directly within Redis using the redis.call('TIME') command inside the Lua script."}}]}</script>
+  </head>
+  <body class="bg-slate-50 text-slate-900 antialiased selection:bg-blue-600 selection:text-white min-h-screen">
+    
+    <div id="root">
+      <article class="p-8 max-w-4xl mx-auto font-sans">
+        <header class="mb-8">
+          <p class="text-sm font-bold text-blue-600 uppercase tracking-wider">System Design · 22 min read</p>
+          <h1 class="text-4xl font-black text-slate-900 mt-2">System Design: How to Design an API Rate Limiter (Token Bucket vs Leaky Bucket)</h1>
+          <p class="text-lg text-slate-600 mt-4 leading-relaxed">Comprehensive system design interview guide for an API Rate Limiter. Compare Token Bucket, Leaky Bucket, and Sliding Window with distributed Redis Lua scripts, memory sizing, and fail-open resilience.</p>
+        </header>
+        <section class="space-y-6">
+          <h2 class="text-2xl font-bold text-slate-800">Key Interview Sections</h2>
+          <ul class="list-disc pl-6 space-y-2 text-slate-700">
+            <li><strong>1. Functional & Non-Functional Requirements</strong></li><li><strong>2. Algorithm Comparison: Token Bucket vs Leaky Bucket vs Sliding Window</strong></li><li><strong>3. High-Level Architecture & Gateway Placement</strong></li><li><strong>4. Distributed Concurrency & The Race Condition Trap</strong></li><li><strong>5. Capacity Estimation & Redis Memory Sizing</strong></li><li><strong>6. Edge Cases, Multi-Tier Limits & Failover Resilience</strong></li>
+          </ul>
+        </section>
+        <section class="mt-12 p-6 rounded-2xl bg-blue-50 border border-blue-200">
+          <h3 class="text-xl font-bold text-slate-900">Practice this question on PrepVisor AI Studio</h3>
+          <p class="text-sm text-slate-600 mt-2">Get real-time scoring, code evaluation, and system design feedback.</p>
+          <a href="https://app.prepvisor.in/register?utm_source=organic_seo&utm_medium=guide&utm_campaign=system-design-rate-limiter" class="inline-block mt-4 px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl">Launch Practice Studio</a>
+        </section>
+      </article>
+    </div>
+  
+  </body>
+</html>

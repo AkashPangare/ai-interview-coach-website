@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Allow: /guides/
 
-Sitemap: https://prepvisor.com/sitemap.xml
+Sitemap: https://prepvisor.in/sitemap.xml

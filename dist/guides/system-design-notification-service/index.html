@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>System Design: How to Design a Notification System | SMS, Push & Email at Scale | PrepVisor</title>
+    <meta name="description" content="Architect a scalable, fault-tolerant notification service handling billions of notifications. Learn priority queues, idempotency, rate limiting, and third-party gateway integrations." />
+    <meta name="keywords" content="tech interview preparation, coding practice, system design, interview study plan" />
+    <meta name="author" content="PrepVisor" />
+    
+    <!-- Open Graph / Facebook / LinkedIn -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="PrepVisor | Tech Interview Preparation" />
+    <meta property="og:description" content="A simple, structured way to prepare for your next tech interview." />
+    <meta property="og:site_name" content="PrepVisor" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PrepVisor | Tech Interview Preparation" />
+    <meta name="twitter:description" content="A simple, structured way to prepare for your next tech interview." />
+
+    <!-- Structured Data for Search Engines -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "PrepVisor",
+        "operatingSystem": "Web, Cloud",
+        "applicationCategory": "EducationalApplication",
+        "description": "A web-based study planner for coding and system design interview preparation."
+      }
+    </script>
+    <script type="module" crossorigin src="/assets/index-DI98TXVx.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-TsRviktK.css">
+  
+    <link rel="canonical" href="https://prepvisor.in/guides/system-design-notification-service" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="System Design: How to Design a Notification System at Scale (SMS, Push, Email)" />
+    <meta property="og:description" content="Architect a scalable, fault-tolerant notification service handling billions of notifications. Learn priority queues, idempotency, rate limiting, and third-party gateway integrations." />
+    <meta property="og:url" content="https://prepvisor.in/guides/system-design-notification-service" />
+    <meta name="twitter:title" content="System Design: How to Design a Notification System at Scale (SMS, Push, Email)" />
+    <meta name="twitter:description" content="Architect a scalable, fault-tolerant notification service handling billions of notifications. Learn priority queues, idempotency, rate limiting, and third-party gateway integrations." />
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"System Design: How to Design a Notification System at Scale (SMS, Push, Email)","description":"Architect a scalable, fault-tolerant notification service handling billions of notifications. Learn priority queues, idempotency, rate limiting, and third-party gateway integrations.","image":"https://prepvisor.in/logo.png","author":{"@type":"Organization","name":"PrepVisor Systems Engineering Team","url":"https://prepvisor.in"},"publisher":{"@type":"Organization","name":"PrepVisor","url":"https://prepvisor.in","logo":{"@type":"ImageObject","url":"https://prepvisor.in/logo.png"}},"datePublished":"2026-09-20T08:00:00+05:30","dateModified":"2026-09-20T08:00:00+05:30","mainEntityOfPage":{"@type":"WebPage","@id":"https://prepvisor.in/guides/system-design-notification-service"},"keywords":"system design notification system, notification service architecture, how to design notification system interview, notification deduplication idempotency, apple apns twilio sendgrid architecture, kafka priority queue notification system"}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do you guarantee high-priority OTP notifications are never delayed by marketing campaigns?","acceptedAnswer":{"@type":"Answer","text":"Separate notifications into dedicated priority Kafka topics (e.g. notifications.p0.transactional vs notifications.p2.marketing) consumed by isolated worker fleets. Even if marketing topics have millions of pending messages, transactional workers pull exclusively from the P0 topic with zero latency contention."}},{"@type":"Question","name":"How do you prevent users from receiving duplicate push notifications or SMS?","acceptedAnswer":{"@type":"Answer","text":"Implement client-driven idempotency keys stored in a distributed Redis cache with atomic SET NX and a 24-hour TTL. In addition, pass the idempotency key to downstream vendor APIs (like Stripe, Twilio, SendGrid) so that transient network retries do not trigger duplicate dispatches."}},{"@type":"Question","name":"How does the notification service integrate with APNs and FCM?","acceptedAnswer":{"@type":"Answer","text":"The service maintains persistent HTTP/2 connections to Apple Push Notification service (APNs) using TLS provider certificates or JWT authentication tokens. For Android, it integrates with Firebase Cloud Messaging (FCM) v1 REST API. Device tokens are stored per user in the database, and when APNs/FCM returns Unregistered, the token is automatically deactivated."}},{"@type":"Question","name":"How do you handle third-party vendor rate limits and downtime (e.g., Twilio outage)?","acceptedAnswer":{"@type":"Answer","text":"Use a distributed Token Bucket in Redis to throttle outbound worker dispatch rates to the vendor's agreed QPS limit. For vendor outages, configure circuit breakers with multi-vendor failover (e.g., if Twilio fails, route SMS through Infobip or AWS SNS) and retry transient errors with exponential backoff and jitter."}},{"@type":"Question","name":"What is the Dead Letter Queue (DLQ) strategy for failed notifications?","acceptedAnswer":{"@type":"Answer","text":"When a notification exhausts its retry attempts (e.g., 3 retries with exponential backoff) or encounters a non-retryable error (e.g., invalid phone number or unparseable payload), it is moved to a Dead Letter Queue. DLQ messages trigger alerts and allow engineers to inspect, correct, and re-drive failed events."}},{"@type":"Question","name":"How do you implement localized quiet hours across global user timezones?","acceptedAnswer":{"@type":"Answer","text":"Store the recipient's timezone or inferred location in their profile. Before queueing non-urgent marketing notifications, check if the recipient's current local time falls between quiet hours (e.g. 9 PM to 8 AM). If so, compute the delay until 8:01 AM local time and schedule delivery via a delayed queue or scheduled Redis sorted set."}}]}</script>
+  </head>
+  <body class="bg-slate-50 text-slate-900 antialiased selection:bg-blue-600 selection:text-white min-h-screen">
+    
+    <div id="root">
+      <article class="p-8 max-w-4xl mx-auto font-sans">
+        <header class="mb-8">
+          <p class="text-sm font-bold text-blue-600 uppercase tracking-wider">System Design · 24 min read</p>
+          <h1 class="text-4xl font-black text-slate-900 mt-2">System Design: How to Design a Notification System at Scale (SMS, Push, Email)</h1>
+          <p class="text-lg text-slate-600 mt-4 leading-relaxed">Architect a scalable, fault-tolerant notification service handling billions of notifications. Learn priority queues, idempotency, rate limiting, and third-party gateway integrations.</p>
+        </header>
+        <section class="space-y-6">
+          <h2 class="text-2xl font-bold text-slate-800">Key Interview Sections</h2>
+          <ul class="list-disc pl-6 space-y-2 text-slate-700">
+            <li><strong>1. Clarifying Requirements & Notification Types</strong></li><li><strong>2. Back-of-the-Envelope Capacity Estimation</strong></li><li><strong>3. High-Level Architecture & End-to-End Flow</strong></li><li><strong>4. Deduplication, Idempotency & Exactly-Once Semantics</strong></li><li><strong>5. Worker Fleet Design, Priority Queues & Vendor Rate Limiting</strong></li><li><strong>6. User Preferences, Quiet Hours & Global Compliance</strong></li>
+          </ul>
+        </section>
+        <section class="mt-12 p-6 rounded-2xl bg-blue-50 border border-blue-200">
+          <h3 class="text-xl font-bold text-slate-900">Practice this question on PrepVisor AI Studio</h3>
+          <p class="text-sm text-slate-600 mt-2">Get real-time scoring, code evaluation, and system design feedback.</p>
+          <a href="https://app.prepvisor.in/register?utm_source=organic_seo&utm_medium=guide&utm_campaign=system-design-notification-service" class="inline-block mt-4 px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl">Launch Practice Studio</a>
+        </section>
+      </article>
+    </div>
+  
+  </body>
+</html>

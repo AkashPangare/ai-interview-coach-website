@@ -21,6 +21,7 @@ export const Footer: React.FC = () => (
         </p>
       </div>
       <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-slate-500">
+        <Link to="/guides" className="hover:text-blue-600 font-semibold">Guides</Link>
         <Link to="/pricing" className="hover:text-blue-600">Pricing</Link>
         <Link to="/about" className="hover:text-blue-600">About</Link>
         <Link to="/contact" className="hover:text-blue-600">Contact</Link>

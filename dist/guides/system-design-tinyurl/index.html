@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>System Design: How to Design TinyURL | Interview Architecture & Capacity Guide | PrepVisor</title>
+    <meta name="description" content="Comprehensive system design interview guide for TinyURL / URL shortener. Learn capacity estimation, Base62 vs hashing, Key Generation Service (KGS), caching, and SPOF analysis." />
+    <meta name="keywords" content="tech interview preparation, coding practice, system design, interview study plan" />
+    <meta name="author" content="PrepVisor" />
+    
+    <!-- Open Graph / Facebook / LinkedIn -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="PrepVisor | Tech Interview Preparation" />
+    <meta property="og:description" content="A simple, structured way to prepare for your next tech interview." />
+    <meta property="og:site_name" content="PrepVisor" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PrepVisor | Tech Interview Preparation" />
+    <meta name="twitter:description" content="A simple, structured way to prepare for your next tech interview." />
+
+    <!-- Structured Data for Search Engines -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "PrepVisor",
+        "operatingSystem": "Web, Cloud",
+        "applicationCategory": "EducationalApplication",
+        "description": "A web-based study planner for coding and system design interview preparation."
+      }
+    </script>
+    <script type="module" crossorigin src="/assets/index-DI98TXVx.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-TsRviktK.css">
+  
+    <link rel="canonical" href="https://prepvisor.in/guides/system-design-tinyurl" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="System Design: How to Design TinyURL (Architecture, Capacity & SPOF)" />
+    <meta property="og:description" content="Comprehensive system design interview guide for TinyURL / URL shortener. Learn capacity estimation, Base62 vs hashing, Key Generation Service (KGS), caching, and SPOF analysis." />
+    <meta property="og:url" content="https://prepvisor.in/guides/system-design-tinyurl" />
+    <meta name="twitter:title" content="System Design: How to Design TinyURL (Architecture, Capacity & SPOF)" />
+    <meta name="twitter:description" content="Comprehensive system design interview guide for TinyURL / URL shortener. Learn capacity estimation, Base62 vs hashing, Key Generation Service (KGS), caching, and SPOF analysis." />
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"System Design: How to Design TinyURL (Architecture, Capacity & SPOF)","description":"Comprehensive system design interview guide for TinyURL / URL shortener. Learn capacity estimation, Base62 vs hashing, Key Generation Service (KGS), caching, and SPOF analysis.","image":"https://prepvisor.in/logo.png","author":{"@type":"Organization","name":"PrepVisor Systems Engineering Team","url":"https://prepvisor.in"},"publisher":{"@type":"Organization","name":"PrepVisor","url":"https://prepvisor.in","logo":{"@type":"ImageObject","url":"https://prepvisor.in/logo.png"}},"datePublished":"2026-09-18T08:00:00+05:30","dateModified":"2026-09-18T08:00:00+05:30","mainEntityOfPage":{"@type":"WebPage","@id":"https://prepvisor.in/guides/system-design-tinyurl"},"keywords":"how to design tinyurl, system design url shortener interview, tinyurl system design high level architecture, base62 encoding tinyurl, key generation service kgs, system design interview questions"}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why use Base62 instead of Base64 for short URLs?","acceptedAnswer":{"@type":"Answer","text":"Base64 includes characters like '+' and '/', which carry special meanings in URL query strings and path segments. Base62 consists strictly of alphanumeric characters [a-z, A-Z, 0-9], making it safe across all browsers, SMS, and messaging apps."}},{"@type":"Question","name":"Should TinyURL return HTTP 301 or HTTP 302 status code?","acceptedAnswer":{"@type":"Answer","text":"HTTP 301 is a Permanent Redirect cached by browsers, preventing click tracking. HTTP 302 is a Temporary Redirect forcing clicks through your servers, allowing real-time analytics, rate-limiting, and malicious link blocking."}},{"@type":"Question","name":"What is the storage requirement for 6 billion short URLs?","acceptedAnswer":{"@type":"Answer","text":"At an average of 600 bytes per record (500 bytes original URL + 100 bytes key and metadata), 6 billion URLs require approximately 3.6 Terabytes of total database storage."}}]}</script>
+  </head>
+  <body class="bg-slate-50 text-slate-900 antialiased selection:bg-blue-600 selection:text-white min-h-screen">
+    
+    <div id="root">
+      <article class="p-8 max-w-4xl mx-auto font-sans">
+        <header class="mb-8">
+          <p class="text-sm font-bold text-blue-600 uppercase tracking-wider">System Design · 20 min read</p>
+          <h1 class="text-4xl font-black text-slate-900 mt-2">System Design: How to Design TinyURL (Architecture, Capacity & SPOF)</h1>
+          <p class="text-lg text-slate-600 mt-4 leading-relaxed">Comprehensive system design interview guide for TinyURL / URL shortener. Learn capacity estimation, Base62 vs hashing, Key Generation Service (KGS), caching, and SPOF analysis.</p>
+        </header>
+        <section class="space-y-6">
+          <h2 class="text-2xl font-bold text-slate-800">Key Interview Sections</h2>
+          <ul class="list-disc pl-6 space-y-2 text-slate-700">
+            <li><strong>1. Functional & Non-Functional Requirements</strong></li><li><strong>2. Capacity Estimation & Back-of-the-Envelope Calculations</strong></li><li><strong>3. Key Generation Strategy: Base62 vs Hashing</strong></li><li><strong>4. High-Level Architecture & End-to-End Flow</strong></li><li><strong>5. Database Schema & Storage Engine Choice</strong></li><li><strong>6. Single Point of Failure (SPOF) & Fault Tolerance</strong></li>
+          </ul>
+        </section>
+        <section class="mt-12 p-6 rounded-2xl bg-blue-50 border border-blue-200">
+          <h3 class="text-xl font-bold text-slate-900">Practice this question on PrepVisor AI Studio</h3>
+          <p class="text-sm text-slate-600 mt-2">Get real-time scoring, code evaluation, and system design feedback.</p>
+          <a href="https://app.prepvisor.in/register?utm_source=organic_seo&utm_medium=guide&utm_campaign=system-design-tinyurl" class="inline-block mt-4 px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl">Launch Practice Studio</a>
+        </section>
+      </article>
+    </div>
+  
+  </body>
+</html>

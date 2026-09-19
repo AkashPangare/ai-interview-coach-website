@@ -1,50 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://prepvisor.com/</loc>
-    <lastmod>2026-09-09</lastmod>
+    <loc>https://prepvisor.in/</loc>
+    <lastmod>2026-09-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://prepvisor.com/pricing</loc>
-    <lastmod>2026-09-09</lastmod>
+    <loc>https://prepvisor.in/pricing</loc>
+    <lastmod>2026-09-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://prepvisor.com/about</loc>
-    <lastmod>2026-09-09</lastmod>
+    <loc>https://prepvisor.in/guides</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://prepvisor.in/guides/system-design-tinyurl</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://prepvisor.in/guides/java-concurrency-interview-questions</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://prepvisor.in/guides/system-design-rate-limiter</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://prepvisor.in/guides/spring-boot-microservices-interview-questions</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://prepvisor.in/guides/lru-cache-implementation</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://prepvisor.in/guides/system-design-notification-service</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://prepvisor.in/about</loc>
+    <lastmod>2026-09-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://prepvisor.com/contact</loc>
-    <lastmod>2026-09-09</lastmod>
+    <loc>https://prepvisor.in/contact</loc>
+    <lastmod>2026-09-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://prepvisor.com/refund-policy</loc>
-    <lastmod>2026-09-09</lastmod>
+    <loc>https://prepvisor.in/refund-policy</loc>
+    <lastmod>2026-09-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://prepvisor.com/delivery-policy</loc>
-    <lastmod>2026-09-09</lastmod>
+    <loc>https://prepvisor.in/privacy</loc>
+    <lastmod>2026-09-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://prepvisor.com/privacy</loc>
-    <lastmod>2026-09-09</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://prepvisor.com/terms</loc>
-    <lastmod>2026-09-09</lastmod>
+    <loc>https://prepvisor.in/terms</loc>
+    <lastmod>2026-09-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

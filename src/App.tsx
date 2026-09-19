@@ -10,6 +10,8 @@ import { RefundPolicyPage } from "@/pages/RefundPolicyPage"
 import { PrivacyPolicyPage } from "@/pages/PrivacyPolicyPage"
 import { TermsPage } from "@/pages/TermsPage"
 import { AboutPage } from "@/pages/AboutPage"
+import { GuidesHubPage } from "@/pages/GuidesHubPage"
+import { GuideDetailPage } from "@/pages/GuideDetailPage"
 
 // Scroll to top helper
 function ScrollToTop() {
@@ -68,6 +70,8 @@ export function App() {
             path="/about"
             element={<AboutPage onOpenWaitlist={handleOpenWaitlist} />}
           />
+          <Route path="/guides" element={<GuidesHubPage />} />
+          <Route path="/guides/:slug" element={<GuideDetailPage />} />
           {/* Catch-all fallback */}
           <Route
             path="*"

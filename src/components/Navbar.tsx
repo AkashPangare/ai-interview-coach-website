@@ -15,6 +15,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
 
   const links = [
     { to: "/", label: "Home" },
+    { to: "/guides", label: "Guides" },
     { to: "/pricing", label: "Pricing" },
     { to: "/about", label: "About" },
     { to: "/contact", label: "Contact" },

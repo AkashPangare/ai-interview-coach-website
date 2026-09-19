@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LRU Cache Implementation Guide | O(1) Operations in Java, Python & C++ | PrepVisor</title>
+    <meta name="description" content="Complete step-by-step guide to implementing an LRU Cache with O(1) get and put operations. Includes Doubly Linked List + HashMap implementations in Java, Python, and C++." />
+    <meta name="keywords" content="tech interview preparation, coding practice, system design, interview study plan" />
+    <meta name="author" content="PrepVisor" />
+    
+    <!-- Open Graph / Facebook / LinkedIn -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="PrepVisor | Tech Interview Preparation" />
+    <meta property="og:description" content="A simple, structured way to prepare for your next tech interview." />
+    <meta property="og:site_name" content="PrepVisor" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PrepVisor | Tech Interview Preparation" />
+    <meta name="twitter:description" content="A simple, structured way to prepare for your next tech interview." />
+
+    <!-- Structured Data for Search Engines -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "PrepVisor",
+        "operatingSystem": "Web, Cloud",
+        "applicationCategory": "EducationalApplication",
+        "description": "A web-based study planner for coding and system design interview preparation."
+      }
+    </script>
+    <script type="module" crossorigin src="/assets/index-DI98TXVx.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-TsRviktK.css">
+  
+    <link rel="canonical" href="https://prepvisor.in/guides/lru-cache-implementation" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="LRU Cache Implementation: Step-by-Step in Java, Python & C++" />
+    <meta property="og:description" content="Complete step-by-step guide to implementing an LRU Cache with O(1) get and put operations. Includes Doubly Linked List + HashMap implementations in Java, Python, and C++." />
+    <meta property="og:url" content="https://prepvisor.in/guides/lru-cache-implementation" />
+    <meta name="twitter:title" content="LRU Cache Implementation: Step-by-Step in Java, Python & C++" />
+    <meta name="twitter:description" content="Complete step-by-step guide to implementing an LRU Cache with O(1) get and put operations. Includes Doubly Linked List + HashMap implementations in Java, Python, and C++." />
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"LRU Cache Implementation: Step-by-Step in Java, Python & C++","description":"Complete step-by-step guide to implementing an LRU Cache with O(1) get and put operations. Includes Doubly Linked List + HashMap implementations in Java, Python, and C++.","image":"https://prepvisor.in/logo.png","author":{"@type":"Organization","name":"PrepVisor Systems Engineering Team","url":"https://prepvisor.in"},"publisher":{"@type":"Organization","name":"PrepVisor","url":"https://prepvisor.in","logo":{"@type":"ImageObject","url":"https://prepvisor.in/logo.png"}},"datePublished":"2026-09-20T08:00:00+05:30","dateModified":"2026-09-20T08:00:00+05:30","mainEntityOfPage":{"@type":"WebPage","@id":"https://prepvisor.in/guides/lru-cache-implementation"},"keywords":"lru cache implementation, lru cache java step by step, lru cache python collections ordereddict, lru cache c++ list unordered_map, leetcode 146 lru cache solution, thread safe lru cache implementation"}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why is a Doubly Linked List required instead of a Singly Linked List for LRU Cache?","acceptedAnswer":{"@type":"Answer","text":"To achieve strict O(1) eviction and node repositioning, removing an arbitrary node in the middle of the list requires instant access to the preceding node (node.prev) so pointers can be reconnected. In a Singly Linked List, finding the previous node requires an O(N) traversal."}},{"@type":"Question","name":"How do dummy head and tail sentinel nodes simplify LRU cache pointer manipulation?","acceptedAnswer":{"@type":"Answer","text":"Dummy head and tail sentinels act as permanent boundaries. The real cached nodes always sit strictly between them. This eliminates edge cases (such as inserting into an empty list, removing the only node, or boundary null pointer checks), reducing code complexity and preventing runtime NullPointerExceptions."}},{"@type":"Question","name":"Why does standard ReentrantReadWriteLock fail to scale for a concurrent LRU cache?","acceptedAnswer":{"@type":"Answer","text":"In a standard cache, get() is a read operation. However, in an LRU cache, get() mutates the list pointers to reposition the accessed node to the most recently used head. Consequently, get() requires a write lock, causing all concurrent reader threads to serialize and eliminating the concurrency benefits of ReadWriteLock."}},{"@type":"Question","name":"What is the difference between LRU (Least Recently Used) and LFU (Least Frequently Used)?","acceptedAnswer":{"@type":"Answer","text":"LRU evicts the item that was accessed the furthest in the past, regardless of how many times it was used before. LFU tracks access frequency and evicts the item with the lowest hit count. LFU is better at resisting cache pollution from one-off bulk scans, but requires more complex O(1) bookkeeping and frequency decay mechanisms."}},{"@type":"Question","name":"How can you add Time-To-Live (TTL) expiration to an LRU cache?","acceptedAnswer":{"@type":"Answer","text":"Add an expiresAt timestamp field to each cache node. Implement lazy expiration on get() (if current time exceeds expiresAt, delete the node and return -1) and active background expiration using a PriorityQueue (Min-Heap) sorted by expiresAt to periodically remove expired entries."}},{"@type":"Question","name":"How does Caffeine Cache achieve high-performance lock-free concurrent caching in Java?","acceptedAnswer":{"@type":"Answer","text":"Caffeine decouples reads from eviction mutations. Reads access a ConcurrentHashMap directly without locking. Node access events are recorded to a lock-free ring buffer (MPSC queue), which is drained in batches by a background maintenance thread to update eviction data structures without blocking concurrent client threads."}}]}</script>
+  </head>
+  <body class="bg-slate-50 text-slate-900 antialiased selection:bg-blue-600 selection:text-white min-h-screen">
+    
+    <div id="root">
+      <article class="p-8 max-w-4xl mx-auto font-sans">
+        <header class="mb-8">
+          <p class="text-sm font-bold text-blue-600 uppercase tracking-wider">Data Structures · 18 min read</p>
+          <h1 class="text-4xl font-black text-slate-900 mt-2">LRU Cache Implementation: Step-by-Step in Java, Python & C++</h1>
+          <p class="text-lg text-slate-600 mt-4 leading-relaxed">Complete step-by-step guide to implementing an LRU Cache with O(1) get and put operations. Includes Doubly Linked List + HashMap implementations in Java, Python, and C++.</p>
+        </header>
+        <section class="space-y-6">
+          <h2 class="text-2xl font-bold text-slate-800">Key Interview Sections</h2>
+          <ul class="list-disc pl-6 space-y-2 text-slate-700">
+            <li><strong>1. LRU Cache Problem Breakdown & Complexity Requirements</strong></li><li><strong>2. The Dummy Sentinel Node Technique (Head & Tail)</strong></li><li><strong>3. Complete Production-Grade Java Implementation</strong></li><li><strong>4. Multi-Language Implementations: Python & Modern C++</strong></li><li><strong>5. Concurrency & Thread-Safety Extensions</strong></li><li><strong>6. Common Interview Follow-Ups & Edge Cases</strong></li>
+          </ul>
+        </section>
+        <section class="mt-12 p-6 rounded-2xl bg-blue-50 border border-blue-200">
+          <h3 class="text-xl font-bold text-slate-900">Practice this question on PrepVisor AI Studio</h3>
+          <p class="text-sm text-slate-600 mt-2">Get real-time scoring, code evaluation, and system design feedback.</p>
+          <a href="https://app.prepvisor.in/register?utm_source=organic_seo&utm_medium=guide&utm_campaign=lru-cache-implementation" class="inline-block mt-4 px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl">Launch Practice Studio</a>
+        </section>
+      </article>
+    </div>
+  
+  </body>
+</html>

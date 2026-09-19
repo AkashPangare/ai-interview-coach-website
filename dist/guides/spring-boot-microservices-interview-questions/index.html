@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Top Spring Boot & Microservices Interview Questions | 3-6 Yrs Senior Guide | PrepVisor</title>
+    <meta name="description" content="Master top Spring Boot and microservices interview questions for 3-6 years experience. In-depth answers on Spring Boot 3, @Transactional pitfalls, distributed tracing, and Saga pattern." />
+    <meta name="keywords" content="tech interview preparation, coding practice, system design, interview study plan" />
+    <meta name="author" content="PrepVisor" />
+    
+    <!-- Open Graph / Facebook / LinkedIn -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="PrepVisor | Tech Interview Preparation" />
+    <meta property="og:description" content="A simple, structured way to prepare for your next tech interview." />
+    <meta property="og:site_name" content="PrepVisor" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PrepVisor | Tech Interview Preparation" />
+    <meta name="twitter:description" content="A simple, structured way to prepare for your next tech interview." />
+
+    <!-- Structured Data for Search Engines -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "PrepVisor",
+        "operatingSystem": "Web, Cloud",
+        "applicationCategory": "EducationalApplication",
+        "description": "A web-based study planner for coding and system design interview preparation."
+      }
+    </script>
+    <script type="module" crossorigin src="/assets/index-DI98TXVx.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-TsRviktK.css">
+  
+    <link rel="canonical" href="https://prepvisor.in/guides/spring-boot-microservices-interview-questions" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Spring Boot & Microservices Interview Questions (3–6 Years Experience)" />
+    <meta property="og:description" content="Master top Spring Boot and microservices interview questions for 3-6 years experience. In-depth answers on Spring Boot 3, @Transactional pitfalls, distributed tracing, and Saga pattern." />
+    <meta property="og:url" content="https://prepvisor.in/guides/spring-boot-microservices-interview-questions" />
+    <meta name="twitter:title" content="Spring Boot & Microservices Interview Questions (3–6 Years Experience)" />
+    <meta name="twitter:description" content="Master top Spring Boot and microservices interview questions for 3-6 years experience. In-depth answers on Spring Boot 3, @Transactional pitfalls, distributed tracing, and Saga pattern." />
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Spring Boot & Microservices Interview Questions (3–6 Years Experience)","description":"Master top Spring Boot and microservices interview questions for 3-6 years experience. In-depth answers on Spring Boot 3, @Transactional pitfalls, distributed tracing, and Saga pattern.","image":"https://prepvisor.in/logo.png","author":{"@type":"Organization","name":"PrepVisor Systems Engineering Team","url":"https://prepvisor.in"},"publisher":{"@type":"Organization","name":"PrepVisor","url":"https://prepvisor.in","logo":{"@type":"ImageObject","url":"https://prepvisor.in/logo.png"}},"datePublished":"2026-09-20T08:00:00+05:30","dateModified":"2026-09-20T08:00:00+05:30","mainEntityOfPage":{"@type":"WebPage","@id":"https://prepvisor.in/guides/spring-boot-microservices-interview-questions"},"keywords":"spring boot microservices interview questions, spring boot interview questions for 5 years experience, transactional rollback spring boot pitfalls, saga pattern vs 2pc microservices, spring boot 3 virtual threads java 21, resilience4j circuit breaker interview"}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why doesn't @Transactional rollback when a checked exception is thrown?","acceptedAnswer":{"@type":"Answer","text":"By default in Spring, transactions only roll back for unchecked exceptions (subclasses of RuntimeException) and Errors. Checked exceptions (subclasses of java.lang.Exception) indicate recoverable conditions according to EJB transaction design history. To roll back on all exceptions, configure @Transactional(rollbackFor = Exception.class)."}},{"@type":"Question","name":"What is the self-invocation issue in Spring @Transactional?","acceptedAnswer":{"@type":"Answer","text":"Spring applies transactional behavior using dynamic AOP proxies. When a method in a service calls another @Transactional method within the same service class using this.method(), the call bypasses the Spring proxy, meaning no transaction interceptor is triggered and the target method runs without transactional guarantees."}},{"@type":"Question","name":"How does the Saga pattern solve distributed transactions compared to 2PC?","acceptedAnswer":{"@type":"Answer","text":"Two-Phase Commit (2PC) is a blocking protocol that locks database rows across multiple services, causing severe latency and availability bottlenecks. The Saga pattern breaks a distributed transaction into a sequence of autonomous local transactions. If one step fails, the Saga executes compensating transactions to undo previous steps, achieving eventual consistency without distributed locks."}},{"@type":"Question","name":"What is the Transactional Outbox pattern and why is it needed?","acceptedAnswer":{"@type":"Answer","text":"The Transactional Outbox pattern solves the dual-write problem where an application must update a database and publish an event to a message broker (like Kafka). By writing the domain event to an 'outbox' table in the same local database transaction, and using a Change Data Capture (CDC) tool like Debezium to stream events, you guarantee at-least-once delivery with zero data inconsistencies."}},{"@type":"Question","name":"How does Resilience4j Circuit Breaker transition between CLOSED, OPEN, and HALF_OPEN?","acceptedAnswer":{"@type":"Answer","text":"In CLOSED state, requests execute normally while failure rates are tracked over a sliding window. If the failure threshold (e.g. 50%) is breached, the circuit flips to OPEN, failing fast without calling the downstream service. After a cooldown duration, it enters HALF_OPEN, allowing a limited test set of requests through. If successful, it resets to CLOSED; otherwise, it returns to OPEN."}},{"@type":"Question","name":"How does enabling Virtual Threads in Spring Boot 3.2 impact high-concurrency microservices?","acceptedAnswer":{"@type":"Answer","text":"Setting spring.threads.virtual.enabled=true allows Tomcat to run each incoming HTTP request on an ultra-lightweight JVM virtual thread instead of an expensive OS platform thread. When blocking on database or HTTP calls, the carrier thread is freed to process other requests, scaling to tens of thousands of concurrent I/O requests without requiring reactive WebFlux."}}]}</script>
+  </head>
+  <body class="bg-slate-50 text-slate-900 antialiased selection:bg-blue-600 selection:text-white min-h-screen">
+    
+    <div id="root">
+      <article class="p-8 max-w-4xl mx-auto font-sans">
+        <header class="mb-8">
+          <p class="text-sm font-bold text-blue-600 uppercase tracking-wider">Backend Architecture · 26 min read</p>
+          <h1 class="text-4xl font-black text-slate-900 mt-2">Spring Boot & Microservices Interview Questions (3–6 Years Experience)</h1>
+          <p class="text-lg text-slate-600 mt-4 leading-relaxed">Master top Spring Boot and microservices interview questions for 3-6 years experience. In-depth answers on Spring Boot 3, @Transactional pitfalls, distributed tracing, and Saga pattern.</p>
+        </header>
+        <section class="space-y-6">
+          <h2 class="text-2xl font-bold text-slate-800">Key Interview Sections</h2>
+          <ul class="list-disc pl-6 space-y-2 text-slate-700">
+            <li><strong>1. Spring Boot 3 Core & Bean Lifecycle Internals</strong></li><li><strong>2. The @Transactional Traps & Rollback Mechanics</strong></li><li><strong>3. Microservices Resilience: Circuit Breakers with Resilience4j</strong></li><li><strong>4. Distributed Transactions: Saga Pattern vs 2-Phase Commit</strong></li><li><strong>5. Observability, Distributed Tracing & W3C Standards</strong></li><li><strong>6. Java 21 & Spring Boot 3 Modern Enhancements</strong></li>
+          </ul>
+        </section>
+        <section class="mt-12 p-6 rounded-2xl bg-blue-50 border border-blue-200">
+          <h3 class="text-xl font-bold text-slate-900">Practice this question on PrepVisor AI Studio</h3>
+          <p class="text-sm text-slate-600 mt-2">Get real-time scoring, code evaluation, and system design feedback.</p>
+          <a href="https://app.prepvisor.in/register?utm_source=organic_seo&utm_medium=guide&utm_campaign=spring-boot-microservices-interview-questions" class="inline-block mt-4 px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl">Launch Practice Studio</a>
+        </section>
+      </article>
+    </div>
+  
+  </body>
+</html>
