@@ -46,6 +46,10 @@ test("Website Pillar Pages & SEO Architecture Suite", async (t) => {
     assert.ok(content.includes('fonts.googleapis.com'), "Must preconnect Google Fonts");
     assert.ok(content.includes('app.prepvisor.in'), "Must preconnect app origin");
     assert.ok(content.includes('/manifest.json'), "Must link manifest.json");
+    assert.ok(content.includes('favicon-48x48.png'), "Must declare 48x48 PNG favicon for Google Search");
+    assert.ok(content.includes('favicon.ico'), "Must declare favicon.ico for search crawlers");
+    assert.ok(fs.existsSync(path.resolve(projectRoot, "public/favicon-48x48.png")), "public/favicon-48x48.png must exist");
+    assert.ok(fs.existsSync(path.resolve(projectRoot, "public/favicon.ico")), "public/favicon.ico must exist");
     assert.ok(content.includes('googletagmanager.com/gtag/js?id=G-DNM4SMR2VK'), "Must contain GA4 script in head");
     assert.ok(!content.includes('aggregateRating'), "Must not contain fabricated aggregateRating");
   });
