@@ -55,6 +55,7 @@ function parseReferrer(referrer: string): { source: string; medium: string } | n
     if (host.includes('twitter.') || host.includes('t.co') || host.includes('x.com')) return { source: 'twitter', medium: 'referral' };
     if (host.includes('youtube.')) return { source: 'youtube', medium: 'referral' };
     if (host.includes('reddit.')) return { source: 'reddit', medium: 'referral' };
+    if (host.includes('instagram.')) return { source: 'instagram', medium: 'referral' };
     return { source: host.replace(/^www\./, ''), medium: 'referral' };
   } catch (_) {
     return null;
@@ -204,9 +205,20 @@ export function decorateUrlWithUtms(targetUrl: string): string {
  * Initializes Google Analytics 4 tag and extracts initial UTM parameters.
  */
 export function initAnalytics(overrideId?: string): void {
-  const measurementId =
-    overrideId ||
-    (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GA_MEASUREMENT_ID);
+  let measurementId: string | undefined = overrideId;
+
+  if (measurementId === undefined) {
+    const envVal = typeof import.meta !== 'undefined' ? import.meta.env?.VITE_GA_MEASUREMENT_ID : undefined;
+    if (envVal !== undefined) {
+      const trimmed = typeof envVal === 'string' ? envVal.trim() : '';
+      measurementId =
+        trimmed === '' || trimmed.toLowerCase() === 'none' || trimmed.toLowerCase() === 'disabled' || trimmed === 'false'
+          ? undefined
+          : trimmed;
+    } else {
+      measurementId = 'G-DNM4SMR2VK';
+    }
+  }
 
   captureUtmParams();
 
