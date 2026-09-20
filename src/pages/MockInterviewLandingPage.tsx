@@ -56,22 +56,23 @@ export const MockInterviewLandingPage: React.FC = () => {
   ]
 
   return (
-    <div className="flex flex-col bg-[#fafbfc] text-slate-900 selection:bg-purple-600 selection:text-white min-h-screen">
+    <div className="flex flex-col bg-[#fafbfc] text-slate-900 selection:bg-blue-600 selection:text-white min-h-screen">
       {/* 1. HERO SECTION */}
-      <section className="relative overflow-hidden pt-20 pb-20 sm:pt-28 sm:pb-32 text-center bg-dot-grid">
-        {/* Subtle Ambient Radial Glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] glow-purple pointer-events-none" />
+      <section className="relative overflow-hidden pt-20 pb-20 sm:pt-28 sm:pb-32 text-center">
+        {/* Ambient Hero Backdrop (Seamless Masked Dot Grid + Glow) */}
+        <div className="absolute inset-0 bg-dot-grid hero-mask pointer-events-none" />
+        <div className="absolute inset-0 glow-blue pointer-events-none" />
 
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative z-10 space-y-6">
           <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs font-semibold text-slate-700 shadow-xs">
-            <span className="flex h-2 w-2 rounded-full bg-purple-600 animate-pulse" />
-            <Mic className="h-3.5 w-3.5 text-purple-600" />
+            <span className="flex h-2 w-2 rounded-full bg-blue-600 animate-pulse" />
+            <Mic className="h-3.5 w-3.5 text-blue-600" />
             <span>AI Voice-to-Text Mock Interviewer & STAR Behavioral Coach</span>
           </div>
 
-          <h1 className="mx-auto max-w-4xl text-4xl sm:text-6xl lg:text-7xl font-semibold tracking-[-0.03em] text-slate-900 leading-[1.08]">
+          <h1 className="mx-auto max-w-4xl text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-[-0.03em] text-slate-900 leading-[1.12]">
             Speak out loud.{" "}
-            <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 bg-clip-text text-transparent">
               Master the STAR framework with AI critique.
             </span>
           </h1>
@@ -84,7 +85,7 @@ export const MockInterviewLandingPage: React.FC = () => {
             <a
               href={decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/register?source=mock_interview_pillar`)}
               onClick={() => trackEvent("landing_cta_clicked", { cta: "mock_interview_start_free", location: "pillar_hero" })}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-purple-600 px-6 py-3.5 text-xs sm:text-sm font-semibold text-white hover:bg-purple-700 transition active:scale-[0.99] w-full sm:w-auto shadow-xs"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-xs sm:text-sm font-semibold text-white hover:bg-blue-700 transition active:scale-[0.99] w-full sm:w-auto shadow-xs"
             >
               <span>Start Free Voice Mock</span>
               <ArrowRight className="h-4 w-4" />
@@ -99,16 +100,16 @@ export const MockInterviewLandingPage: React.FC = () => {
 
           <div className="pt-8 flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-xs font-mono text-slate-600 border-t border-slate-200 max-w-4xl mx-auto">
             <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-purple-600" /> Real-time Speech Recognition
+              <CheckCircle2 className="w-4 h-4 text-blue-600" /> Real-time Speech Recognition
             </div>
             <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" /> STAR Framework Scoring (S-T-A-R)
+              <CheckCircle2 className="w-4 h-4 text-blue-600" /> STAR Framework Scoring (S-T-A-R)
             </div>
             <div className="flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-blue-600" /> Leadership Ownership Ratio ('I' vs 'we')
             </div>
             <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-pink-600" /> Multi-Turn Role-Calibrated Rounds
+              <CheckCircle2 className="w-4 h-4 text-blue-600" /> Multi-Turn Role-Calibrated Rounds
             </div>
           </div>
         </div>
@@ -120,7 +121,7 @@ export const MockInterviewLandingPage: React.FC = () => {
           {/* Header Strip */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
             <div>
-              <div className="flex items-center gap-2 text-xs font-mono text-purple-600 uppercase tracking-wider font-semibold">
+              <div className="flex items-center gap-2 text-xs font-mono text-blue-600 uppercase tracking-wider font-semibold">
                 <Volume2 className="h-3.5 w-3.5" />
                 <span>Live Evaluation Engine · Voice Session</span>
               </div>
@@ -128,7 +129,7 @@ export const MockInterviewLandingPage: React.FC = () => {
               <p className="text-xs text-slate-600">Prompt: "Tell me about a time you resolved a major production incident."</p>
             </div>
             <div className="flex items-center gap-3">
-              <span className="rounded-full bg-purple-50 px-3 py-1 text-xs font-mono text-purple-700 border border-purple-200 font-medium">
+              <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-mono text-blue-700 border border-blue-200 font-medium">
                 STAR Score: 92 / 100
               </span>
               <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-mono text-emerald-700 border border-emerald-200 font-medium">
@@ -148,7 +149,7 @@ export const MockInterviewLandingPage: React.FC = () => {
                 <span className="ml-3 font-mono text-xs text-slate-600">interviewer-loop-v2.speech</span>
               </div>
               <div className="flex items-center gap-2 font-mono text-[11px] text-slate-600">
-                <Activity className="h-3.5 w-3.5 text-purple-600 animate-pulse" />
+                <Activity className="h-3.5 w-3.5 text-blue-600 animate-pulse" />
                 <span>Voice Dictation: Speech Recognition Active</span>
               </div>
             </div>
@@ -217,9 +218,9 @@ export const MockInterviewLandingPage: React.FC = () => {
                   ))}
                 </div>
 
-                <div className="rounded-xl border border-purple-200 bg-purple-50/60 p-3.5 text-xs text-purple-900">
-                  <p className="font-semibold flex items-center gap-1.5 text-purple-700">
-                    <Bot className="h-3.5 w-3.5 text-purple-600" /> AI Coach Feedback & Actionable Directives:
+                <div className="rounded-xl border border-blue-200 bg-blue-50/60 p-3.5 text-xs text-blue-950">
+                  <p className="font-semibold flex items-center gap-1.5 text-blue-700">
+                    <Bot className="h-3.5 w-3.5 text-blue-600" /> AI Coach Feedback & Actionable Directives:
                   </p>
                   <p className="text-[11px] text-slate-700 mt-1 leading-relaxed">
                     "Great technical ownership and root cause triage. To elevate this response: specify how you communicated the outage timeline to leadership and stakeholders during the 22-minute incident window."
@@ -235,8 +236,8 @@ export const MockInterviewLandingPage: React.FC = () => {
       <section className="py-20 sm:py-28 bg-[#fafbfc]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
           <div className="text-center space-y-3 max-w-3xl mx-auto">
-            <span className="text-xs font-mono uppercase tracking-widest text-purple-600 font-semibold">Why PrepVisor Voice Mocks Win</span>
-            <h2 className="text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-slate-900">
+            <span className="text-xs font-mono uppercase tracking-widest text-blue-600 font-semibold">Why PrepVisor Voice Mocks Win</span>
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-slate-900">
               Engineered to eliminate interview day nervousness
             </h2>
             <p className="text-sm text-slate-600">
@@ -246,7 +247,7 @@ export const MockInterviewLandingPage: React.FC = () => {
 
           <div className="grid gap-6 md:grid-cols-2">
             <div className="rounded-2xl border border-slate-200 bg-white p-8 space-y-4 hover:border-slate-300 hover:shadow-md transition">
-              <div className="h-10 w-10 rounded-xl bg-purple-50 border border-purple-200 flex items-center justify-center text-purple-600">
+              <div className="h-10 w-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
                 <Mic className="h-5 w-5" />
               </div>
               <h3 className="text-lg font-semibold text-slate-900">Real-Time Conversational Voice Recognition</h3>
@@ -255,11 +256,11 @@ export const MockInterviewLandingPage: React.FC = () => {
               </p>
               <ul className="space-y-2 text-xs text-slate-700 pt-2 font-mono">
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-purple-600 shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-blue-600 shrink-0" />
                   <span>Browser-native Speech-to-Text with instant feedback</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-purple-600 shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-blue-600 shrink-0" />
                   <span>Simulates genuine conversational interview cadence</span>
                 </li>
               </ul>
@@ -286,7 +287,7 @@ export const MockInterviewLandingPage: React.FC = () => {
             </div>
 
             <div className="rounded-2xl border border-slate-200 bg-white p-8 space-y-4 hover:border-slate-300 hover:shadow-md transition">
-              <div className="h-10 w-10 rounded-xl bg-pink-50 border border-pink-200 flex items-center justify-center text-pink-600">
+              <div className="h-10 w-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
                 <Bot className="h-5 w-5" />
               </div>
               <h3 className="text-lg font-semibold text-slate-900">Multi-Turn Role-Calibrated Rounds</h3>
@@ -295,18 +296,18 @@ export const MockInterviewLandingPage: React.FC = () => {
               </p>
               <ul className="space-y-2 text-xs text-slate-700 pt-2 font-mono">
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-pink-600 shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-blue-600 shrink-0" />
                   <span>Curated 5-turn interview sequences calibrated by role</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-pink-600 shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-blue-600 shrink-0" />
                   <span>Instant turn-by-turn critique and scoring before advancing</span>
                 </li>
               </ul>
             </div>
 
             <div className="rounded-2xl border border-slate-200 bg-white p-8 space-y-4 hover:border-slate-300 hover:shadow-md transition">
-              <div className="h-10 w-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
+              <div className="h-10 w-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
                 <BarChart3 className="h-5 w-5" />
               </div>
               <h3 className="text-lg font-semibold text-slate-900">10-Dimension Longitudinal Progress</h3>
@@ -315,11 +316,11 @@ export const MockInterviewLandingPage: React.FC = () => {
               </p>
               <ul className="space-y-2 text-xs text-slate-700 pt-2 font-mono">
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-blue-600 shrink-0" />
                   <span>Verifiable trend direction (+3 improving, stable, or declining)</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-blue-600 shrink-0" />
                   <span>Diagnostic score integrated into overall Readiness Index</span>
                 </li>
               </ul>
@@ -332,11 +333,11 @@ export const MockInterviewLandingPage: React.FC = () => {
       <section className="py-20 sm:py-28 border-t border-slate-200 bg-slate-50/50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           <div className="text-center space-y-2">
-            <div className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-purple-600 font-semibold">
+            <div className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-blue-600 font-semibold">
               <HelpCircle className="h-4 w-4" />
               <span>Got Questions?</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-slate-900">
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-slate-900">
               Voice Mock Interview FAQs
             </h2>
             <p className="text-sm text-slate-600">
@@ -356,7 +357,7 @@ export const MockInterviewLandingPage: React.FC = () => {
                   >
                     <span>{faq.q}</span>
                     {isOpen ? (
-                      <ChevronUp className="h-4 w-4 shrink-0 text-purple-600" />
+                      <ChevronUp className="h-4 w-4 shrink-0 text-blue-600" />
                     ) : (
                       <ChevronDown className="h-4 w-4 shrink-0 text-slate-400" />
                     )}
@@ -374,14 +375,14 @@ export const MockInterviewLandingPage: React.FC = () => {
       </section>
 
       {/* 5. BOTTOM CTA */}
-      <section className="py-20 sm:py-28 text-center border-t border-slate-200 bg-gradient-to-b from-[#fafbfc] to-slate-100 relative">
-        <div className="absolute inset-0 glow-purple opacity-20 pointer-events-none" />
+      <section className="py-20 sm:py-28 text-center border-t border-slate-200 bg-gradient-to-b from-[#fafbfc] to-slate-100/80 relative overflow-hidden">
+        <div className="absolute inset-0 glow-blue opacity-30 pointer-events-none" />
         <div className="mx-auto max-w-3xl px-4 sm:px-6 relative z-10 space-y-6">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-200 bg-purple-50 px-3.5 py-1 text-xs font-mono text-purple-700 font-medium">
-            <Zap className="h-3.5 w-3.5 text-purple-600" />
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3.5 py-1 text-xs font-medium text-blue-700">
+            <Zap className="h-3.5 w-3.5 text-blue-600" />
             Instant Digital Access
           </span>
-          <h2 className="text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-slate-900">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-[-0.03em] text-slate-900">
             Start practicing voice mock interviews today.
           </h2>
           <p className="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
@@ -391,7 +392,7 @@ export const MockInterviewLandingPage: React.FC = () => {
             <a
               href={decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/register?source=mock_interview_bottom`)}
               onClick={() => trackEvent("landing_cta_clicked", { cta: "mock_interview_bottom_start_free", location: "pillar_bottom" })}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-purple-600 px-7 py-3.5 text-sm font-semibold text-white hover:bg-purple-700 transition active:scale-[0.99] shadow-xs"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-7 py-3.5 text-sm font-semibold text-white hover:bg-blue-700 transition active:scale-[0.99] shadow-sm"
             >
               <span>Start Free Voice Mock Session</span>
               <ArrowRight className="h-4 w-4" />

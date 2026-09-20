@@ -10,6 +10,7 @@ import {
 } from "lucide-react"
 import { COMPANY_CONFIG } from "@/config/company"
 import { usePageSeo } from "@/hooks/usePageSeo"
+import { trackEvent } from "@/lib/analytics"
 
 export const ContactPage: React.FC = () => {
   usePageSeo({
@@ -34,6 +35,11 @@ export const ContactPage: React.FC = () => {
     setIsSubmitting(true)
     const generatedId = `PV-${Math.floor(10000 + Math.random() * 90000)}`
     setTicketId(generatedId)
+
+    trackEvent("contact_form_submitted", {
+      category,
+      ticket_id: generatedId,
+    })
 
     try {
       await fetch(`https://formsubmit.co/ajax/${COMPANY_CONFIG.contact.email}`, {
@@ -63,17 +69,20 @@ export const ContactPage: React.FC = () => {
   }
 
   return (
-    <div className="py-16 sm:py-24 bg-[#fafbfc] min-h-screen text-slate-900 selection:bg-blue-600 selection:text-white bg-dot-grid relative">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] glow-blue pointer-events-none opacity-40" />
+    <div className="py-16 sm:py-24 bg-[#fafbfc] min-h-screen text-slate-900 selection:bg-blue-600 selection:text-white relative overflow-hidden">
+      {/* Ambient Hero Backdrop (Seamless Masked Dot Grid + Glow) */}
+      <div className="absolute inset-x-0 top-0 h-[480px] bg-dot-grid hero-mask pointer-events-none" />
+      <div className="absolute inset-x-0 top-0 h-[480px] glow-blue pointer-events-none" />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1 text-xs font-mono uppercase tracking-wider text-blue-600 shadow-xs font-semibold">
+          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs font-semibold text-slate-700 shadow-xs">
+            <span className="flex h-2 w-2 rounded-full bg-blue-600 animate-pulse" />
             <Mail className="h-3.5 w-3.5 text-blue-600" />
             <span>Support & Assistance</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-slate-900">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-[-0.03em] text-slate-900 leading-[1.12]">
             Contact PrepVisor Support
           </h1>
           <p className="text-sm text-slate-600 leading-relaxed">
@@ -116,10 +125,16 @@ export const ContactPage: React.FC = () => {
                   <div>
                     <span className="font-semibold text-slate-800 block">Email</span>
                     <a
-                      href={`mailto:divya@prepvisor.in`}
+                      href={`mailto:${COMPANY_CONFIG.contact.email}`}
+                      onClick={() =>
+                        trackEvent("contact_link_clicked", {
+                          channel: "email",
+                          target: COMPANY_CONFIG.contact.email,
+                        })
+                      }
                       className="text-blue-600 hover:text-blue-700 underline"
                     >
-                      divya@prepvisor.in
+                      {COMPANY_CONFIG.contact.email}
                     </a>
                   </div>
                 </div>
@@ -128,7 +143,18 @@ export const ContactPage: React.FC = () => {
                   <Phone className="h-4 w-4 text-blue-600 shrink-0 mt-0.5" />
                   <div>
                     <span className="font-semibold text-slate-800 block">Phone</span>
-                    <span className="text-slate-600">{COMPANY_CONFIG.contact.displayPhone}</span>
+                    <a
+                      href={`tel:${COMPANY_CONFIG.contact.phone}`}
+                      onClick={() =>
+                        trackEvent("contact_link_clicked", {
+                          channel: "phone",
+                          target: COMPANY_CONFIG.contact.phone,
+                        })
+                      }
+                      className="text-slate-600 hover:text-blue-600 transition-colors"
+                    >
+                      {COMPANY_CONFIG.contact.displayPhone}
+                    </a>
                   </div>
                 </div>
 

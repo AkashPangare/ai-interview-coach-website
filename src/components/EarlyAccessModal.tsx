@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { X, CheckCircle2, ArrowRight, ShieldCheck, Zap, CreditCard, Lock } from "lucide-react"
 import { COMPANY_CONFIG } from "@/config/company"
+import { trackEvent } from "@/lib/analytics"
 
 interface EarlyAccessModalProps {
   isOpen: boolean
@@ -54,6 +55,20 @@ export const EarlyAccessModal: React.FC<EarlyAccessModalProps> = ({
       // ignore storage error
     }
 
+    trackEvent("lead_form_submitted", {
+      plan_id: selectedPlanId,
+      plan_name: selectedTier.name,
+      amount: selectedTier.priceINR,
+      order_id: generatedOrderId,
+      target_role: effectiveRole,
+    })
+    trackEvent("begin_checkout", {
+      plan_id: selectedPlanId,
+      value: selectedTier.priceINR,
+      currency: "INR",
+      order_id: generatedOrderId,
+    })
+
     try {
       await fetch(`https://formsubmit.co/ajax/${COMPANY_CONFIG.contact.email}`, {
         method: "POST",
@@ -102,7 +117,7 @@ export const EarlyAccessModal: React.FC<EarlyAccessModalProps> = ({
               <CreditCard className="h-4 w-4 text-blue-600" />
               <span>Checkout & Activation</span>
             </div>
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-1.5">
+            <h2 className="text-2xl font-semibold tracking-[-0.02em] text-slate-900 mb-1.5">
               Order Summary & Registration
             </h2>
             <p className="text-xs text-slate-600 mb-5">
@@ -247,7 +262,7 @@ export const EarlyAccessModal: React.FC<EarlyAccessModalProps> = ({
               <span className="rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-xs font-mono text-emerald-700 font-medium">
                 Order Registered
               </span>
-              <h3 className="text-2xl font-bold text-slate-900 mt-2">
+              <h3 className="text-2xl font-semibold text-slate-900 mt-2">
                 Thank You, {name}!
               </h3>
               <p className="text-xs text-slate-600">

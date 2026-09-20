@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import { Target, Award, Code, Sparkles, ArrowRight, ShieldCheck, MapPin, Mail } from "lucide-react"
 import { COMPANY_CONFIG } from "@/config/company"
 import { usePageSeo } from "@/hooks/usePageSeo"
+import { trackEvent } from "@/lib/analytics"
 
 interface AboutPageProps {
   onOpenWaitlist?: () => void
@@ -17,17 +18,20 @@ export const AboutPage: React.FC<AboutPageProps> = () => {
   })
 
   return (
-    <div className="py-16 sm:py-24 bg-[#fafbfc] min-h-screen text-slate-900 selection:bg-blue-600 selection:text-white bg-dot-grid relative">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] glow-blue pointer-events-none opacity-40" />
+    <div className="py-16 sm:py-24 bg-[#fafbfc] min-h-screen text-slate-900 selection:bg-blue-600 selection:text-white relative overflow-hidden">
+      {/* Ambient Hero Backdrop (Seamless Masked Dot Grid + Glow) */}
+      <div className="absolute inset-x-0 top-0 h-[480px] bg-dot-grid hero-mask pointer-events-none" />
+      <div className="absolute inset-x-0 top-0 h-[480px] glow-blue pointer-events-none" />
 
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1 text-xs font-mono uppercase tracking-wider text-blue-600 shadow-xs font-semibold">
+          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs font-semibold text-slate-700 shadow-xs">
+            <span className="flex h-2 w-2 rounded-full bg-blue-600 animate-pulse" />
             <Sparkles className="h-3.5 w-3.5 text-blue-600" />
             <span>About PrepVisor</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-slate-900">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-[-0.03em] text-slate-900 leading-[1.12]">
             Why We Built PrepVisor
           </h1>
           <p className="text-sm text-slate-600 leading-relaxed">
@@ -66,7 +70,7 @@ export const AboutPage: React.FC<AboutPageProps> = () => {
                 </div>
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-base font-bold text-slate-900">{COMPANY_CONFIG.proprietorName}</h3>
+                    <h3 className="text-base font-semibold text-slate-900">{COMPANY_CONFIG.proprietorName}</h3>
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-semibold">
                       Founder & Lead Architect
                     </span>
@@ -107,7 +111,7 @@ export const AboutPage: React.FC<AboutPageProps> = () => {
         {/* Principles */}
         <div className="space-y-6">
           <div className="text-center space-y-1">
-            <h2 className="text-2xl font-semibold text-slate-900">What Guides Us</h2>
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-slate-900">What Guides Us</h2>
             <p className="text-xs text-slate-500">Simple principles behind our platform</p>
           </div>
 
@@ -145,20 +149,28 @@ export const AboutPage: React.FC<AboutPageProps> = () => {
         </div>
 
         {/* Bottom CTA */}
-        <div className="rounded-2xl border border-slate-200 bg-gradient-to-r from-blue-50 via-indigo-50/50 to-blue-50 p-8 text-center space-y-4 shadow-xs">
-          <h3 className="text-xl sm:text-2xl font-semibold text-slate-900">
+        <div className="rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 via-indigo-50/40 to-blue-50 p-8 sm:p-10 text-center text-slate-900 space-y-4 shadow-xs">
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-[-0.02em] text-slate-900">
             Start Your Interview Preparation Today
-          </h3>
-          <p className="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
             Choose a structured preparation pass that fits your upcoming interview timeline.
           </p>
-          <Link
-            to="/pricing"
-            className="inline-flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 px-6 py-2.5 text-xs sm:text-sm font-semibold text-white transition-all active:scale-[0.99] shadow-xs"
-          >
-            <span>Get Started</span>
-            <ArrowRight className="h-4 w-4" />
-          </Link>
+          <div className="pt-1">
+            <Link
+              to="/pricing"
+              onClick={() =>
+                trackEvent("landing_cta_clicked", {
+                  cta: "about_get_started",
+                  location: "about_bottom",
+                })
+              }
+              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 px-6 py-2.5 text-xs sm:text-sm font-semibold text-white transition-all active:scale-[0.99] shadow-sm"
+            >
+              <span>Get Started</span>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
       </div>
     </div>

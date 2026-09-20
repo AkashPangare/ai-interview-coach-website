@@ -5,6 +5,7 @@ import {
   getUtmParams,
   decorateUrlWithUtms,
   trackEvent,
+  trackPageView,
   initAnalytics,
 } from "../src/lib/analytics.ts";
 
@@ -122,4 +123,39 @@ test("Analytics & UTM Attribution Suite", async (t) => {
     assert.equal(directResult.utm_source, "direct");
     assert.equal(directResult.utm_medium, "direct");
   });
+
+  await t.test("8. trackPageView executes safely without errors when gtag is absent or blocked", () => {
+    delete (globalThis as any).window.gtag;
+    assert.doesNotThrow(() => {
+      trackPageView("PrepVisor Pricing Plans", "https://prepvisor.in/pricing", "/pricing");
+    });
+  });
+
+  await t.test("9. trackPageView dispatches page_view event to window.gtag with title, location, path, and UTM metadata", () => {
+    // Re-seed UTM params
+    captureUtmParams("?utm_source=twitter&utm_medium=social&utm_campaign=launch_announcement", "");
+
+    const dispatched: any[] = [];
+    (globalThis as any).window.gtag = (command: string, eventName: string, params: any) => {
+      dispatched.push({ command, eventName, params });
+    };
+
+    trackPageView(
+      "PrepVisor | Dynamic AI Interview Roadmap",
+      "https://prepvisor.in/roadmap",
+      "/roadmap"
+    );
+
+    assert.equal(dispatched.length, 1);
+    assert.equal(dispatched[0].command, "event");
+    assert.equal(dispatched[0].eventName, "page_view");
+    assert.equal(dispatched[0].params.page_title, "PrepVisor | Dynamic AI Interview Roadmap");
+    assert.equal(dispatched[0].params.page_location, "https://prepvisor.in/roadmap");
+    assert.equal(dispatched[0].params.page_path, "/roadmap");
+    assert.equal(dispatched[0].params.utm_source, "twitter");
+    assert.equal(dispatched[0].params.utm_medium, "social");
+    assert.equal(dispatched[0].params.utm_campaign, "launch_announcement");
+    assert.ok(dispatched[0].params.timestamp);
+  });
 });
+

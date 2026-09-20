@@ -30,16 +30,22 @@ body {
   background-size: 40px 40px;
 }
 
+/* Organic radial mask: dissolves patterns seamlessly into background without sharp box edges */
+.hero-mask {
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 40%, transparent 100%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 40%, transparent 100%);
+}
+
 .glow-blue {
-  background: radial-gradient(700px circle at 50% -10%, rgba(59, 130, 246, 0.08), transparent 70%);
+  background: radial-gradient(ellipse 65% 50% at 50% 0%, rgba(59, 130, 246, 0.09), transparent 75%);
 }
 
 .glow-purple {
-  background: radial-gradient(700px circle at 50% -10%, rgba(147, 51, 234, 0.08), transparent 70%);
+  background: radial-gradient(ellipse 65% 50% at 50% 0%, rgba(147, 51, 234, 0.08), transparent 75%);
 }
 
 .glow-emerald {
-  background: radial-gradient(700px circle at 50% -10%, rgba(16, 185, 129, 0.08), transparent 70%);
+  background: radial-gradient(ellipse 65% 50% at 50% 0%, rgba(16, 185, 129, 0.08), transparent 75%);
 }
 
 /* Custom subtle scrollbars */

@@ -241,12 +241,42 @@ export function initAnalytics(overrideId?: string): void {
       };
       window.gtag('js', new Date());
       window.gtag('config', measurementId, {
-        send_page_view: true,
+        send_page_view: false,
       });
     }
   } catch (err) {
     // Fail silently so ad-blockers never disrupt app execution
     console.warn('[PrepVisor Analytics] GA4 init skipped or blocked:', err);
+  }
+}
+
+/**
+ * Dispatches a standard GA4 page_view event with active UTM attribution.
+ * Crucial for single-page applications (SPAs) where client-side route transitions
+ * do not reload the document.
+ */
+export function trackPageView(pageTitle?: string, pageLocation?: string, pagePath?: string): void {
+  const title = pageTitle || (typeof document !== 'undefined' ? document.title : '');
+  const location = pageLocation || (typeof window !== 'undefined' ? window.location.href : '');
+  const path = pagePath || (typeof window !== 'undefined' ? window.location.pathname + window.location.search : '');
+  const utms = getUtmParams();
+
+  const payload = {
+    page_title: title,
+    page_location: location,
+    page_path: path,
+    utm_source: utms.utm_source || 'direct',
+    utm_campaign: utms.utm_campaign,
+    utm_medium: utms.utm_medium,
+    timestamp: new Date().toISOString(),
+  };
+
+  if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+    try {
+      window.gtag('event', 'page_view', payload);
+    } catch (_) {}
+  } else if (typeof import.meta !== 'undefined' && import.meta.env?.DEV) {
+    console.debug(`[PrepVisor PageView]`, payload);
   }
 }
 
@@ -271,3 +301,4 @@ export function trackEvent(eventName: string, params: Record<string, any> = {}):
     console.debug(`[PrepVisor Event] ${eventName}:`, payload);
   }
 }
+

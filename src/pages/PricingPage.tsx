@@ -93,18 +93,20 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#fafbfc] py-16 sm:py-24 text-slate-900 selection:bg-blue-600 selection:text-white bg-dot-grid relative">
-      {/* Ambient glow behind pricing tiers */}
-      <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[800px] h-[400px] glow-blue pointer-events-none opacity-40" />
+    <div className="min-h-screen bg-[#fafbfc] py-16 sm:py-24 text-slate-900 selection:bg-blue-600 selection:text-white relative overflow-hidden">
+      {/* Ambient Hero Backdrop (Seamless Masked Dot Grid + Glow) */}
+      <div className="absolute inset-x-0 top-0 h-[520px] bg-dot-grid hero-mask pointer-events-none" />
+      <div className="absolute inset-x-0 top-0 h-[520px] glow-blue pointer-events-none" />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-20 relative z-10">
         {/* Header */}
         <div className="mx-auto max-w-3xl text-center space-y-4">
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1 text-xs font-mono uppercase tracking-wider text-blue-600 shadow-xs font-semibold">
+          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs font-semibold text-slate-700 shadow-xs">
+            <span className="flex h-2 w-2 rounded-full bg-blue-600 animate-pulse" />
             <Sparkles className="h-3.5 w-3.5 text-blue-600" />
             <span>Transparent & Honest Pricing</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-semibold tracking-[-0.03em] text-slate-900">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-[-0.03em] text-slate-900 leading-[1.12]">
             Choose a preparation plan that fits your interview timeline.
           </h1>
           <p className="text-sm sm:text-base leading-relaxed text-slate-600 max-w-2xl mx-auto">
@@ -154,7 +156,7 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
 
                 <div className="space-y-4">
                   <div>
-                    <h2 className="text-lg font-semibold text-slate-900">{tier.name}</h2>
+                    <h3 className="text-lg font-semibold text-slate-900">{tier.name}</h3>
                     <p className="mt-1 min-h-[36px] text-xs leading-relaxed text-slate-600">
                       {tier.subtitle}
                     </p>
@@ -266,7 +268,13 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
                 </div>
                 <div className="mt-3 pt-2 border-t border-slate-200">
                   <a
-                    href={`${COMPANY_CONFIG.appUrl}/pricing`}
+                    href={decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/pricing`)}
+                    onClick={() =>
+                      trackEvent("landing_cta_clicked", {
+                        cta: `addon_${pack.id}`,
+                        location: "pricing_addons",
+                      })
+                    }
                     className="text-[11px] font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1"
                   >
                     <span>View in App</span>
@@ -347,9 +355,9 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
               <HelpCircle className="h-4 w-4" />
               <span>Got Questions?</span>
             </div>
-            <h3 className="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900">
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-slate-900">
               Frequently Asked Questions
-            </h3>
+            </h2>
             <p className="text-xs text-slate-600">
               Everything you need to know about our billing, access, and refund terms.
             </p>

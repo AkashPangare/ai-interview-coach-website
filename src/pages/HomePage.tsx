@@ -94,19 +94,21 @@ export const HomePage: React.FC<HomePageProps> = () => {
   return (
     <div className="flex flex-col bg-[#fafbfc] text-slate-900 selection:bg-blue-600 selection:text-white min-h-screen">
       {/* 1. HERO SECTION */}
-      <section className="relative overflow-hidden pt-20 pb-20 sm:pt-28 sm:pb-32 text-center bg-dot-grid">
-        {/* Subtle Ambient Radial Glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[450px] glow-blue pointer-events-none" />
+      <section className="relative overflow-hidden pt-20 pb-20 sm:pt-28 sm:pb-32 text-center">
+        {/* Ambient Hero Backdrop (Seamless Masked Dot Grid + Glow) */}
+        <div className="absolute inset-0 bg-dot-grid hero-mask pointer-events-none" />
+        <div className="absolute inset-0 glow-blue pointer-events-none" />
 
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative z-10 space-y-6">
           {/* Eyebrow Badge */}
           <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs font-semibold text-slate-700 shadow-xs">
             <span className="flex h-2 w-2 rounded-full bg-blue-600 animate-pulse" />
+            <Sparkles className="h-3.5 w-3.5 text-blue-600" />
             <span>The Technical Interview Workbench</span>
           </div>
 
           {/* Main Title */}
-          <h1 className="mx-auto max-w-4xl text-4xl sm:text-6xl lg:text-7xl font-semibold tracking-[-0.03em] text-slate-900 leading-[1.08]">
+          <h1 className="mx-auto max-w-4xl text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-[-0.03em] text-slate-900 leading-[1.12]">
             Engineered for the{" "}
             <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 bg-clip-text text-transparent">
               final round.
@@ -305,7 +307,8 @@ export const HomePage: React.FC<HomePageProps> = () => {
                     </span>
                   </div>
                   <a
-                    href={decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/register`)}
+                    href={decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/register?source=workbench_pacing`)}
+                    onClick={() => trackEvent("landing_cta_clicked", { cta: "workbench_pacing_generate", location: "workbench" })}
                     className="font-semibold text-blue-600 hover:text-blue-700 shrink-0 ml-4 flex items-center gap-1"
                   >
                     Generate Your Roadmap <ArrowRight className="h-3 w-3" />
@@ -534,87 +537,155 @@ export const HomePage: React.FC<HomePageProps> = () => {
 
           <div className="grid gap-6 md:grid-cols-2">
             {/* Bento Card 1 */}
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-8 space-y-4 hover:border-slate-300 hover:bg-white hover:shadow-md transition-all">
-              <div className="h-9 w-9 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
-                <Calendar className="h-4 w-4" />
+            <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-8 space-y-4 hover:border-slate-300 hover:bg-white hover:shadow-md transition-all flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="h-9 w-9 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
+                  <Calendar className="h-4 w-4" />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900 tracking-tight">Time-Calibrated Pacing & 1-Click Rebalance</h3>
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                  Whether you have 7 days before an unexpected on-site or 60 days to prepare, your curriculum dynamically sizes your daily workload around your available hours. If you fall behind, 1 click redistributes tasks smoothly.
+                </p>
+                <ul className="space-y-2 text-xs text-slate-600 pt-2 border-t border-slate-200">
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-blue-600 shrink-0" />
+                    <span>Day 1 Diagnostic Baseline to surface specific blind spots</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-blue-600 shrink-0" />
+                    <span>Balanced daily mix of Algorithms, System Design, and Behavioral</span>
+                  </li>
+                </ul>
               </div>
-              <h3 className="text-lg font-semibold text-slate-900 tracking-tight">Time-Calibrated Pacing & 1-Click Rebalance</h3>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                Whether you have 7 days before an unexpected on-site or 60 days to prepare, your curriculum dynamically sizes your daily workload around your available hours. If you fall behind, 1 click redistributes tasks smoothly.
-              </p>
-              <ul className="space-y-2 text-xs text-slate-600 pt-2 border-t border-slate-200">
-                <li className="flex items-center gap-2">
-                  <Check className="h-3.5 w-3.5 text-blue-600 shrink-0" />
-                  <span>Day 1 Diagnostic Baseline to surface specific blind spots</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="h-3.5 w-3.5 text-blue-600 shrink-0" />
-                  <span>Balanced daily mix of Algorithms, System Design, and Behavioral</span>
-                </li>
-              </ul>
+              <div className="pt-3 border-t border-slate-200">
+                <Link
+                  to="/roadmap"
+                  onClick={() =>
+                    trackEvent("landing_cta_clicked", {
+                      cta: "bento_explore_roadmap",
+                      location: "homepage_bento",
+                    })
+                  }
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-700 transition"
+                >
+                  <span>Explore Dynamic Roadmap</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
             </div>
 
             {/* Bento Card 2 */}
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-8 space-y-4 hover:border-slate-300 hover:bg-white hover:shadow-md transition-all">
-              <div className="h-9 w-9 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
-                <Terminal className="h-4 w-4" />
+            <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-8 space-y-4 hover:border-slate-300 hover:bg-white hover:shadow-md transition-all flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="h-9 w-9 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
+                  <Terminal className="h-4 w-4" />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900 tracking-tight">DSA Coding Studio with Live Stdout in 9 Languages</h3>
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                  VS Code-grade Cloud IDE featuring Java as primary default alongside Python, C++, and TypeScript. A live Console Output terminal captures print statements for fast debugging, with automated Big-O complexity scoring.
+                </p>
+                <ul className="space-y-2 text-xs text-slate-600 pt-2 border-t border-slate-200">
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                    <span>Print logs stream line-by-line without swallowed outputs</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                    <span>3-tier progressive hint engine to unstick algorithms independently</span>
+                  </li>
+                </ul>
               </div>
-              <h3 className="text-lg font-semibold text-slate-900 tracking-tight">DSA Coding Studio with Live Stdout in 9 Languages</h3>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                VS Code-grade Cloud IDE featuring Java as primary default alongside Python, C++, and TypeScript. A live Console Output terminal captures print statements for fast debugging, with automated Big-O complexity scoring.
-              </p>
-              <ul className="space-y-2 text-xs text-slate-600 pt-2 border-t border-slate-200">
-                <li className="flex items-center gap-2">
-                  <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                  <span>Print logs stream line-by-line without swallowed outputs</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                  <span>3-tier progressive hint engine to unstick algorithms independently</span>
-                </li>
-              </ul>
+              <div className="pt-3 border-t border-slate-200">
+                <Link
+                  to="/coding-practice"
+                  onClick={() =>
+                    trackEvent("landing_cta_clicked", {
+                      cta: "bento_explore_coding",
+                      location: "homepage_bento",
+                    })
+                  }
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 hover:text-emerald-700 transition"
+                >
+                  <span>Explore Coding Studio</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
             </div>
 
             {/* Bento Card 3 */}
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-8 space-y-4 hover:border-slate-300 hover:bg-white hover:shadow-md transition-all">
-              <div className="h-9 w-9 rounded-lg bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-600">
-                <Layers className="h-4 w-4" />
+            <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-8 space-y-4 hover:border-slate-300 hover:bg-white hover:shadow-md transition-all flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="h-9 w-9 rounded-lg bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-600">
+                  <Layers className="h-4 w-4" />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900 tracking-tight">System Design Canvas with Real-Time Scale Math</h3>
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                  Connect microservices, load balancers, databases, and caches on an infinite cloud canvas. Back-of-the-envelope scale math automatically computes QPS, 5-year storage, and RAM requirements with automated AI SPOF evaluation on submission.
+                </p>
+                <ul className="space-y-2 text-xs text-slate-600 pt-2 border-t border-slate-200">
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-sky-600 shrink-0" />
+                    <span>Interactive node snapping with protocol definitions (gRPC, REST, TCP)</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-sky-600 shrink-0" />
+                    <span>Automated single point of failure and bottleneck evaluation on submission</span>
+                  </li>
+                </ul>
               </div>
-              <h3 className="text-lg font-semibold text-slate-900 tracking-tight">System Design Canvas with Real-Time Scale Math</h3>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                Connect microservices, load balancers, databases, and caches on an infinite cloud canvas. Back-of-the-envelope scale math automatically computes QPS, 5-year storage, and RAM requirements with automated AI SPOF evaluation on submission.
-              </p>
-              <ul className="space-y-2 text-xs text-slate-600 pt-2 border-t border-slate-200">
-                <li className="flex items-center gap-2">
-                  <Check className="h-3.5 w-3.5 text-sky-600 shrink-0" />
-                  <span>Interactive node snapping with protocol definitions (gRPC, REST, TCP)</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="h-3.5 w-3.5 text-sky-600 shrink-0" />
-                  <span>Automated single point of failure and bottleneck evaluation on submission</span>
-                </li>
-              </ul>
+              <div className="pt-3 border-t border-slate-200">
+                <Link
+                  to="/system-design"
+                  onClick={() =>
+                    trackEvent("landing_cta_clicked", {
+                      cta: "bento_explore_system_design",
+                      location: "homepage_bento",
+                    })
+                  }
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-sky-600 hover:text-sky-700 transition"
+                >
+                  <span>Explore System Design</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
             </div>
 
             {/* Bento Card 4 */}
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-8 space-y-4 hover:border-slate-300 hover:bg-white hover:shadow-md transition-all">
-              <div className="h-9 w-9 rounded-lg bg-purple-50 border border-purple-200 flex items-center justify-center text-purple-600">
-                <Mic className="h-4 w-4" />
+            <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-8 space-y-4 hover:border-slate-300 hover:bg-white hover:shadow-md transition-all flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="h-9 w-9 rounded-lg bg-purple-50 border border-purple-200 flex items-center justify-center text-purple-600">
+                  <Mic className="h-4 w-4" />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900 tracking-tight">Voice AI Mock Sessions with STAR Evaluation</h3>
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                  Practice speaking out loud naturally. Speech-to-Text transcribes your answers in real time and grades your leadership ownership ('I' vs 'we'), metric density, and depth across the proven STAR framework.
+                </p>
+                <ul className="space-y-2 text-xs text-slate-600 pt-2 border-t border-slate-200">
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-purple-600 shrink-0" />
+                    <span>Structured multi-turn question rounds with turn-by-turn STAR critique</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-3.5 w-3.5 text-purple-600 shrink-0" />
+                    <span>Longitudinal tracking across 10 behavioral dimensions over time</span>
+                  </li>
+                </ul>
               </div>
-              <h3 className="text-lg font-semibold text-slate-900 tracking-tight">Voice AI Mock Sessions with STAR Evaluation</h3>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                Practice speaking out loud naturally. Speech-to-Text transcribes your answers in real time and grades your leadership ownership ('I' vs 'we'), metric density, and depth across the proven STAR framework.
-              </p>
-              <ul className="space-y-2 text-xs text-slate-600 pt-2 border-t border-slate-200">
-                <li className="flex items-center gap-2">
-                  <Check className="h-3.5 w-3.5 text-purple-600 shrink-0" />
-                  <span>Structured multi-turn question rounds with turn-by-turn STAR critique</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="h-3.5 w-3.5 text-purple-600 shrink-0" />
-                  <span>Longitudinal tracking across 10 behavioral dimensions over time</span>
-                </li>
-              </ul>
+              <div className="pt-3 border-t border-slate-200">
+                <Link
+                  to="/mock-interview"
+                  onClick={() =>
+                    trackEvent("landing_cta_clicked", {
+                      cta: "bento_explore_mock_interview",
+                      location: "homepage_bento",
+                    })
+                  }
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-purple-600 hover:text-purple-700 transition"
+                >
+                  <span>Explore Voice Mocks</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -647,7 +718,7 @@ export const HomePage: React.FC<HomePageProps> = () => {
               </div>
               <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
                 <div>
-                  <h4 className="text-xs font-bold text-slate-900">Rohit S.</h4>
+                  <h4 className="text-xs font-semibold text-slate-900">Rohit S.</h4>
                   <p className="text-[11px] text-slate-500">Senior Backend Engineer</p>
                 </div>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200">
@@ -669,7 +740,7 @@ export const HomePage: React.FC<HomePageProps> = () => {
               </div>
               <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
                 <div>
-                  <h4 className="text-xs font-bold text-slate-900">Ananya K.</h4>
+                  <h4 className="text-xs font-semibold text-slate-900">Ananya K.</h4>
                   <p className="text-[11px] text-slate-500">Staff Systems Architect</p>
                 </div>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-semibold border border-blue-200">
@@ -691,7 +762,7 @@ export const HomePage: React.FC<HomePageProps> = () => {
               </div>
               <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
                 <div>
-                  <h4 className="text-xs font-bold text-slate-900">Karthik V.</h4>
+                  <h4 className="text-xs font-semibold text-slate-900">Karthik V.</h4>
                   <p className="text-[11px] text-slate-500">SDE-2 Full Stack</p>
                 </div>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-50 text-purple-700 font-semibold border border-purple-200">
@@ -855,7 +926,8 @@ export const HomePage: React.FC<HomePageProps> = () => {
                   </ul>
                 </div>
                 <a
-                  href={decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/register`)}
+                  href={decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/register?source=persona_${persona.role.toLowerCase().replace(/[^a-z0-9]+/g, '_')}`)}
+                  onClick={() => trackEvent("landing_cta_clicked", { cta: `persona_track_${persona.role.toLowerCase().replace(/[^a-z0-9]+/g, '_')}`, location: "curriculum_personas" })}
                   className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-700 pt-3 border-t border-slate-200"
                 >
                   <span>Build Track Plan</span>
@@ -1070,7 +1142,7 @@ export const HomePage: React.FC<HomePageProps> = () => {
               <HelpCircle className="h-4 w-4" />
               <span>Questions & Answers</span>
             </div>
-            <h2 className="text-3xl font-semibold tracking-tight text-slate-900">
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-slate-900">
               Frequently Asked Questions
             </h2>
             <p className="text-sm text-slate-600">
@@ -1108,35 +1180,36 @@ export const HomePage: React.FC<HomePageProps> = () => {
       </section>
 
       {/* 8. HIGH-IMPACT BOTTOM CTA BANNER */}
-      <section className="py-24 sm:py-32 text-center bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white border-t border-slate-200">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 space-y-6">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.08] border border-white/[0.15] px-3 py-1 text-xs font-mono text-slate-200">
-            <Zap className="h-3.5 w-3.5 text-blue-400" />
+      <section className="py-24 sm:py-32 text-center bg-gradient-to-b from-[#fafbfc] to-slate-100/80 border-t border-slate-200 relative overflow-hidden">
+        <div className="absolute inset-0 glow-blue opacity-30 pointer-events-none" />
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 relative z-10 space-y-6">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3.5 py-1 text-xs font-medium text-blue-700">
+            <Zap className="h-3.5 w-3.5 text-blue-600" />
             Instant Digital Workbench
           </span>
-          <h2 className="text-3xl font-semibold tracking-[-0.03em] text-white sm:text-4xl lg:text-5xl">
+          <h2 className="text-3xl font-semibold tracking-[-0.03em] text-slate-900 sm:text-4xl lg:text-5xl">
             Start preparing with clarity today.
           </h2>
-          <p className="text-sm sm:text-base text-slate-300 max-w-xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base text-slate-600 max-w-xl mx-auto leading-relaxed">
             Create your personalized interview roadmap in 60 seconds with our free tier. Test your baseline skills in our DSA and System Design studios with zero credit card required.
           </p>
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
             <a
               href={decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/register`)}
               onClick={() => trackEvent("landing_cta_clicked", { cta: "bottom_get_roadmap", location: "bottom_cta" })}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-3.5 text-xs sm:text-sm font-semibold text-slate-950 shadow-sm hover:bg-slate-100 active:scale-[0.99] transition w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-8 py-3.5 text-xs sm:text-sm font-semibold text-white shadow-sm hover:bg-blue-700 active:scale-[0.99] transition w-full sm:w-auto"
             >
               <span>Get Your Free Interview Roadmap →</span>
               <ArrowRight className="h-4 w-4" />
             </a>
             <Link
               to="/pricing"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/[0.06] px-7 py-3.5 text-xs sm:text-sm font-medium text-white hover:bg-white/[0.1] transition w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-7 py-3.5 text-xs sm:text-sm font-medium text-slate-700 hover:bg-slate-50 transition w-full sm:w-auto shadow-xs"
             >
               <span>View Passes (From ₹199)</span>
             </Link>
           </div>
-          <p className="text-xs text-slate-400 font-mono pt-2">
+          <p className="text-xs text-slate-500 font-mono pt-2">
             No credit card required · Free forever tier included · One-time prepaid passes · Zero recurring debits
           </p>
         </div>

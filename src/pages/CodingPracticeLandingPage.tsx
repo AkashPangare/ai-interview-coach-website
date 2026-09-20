@@ -56,22 +56,23 @@ export const CodingPracticeLandingPage: React.FC = () => {
   ]
 
   return (
-    <div className="flex flex-col bg-[#fafbfc] text-slate-900 selection:bg-emerald-600 selection:text-white min-h-screen">
+    <div className="flex flex-col bg-[#fafbfc] text-slate-900 selection:bg-blue-600 selection:text-white min-h-screen">
       {/* 1. HERO SECTION */}
-      <section className="relative overflow-hidden pt-20 pb-20 sm:pt-28 sm:pb-32 text-center bg-dot-grid">
-        {/* Subtle Ambient Radial Glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] glow-emerald pointer-events-none" />
+      <section className="relative overflow-hidden pt-20 pb-20 sm:pt-28 sm:pb-32 text-center">
+        {/* Ambient Hero Backdrop (Seamless Masked Dot Grid + Glow) */}
+        <div className="absolute inset-0 bg-dot-grid hero-mask pointer-events-none" />
+        <div className="absolute inset-0 glow-blue pointer-events-none" />
 
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative z-10 space-y-6">
           <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs font-semibold text-slate-700 shadow-xs">
-            <span className="flex h-2 w-2 rounded-full bg-emerald-600 animate-pulse" />
-            <Terminal className="h-3.5 w-3.5 text-emerald-600" />
+            <span className="flex h-2 w-2 rounded-full bg-blue-600 animate-pulse" />
+            <Terminal className="h-3.5 w-3.5 text-blue-600" />
             <span>Interactive DSA Coding Arena · Java First-Class Default</span>
           </div>
 
-          <h1 className="mx-auto max-w-4xl text-4xl sm:text-6xl lg:text-7xl font-semibold tracking-[-0.03em] text-slate-900 leading-[1.08]">
-            Solve DSA in Java, Python & C++.{" "}
-            <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
+          <h1 className="mx-auto max-w-4xl text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-[-0.03em] text-slate-900 leading-[1.12]">
+            Solve DSA in Java, Python & C++. <br className="hidden sm:inline" />
+            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 bg-clip-text text-transparent">
               Debug with live terminal stdout.
             </span>
           </h1>
@@ -84,7 +85,7 @@ export const CodingPracticeLandingPage: React.FC = () => {
             <a
               href={decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/register?source=coding_practice_pillar`)}
               onClick={() => trackEvent("landing_cta_clicked", { cta: "coding_practice_start_free", location: "pillar_hero" })}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-3.5 text-xs sm:text-sm font-semibold text-white hover:bg-emerald-700 transition active:scale-[0.99] w-full sm:w-auto shadow-xs"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-xs sm:text-sm font-semibold text-white hover:bg-blue-700 transition active:scale-[0.99] w-full sm:w-auto shadow-xs"
             >
               <span>Launch Free Coding Arena</span>
               <ArrowRight className="h-4 w-4" />
@@ -100,28 +101,28 @@ export const CodingPracticeLandingPage: React.FC = () => {
 
           <div className="pt-8 flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-xs font-mono text-slate-600 border-t border-slate-200 max-w-4xl mx-auto">
             <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Java, Python, C++, TS in Cloud IDE
+              <CheckCircle2 className="w-4 h-4 text-blue-600" /> Java, Python, C++, TS in Cloud IDE
             </div>
             <div className="flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-blue-600" /> Live Terminal Console Output (Print Logs)
             </div>
             <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-teal-600" /> Automated Test Runner & Edge Cases
+              <CheckCircle2 className="w-4 h-4 text-blue-600" /> Automated Test Runner & Edge Cases
             </div>
             <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-purple-600" /> Big-O Time & Space Algorithmic Scoring
+              <CheckCircle2 className="w-4 h-4 text-blue-600" /> Big-O Time & Space Algorithmic Scoring
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. LIVE TERMINAL & IDE PREVIEW */}
+      {/* 2. LIVE WORKBENCH PREVIEW */}
       <section className="py-16 sm:py-24 border-y border-slate-200 bg-slate-50/50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           {/* Header Strip */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
             <div>
-              <div className="flex items-center gap-2 text-xs font-mono text-emerald-600 uppercase tracking-wider font-semibold">
+              <div className="flex items-center gap-2 text-xs font-mono text-blue-600 uppercase tracking-wider font-semibold">
                 <Code2 className="h-3.5 w-3.5" />
                 <span>Cloud IDE Runtime Engine · Java</span>
               </div>
@@ -210,8 +211,8 @@ export const CodingPracticeLandingPage: React.FC = () => {
       <section className="py-20 sm:py-28 bg-[#fafbfc]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
           <div className="text-center space-y-3 max-w-3xl mx-auto">
-            <span className="text-xs font-mono uppercase tracking-widest text-emerald-600 font-semibold">Built for Serious Engineering Candidates</span>
-            <h2 className="text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-slate-900">
+            <span className="text-xs font-mono uppercase tracking-widest text-blue-600 font-semibold">Built for Serious Engineering Candidates</span>
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-slate-900">
               Everything you need to write clean, production-grade code
             </h2>
             <p className="text-sm text-slate-600">
@@ -221,7 +222,7 @@ export const CodingPracticeLandingPage: React.FC = () => {
 
           <div className="grid gap-6 md:grid-cols-2">
             <div className="rounded-2xl border border-slate-200 bg-white p-8 space-y-4 hover:border-slate-300 hover:shadow-md transition">
-              <div className="h-10 w-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
+              <div className="h-10 w-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
                 <Code2 className="h-5 w-5" />
               </div>
               <h3 className="text-lg font-semibold text-slate-900">First-Class Java Default</h3>
@@ -230,11 +231,11 @@ export const CodingPracticeLandingPage: React.FC = () => {
               </p>
               <ul className="space-y-2 text-xs text-slate-700 pt-2 font-mono">
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-blue-600 shrink-0" />
                   <span>Full support for 9 industry languages</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-blue-600 shrink-0" />
                   <span>Authentic starter templates and idiomatic signatures</span>
                 </li>
               </ul>
@@ -307,8 +308,8 @@ export const CodingPracticeLandingPage: React.FC = () => {
       <section className="py-20 border-y border-slate-200 bg-slate-50/50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center space-y-3 max-w-2xl mx-auto">
-            <span className="text-xs font-mono uppercase tracking-widest text-emerald-600 font-semibold">Curated Coding Blueprints</span>
-            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-slate-900">
+            <span className="text-xs font-mono uppercase tracking-widest text-blue-600 font-semibold">Curated Coding Blueprints</span>
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-slate-900">
               Study step-by-step algorithmic implementations
             </h2>
             <p className="text-sm text-slate-600">
@@ -333,13 +334,13 @@ export const CodingPracticeLandingPage: React.FC = () => {
             ].map((g) => (
               <div key={g.slug} className="rounded-2xl border border-slate-200 bg-white p-6 flex flex-col justify-between space-y-4 hover:border-slate-300 hover:shadow-md transition">
                 <div className="space-y-2">
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-semibold">{g.readTime}</span>
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 font-semibold">{g.readTime}</span>
                   <h3 className="text-base font-semibold text-slate-900 leading-snug">{g.title}</h3>
                   <p className="text-xs text-slate-600 leading-relaxed">{g.desc}</p>
                 </div>
                 <Link
                   to={`/guides/${g.slug}`}
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 hover:text-emerald-700 pt-3 border-t border-slate-100"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700 pt-3 border-t border-slate-100"
                 >
                   <span>Read Complete Implementation Guide</span>
                   <ArrowRight className="h-3.5 w-3.5" />
@@ -354,11 +355,11 @@ export const CodingPracticeLandingPage: React.FC = () => {
       <section className="py-20 sm:py-28 bg-[#fafbfc]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           <div className="text-center space-y-2">
-            <div className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-emerald-600 font-semibold">
+            <div className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-blue-600 font-semibold">
               <HelpCircle className="h-4 w-4" />
               <span>Got Questions?</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-slate-900">
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-slate-900">
               DSA Coding Arena FAQs
             </h2>
             <p className="text-sm text-slate-600">
@@ -378,7 +379,7 @@ export const CodingPracticeLandingPage: React.FC = () => {
                   >
                     <span>{faq.q}</span>
                     {isOpen ? (
-                      <ChevronUp className="h-4 w-4 shrink-0 text-emerald-600" />
+                      <ChevronUp className="h-4 w-4 shrink-0 text-blue-600" />
                     ) : (
                       <ChevronDown className="h-4 w-4 shrink-0 text-slate-400" />
                     )}
@@ -396,14 +397,14 @@ export const CodingPracticeLandingPage: React.FC = () => {
       </section>
 
       {/* 6. BOTTOM CTA */}
-      <section className="py-20 sm:py-28 text-center border-t border-slate-200 bg-gradient-to-b from-[#fafbfc] to-slate-100 relative">
-        <div className="absolute inset-0 glow-emerald opacity-20 pointer-events-none" />
+      <section className="py-20 sm:py-28 text-center border-t border-slate-200 bg-gradient-to-b from-[#fafbfc] to-slate-100/80 relative overflow-hidden">
+        <div className="absolute inset-0 glow-blue opacity-30 pointer-events-none" />
         <div className="mx-auto max-w-3xl px-4 sm:px-6 relative z-10 space-y-6">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3.5 py-1 text-xs font-mono text-emerald-700 font-medium">
-            <Zap className="h-3.5 w-3.5 text-emerald-600" />
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3.5 py-1 text-xs font-medium text-blue-700">
+            <Zap className="h-3.5 w-3.5 text-blue-600" />
             Instant Studio Access
           </span>
-          <h2 className="text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-slate-900">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-[-0.03em] text-slate-900">
             Start writing code in our interactive arena today.
           </h2>
           <p className="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
@@ -413,7 +414,7 @@ export const CodingPracticeLandingPage: React.FC = () => {
             <a
               href={decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/register?source=coding_practice_bottom`)}
               onClick={() => trackEvent("landing_cta_clicked", { cta: "coding_practice_bottom_start_free", location: "pillar_bottom" })}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-7 py-3.5 text-sm font-semibold text-white hover:bg-emerald-700 transition active:scale-[0.99] shadow-xs"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-7 py-3.5 text-sm font-semibold text-white hover:bg-blue-700 transition active:scale-[0.99] shadow-sm"
             >
               <span>Launch Free Coding Studio</span>
               <ArrowRight className="h-4 w-4" />

@@ -11,15 +11,16 @@ export const RefundPolicyPage: React.FC = () => {
   })
 
   return (
-    <div className="py-14 sm:py-20 bg-[#fafbfc] min-h-screen text-slate-800 bg-dot-grid-subtle">
+    <div className="py-14 sm:py-20 bg-[#fafbfc] min-h-screen text-slate-800">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 space-y-8">
         {/* Header */}
         <div className="space-y-3 border-b border-slate-200 pb-6">
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
-            <RotateCcw className="h-3.5 w-3.5" />
+          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs font-semibold text-slate-700 shadow-xs">
+            <span className="flex h-2 w-2 rounded-full bg-blue-600 animate-pulse" />
+            <RotateCcw className="h-3.5 w-3.5 text-blue-600" />
             <span>Policy Document</span>
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-slate-900">
             Cancellation & Refund Policy
           </h1>
           <p className="text-xs text-slate-500">
@@ -29,7 +30,7 @@ export const RefundPolicyPage: React.FC = () => {
 
         {/* Highlight Summary */}
         <div className="rounded-xl border border-blue-200 bg-blue-50/70 p-4 text-xs sm:text-sm text-slate-700 space-y-1">
-          <p className="font-bold text-slate-900">Summary at a Glance</p>
+          <p className="font-semibold text-slate-900">Summary at a Glance</p>
           <p className="leading-relaxed text-slate-600">
             PrepVisor paid plans are 100% prepaid, one-time passes with zero recurring auto-debits. Purchases carry a <strong className="text-slate-900">7-day refund window</strong>. Approved refunds are returned to your original payment method within <strong className="text-slate-900">5 to 7 business days</strong>.
           </p>
@@ -38,7 +39,7 @@ export const RefundPolicyPage: React.FC = () => {
         {/* Core Policy Points */}
         <div className="space-y-6 text-xs sm:text-sm leading-relaxed text-slate-600">
           <section className="space-y-2">
-            <h2 className="text-base font-bold text-slate-900">1. One-Time Prepaid Passes (Zero Auto-Renewals)</h2>
+            <h2 className="text-base font-semibold text-slate-900">1. One-Time Prepaid Passes (Zero Auto-Renewals)</h2>
             <p>
               All PrepVisor paid plans are one-time prepaid digital access passes for the selected duration (7, 14, 30, or 90 days). There are no automatic renewals, recurring debits, or surprise charges.
             </p>
@@ -48,7 +49,7 @@ export const RefundPolicyPage: React.FC = () => {
           </section>
 
           <section className="space-y-2">
-            <h2 className="text-base font-bold text-slate-900">2. Refund Eligibility (7-Day Window)</h2>
+            <h2 className="text-base font-semibold text-slate-900">2. Refund Eligibility (7-Day Window)</h2>
             <p>
               Preparation passes are eligible for a full refund within <strong className="text-slate-900">{COMPANY_CONFIG.compliance.refundWindowDays} calendar days</strong> of purchase if:
             </p>
@@ -63,7 +64,7 @@ export const RefundPolicyPage: React.FC = () => {
           </section>
 
           <section className="space-y-2">
-            <h2 className="text-base font-bold text-slate-900">3. Non-Refundable Cases</h2>
+            <h2 className="text-base font-semibold text-slate-900">3. Non-Refundable Cases</h2>
             <ul className="list-disc list-inside space-y-1.5 pl-1 text-slate-600">
               <li>Requests submitted after 7 days from purchase.</li>
               <li>Accounts with substantial usage (e.g., extensive mock interviews completed or bulk downloads).</li>
@@ -73,21 +74,21 @@ export const RefundPolicyPage: React.FC = () => {
           </section>
 
           <section className="space-y-2">
-            <h2 className="text-base font-bold text-slate-900">4. Processing Time & Mode</h2>
+            <h2 className="text-base font-semibold text-slate-900">4. Processing Time & Mode</h2>
             <p>
               Approved refunds are processed <strong className="text-slate-900">exclusively back to the original payment method</strong> (Bank account, Credit/Debit Card, or UPI) within <strong className="text-slate-900">{COMPANY_CONFIG.compliance.refundProcessingDays}</strong>.
             </p>
           </section>
 
           <section className="space-y-2">
-            <h2 className="text-base font-bold text-slate-900">5. How to Request a Refund</h2>
+            <h2 className="text-base font-semibold text-slate-900">5. How to Request a Refund</h2>
             <p>
               Send an email to <a href={`mailto:${COMPANY_CONFIG.contact.email}`} className="text-blue-600 hover:underline font-medium">{COMPANY_CONFIG.contact.email}</a> with your registered email, payment/order ID, and reason for the refund. We review and respond within {COMPANY_CONFIG.contact.tat.toLowerCase()}.
             </p>
           </section>
 
           <section className="space-y-2 border-t border-slate-200 pt-5">
-            <h2 className="text-base font-bold text-slate-900">6. Grievance & Statutory Details</h2>
+            <h2 className="text-base font-semibold text-slate-900">6. Grievance & Statutory Details</h2>
             <p>
               Pursuant to the Consumer Protection (E-Commerce) Rules, 2020:
             </p>

@@ -23,6 +23,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { decorateUrlWithUtms, trackEvent } from "@/lib/analytics";
+import { COMPANY_CONFIG } from "@/config/company";
 
 export const GuideDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -105,7 +106,7 @@ export const GuideDetailPage: React.FC = () => {
         <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-50 text-amber-700 mb-4 border border-amber-200 shadow-xs">
           <BookOpen className="h-8 w-8" />
         </div>
-        <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Guide Not Found</h1>
+        <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900 tracking-[-0.02em]">Guide Not Found</h1>
         <p className="mt-2 text-slate-600 text-sm max-w-md mx-auto">
           The requested technical interview guide could not be located. Browse our curated library of system design and coding case studies.
         </p>
@@ -135,7 +136,7 @@ export const GuideDetailPage: React.FC = () => {
   const otherGuides = GUIDES.filter((g) => g.slug !== guide.slug);
 
   return (
-    <article className="min-h-screen bg-[#fafbfc] text-slate-900 selection:bg-blue-600 selection:text-white bg-dot-grid-subtle">
+    <article className="min-h-screen bg-[#fafbfc] text-slate-900 selection:bg-blue-600 selection:text-white">
       {/* Top Breadcrumbs & Meta Bar */}
       <div className="border-b border-slate-200 bg-white/80 backdrop-blur-md">
         <div className="mx-auto max-w-5xl px-4 py-3 sm:px-6 lg:px-8">
@@ -176,7 +177,7 @@ export const GuideDetailPage: React.FC = () => {
             </span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-slate-900 leading-[1.15]">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-[-0.03em] text-slate-900 leading-[1.15]">
             {guide.title}
           </h1>
 
@@ -214,7 +215,7 @@ export const GuideDetailPage: React.FC = () => {
             {guide.sections.map((section, idx) => (
               <section key={section.id} id={section.id} className="scroll-mt-24 space-y-4">
                 <div className="border-b border-slate-200 pb-3">
-                  <h2 className="text-2xl font-bold tracking-[-0.02em] text-slate-900">
+                  <h2 className="text-2xl sm:text-3xl font-semibold tracking-[-0.02em] text-slate-900">
                     {section.title}
                   </h2>
                   {section.subtitle && (
@@ -304,7 +305,7 @@ export const GuideDetailPage: React.FC = () => {
                       <span className="inline-block text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md bg-blue-600 text-white mb-1.5">
                         Interactive PrepVisor Studio
                       </span>
-                      <h3 className="text-base font-bold text-slate-900">
+                      <h3 className="text-base font-semibold text-slate-900">
                         Don't just read the answer — test yourself now
                       </h3>
                       <p className="text-xs text-slate-600 max-w-md">
@@ -337,7 +338,7 @@ export const GuideDetailPage: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-[-0.02em] text-white">
                   {guide.cta.heading}
                 </h2>
                 <p className="text-sm text-blue-100 max-w-xl leading-relaxed">
@@ -369,7 +370,7 @@ export const GuideDetailPage: React.FC = () => {
             <section id="faqs" className="scroll-mt-24 space-y-4 pt-6 border-t border-slate-200">
               <div className="flex items-center gap-2">
                 <HelpCircle className="h-5 w-5 text-blue-600" />
-                <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+                <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-[-0.02em]">
                   Frequently Asked Questions
                 </h2>
               </div>
@@ -449,8 +450,14 @@ export const GuideDetailPage: React.FC = () => {
                 </p>
                 <a
                   href={decorateUrlWithUtms(
-                    `https://app.prepvisor.in/register?utm_source=organic_seo&utm_medium=guide_sidebar&utm_campaign=${guide.slug}`
+                    `${COMPANY_CONFIG.appUrl}/register?utm_source=organic_seo&utm_medium=guide_sidebar&utm_campaign=${guide.slug}`
                   )}
+                  onClick={() =>
+                    trackEvent("guide_sidebar_cta_clicked", {
+                      slug: guide.slug,
+                      cta: "sidebar_card",
+                    })
+                  }
                   className="inline-flex w-full items-center justify-center gap-1 rounded-xl bg-blue-600 py-2 text-xs font-bold text-white hover:bg-blue-700 transition shadow-xs"
                 >
                   <span>Start Free Prep</span>

@@ -65,19 +65,22 @@ export const NotFoundPage: React.FC = () => {
   ]
 
   return (
-    <div className="py-20 sm:py-28 bg-[#fafbfc] min-h-screen text-slate-900 bg-dot-grid relative flex flex-col justify-center">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] glow-blue pointer-events-none opacity-30" />
+    <div className="py-20 sm:py-28 bg-[#fafbfc] min-h-screen text-slate-900 relative overflow-hidden flex flex-col justify-center">
+      {/* Ambient Hero Backdrop (Seamless Masked Dot Grid + Glow) */}
+      <div className="absolute inset-0 bg-dot-grid hero-mask pointer-events-none" />
+      <div className="absolute inset-0 glow-blue pointer-events-none" />
 
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 space-y-10 relative z-10 text-center">
         {/* Error Badge */}
-        <div className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-3.5 py-1 text-xs font-mono font-semibold text-red-700 shadow-xs">
-          <AlertCircle className="h-3.5 w-3.5 text-red-600" />
+        <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs font-semibold text-slate-700 shadow-xs">
+          <span className="flex h-2 w-2 rounded-full bg-rose-500 animate-pulse" />
+          <AlertCircle className="h-3.5 w-3.5 text-rose-500" />
           <span>404 · Page Not Found</span>
         </div>
 
         {/* Heading */}
         <div className="space-y-3">
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-4xl sm:text-5xl font-semibold tracking-[-0.03em] text-slate-900">
             Lost your way?
           </h1>
           <p className="text-base text-slate-600 max-w-lg mx-auto leading-relaxed">

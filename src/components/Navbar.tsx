@@ -15,6 +15,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
 
   const links = [
     { to: "/", label: "Home" },
+    { to: "/roadmap", label: "Roadmap" },
     { to: "/system-design", label: "System Design" },
     { to: "/mock-interview", label: "Mock Interview" },
     { to: "/coding-practice", label: "Coding Arena" },
@@ -29,7 +30,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
         <BrandLogo to="/" />
 
         {/* Desktop Nav Links */}
-        <nav className="hidden items-center gap-7 md:flex">
+        <nav className="hidden items-center gap-5 lg:gap-7 md:flex">
           {links.map((link) => (
             <Link
               key={link.to}

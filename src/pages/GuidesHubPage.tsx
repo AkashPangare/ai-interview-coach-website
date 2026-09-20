@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { decorateUrlWithUtms, trackEvent } from "@/lib/analytics";
 import { usePageSeo } from "@/hooks/usePageSeo";
+import { COMPANY_CONFIG } from "@/config/company";
 
 export const GuidesHubPage: React.FC = () => {
   const [search, setSearch] = useState("");
@@ -51,19 +52,21 @@ export const GuidesHubPage: React.FC = () => {
   }, [selectedCategory, search]);
 
   return (
-    <div className="min-h-screen bg-[#fafbfc] text-slate-900 selection:bg-blue-600 selection:text-white pb-20 bg-dot-grid relative">
-      {/* Ambient Radial Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] glow-blue pointer-events-none opacity-40" />
-
+    <div className="min-h-screen bg-[#fafbfc] text-slate-900 selection:bg-blue-600 selection:text-white pb-20 relative">
       {/* Header */}
-      <header className="border-b border-slate-200 bg-white/80 backdrop-blur-md py-16 sm:py-24 relative z-10">
-        <div className="mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8 space-y-4">
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1 text-xs font-mono uppercase tracking-wider text-blue-600 shadow-xs font-semibold">
+      <header className="border-b border-slate-200 relative overflow-hidden py-16 sm:py-24 bg-white/70">
+        {/* Ambient Hero Backdrop (Seamless Masked Dot Grid + Glow) */}
+        <div className="absolute inset-0 bg-dot-grid hero-mask pointer-events-none" />
+        <div className="absolute inset-0 glow-blue pointer-events-none" />
+
+        <div className="mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8 space-y-4 relative z-10">
+          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs font-semibold text-slate-700 shadow-xs">
+            <span className="flex h-2 w-2 rounded-full bg-blue-600 animate-pulse" />
             <Sparkles className="h-3.5 w-3.5 text-blue-600" />
             <span>Curated Engineering Study Library</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-semibold tracking-[-0.03em] text-slate-900">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-[-0.03em] text-slate-900 leading-[1.12]">
             Technical Interview Blueprints
           </h1>
 
@@ -179,13 +182,13 @@ export const GuidesHubPage: React.FC = () => {
         )}
 
         {/* Global Conversion CTA */}
-        <div className="mt-14 rounded-2xl border border-slate-200 bg-gradient-to-r from-blue-50 via-indigo-50/50 to-blue-50 p-8 sm:p-10 text-slate-900 text-center sm:text-left sm:flex items-center justify-between gap-8 shadow-xs">
+        <div className="mt-14 rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 via-indigo-50/40 to-blue-50 p-8 sm:p-10 text-slate-900 text-center sm:text-left sm:flex items-center justify-between gap-8 shadow-xs">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-blue-700 font-semibold">
               <Sparkles className="h-3 w-3 text-blue-600" />
               <span>Personalized AI Preparation</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900">
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-slate-900">
               Want a customized prep roadmap for your target company?
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 max-w-lg leading-relaxed">
@@ -195,7 +198,7 @@ export const GuidesHubPage: React.FC = () => {
 
           <a
             href={decorateUrlWithUtms(
-              "https://app.prepvisor.in/register?utm_source=organic_seo&utm_medium=guides_hub&utm_campaign=bottom_banner"
+              `${COMPANY_CONFIG.appUrl}/register?utm_source=organic_seo&utm_medium=guides_hub&utm_campaign=bottom_banner`
             )}
             onClick={() => trackEvent("hub_bottom_cta_clicked", {})}
             className="mt-6 sm:mt-0 inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-xs sm:text-sm font-semibold text-white shadow-xs hover:bg-blue-700 transition shrink-0 active:scale-[0.99]"

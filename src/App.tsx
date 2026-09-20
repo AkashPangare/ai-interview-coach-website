@@ -17,13 +17,19 @@ import { MockInterviewLandingPage } from "@/pages/MockInterviewLandingPage"
 import { CodingPracticeLandingPage } from "@/pages/CodingPracticeLandingPage"
 import { RoadmapPage } from "@/pages/RoadmapPage"
 import { NotFoundPage } from "@/pages/NotFoundPage"
+import { trackPageView } from "@/lib/analytics"
 
-// Scroll to top helper
-function ScrollToTop() {
-  const { pathname } = useLocation()
+// Scroll to top and track SPA page views on route changes
+function RouteTracker() {
+  const { pathname, search } = useLocation()
   useEffect(() => {
     window.scrollTo(0, 0)
-  }, [pathname])
+    // Small delay ensures child page's usePageSeo or useEffect has updated document.title
+    const timer = setTimeout(() => {
+      trackPageView(document.title, window.location.href, pathname + search)
+    }, 50)
+    return () => clearTimeout(timer)
+  }, [pathname, search])
   return null
 }
 
@@ -44,7 +50,7 @@ export function App() {
 
   return (
     <div className="flex min-h-screen flex-col bg-[#fafbfc] text-slate-900 selection:bg-blue-600 selection:text-white">
-      <ScrollToTop />
+      <RouteTracker />
       <Navbar
         onOpenWaitlist={handleOpenWaitlist}
       />

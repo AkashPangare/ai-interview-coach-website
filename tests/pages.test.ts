@@ -46,6 +46,7 @@ test("Website Pillar Pages & SEO Architecture Suite", async (t) => {
     assert.ok(content.includes('fonts.googleapis.com'), "Must preconnect Google Fonts");
     assert.ok(content.includes('app.prepvisor.in'), "Must preconnect app origin");
     assert.ok(content.includes('/manifest.json'), "Must link manifest.json");
+    assert.ok(content.includes('googletagmanager.com/gtag/js?id=G-DNM4SMR2VK'), "Must contain GA4 script in head");
     assert.ok(!content.includes('aggregateRating'), "Must not contain fabricated aggregateRating");
   });
 
