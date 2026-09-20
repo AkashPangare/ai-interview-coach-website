@@ -1,10 +1,17 @@
 import React from "react"
 import { ShieldAlert, Scale } from "lucide-react"
 import { COMPANY_CONFIG } from "@/config/company"
+import { usePageSeo } from "@/hooks/usePageSeo"
 
 export const TermsPage: React.FC = () => {
+  usePageSeo({
+    title: "Terms of Service | PrepVisor",
+    description: "Terms of Service and user agreement governing access to PrepVisor educational software platform and prep passes.",
+    canonicalUrl: "https://prepvisor.in/terms",
+  })
+
   return (
-    <div className="py-14 sm:py-20 bg-white min-h-screen text-slate-700">
+    <div className="py-14 sm:py-20 bg-[#fafbfc] min-h-screen text-slate-800 bg-dot-grid-subtle">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 space-y-10">
         {/* Header */}
         <div className="space-y-3 border-b border-slate-200 pb-6">
@@ -55,8 +62,8 @@ export const TermsPage: React.FC = () => {
 
           <section className="space-y-2">
             <h2 className="text-base font-bold text-slate-900">5. Educational Disclaimer</h2>
-            <div className="rounded-lg border border-amber-200 bg-amber-50/70 p-4 space-y-1.5 text-xs text-slate-700">
-              <div className="flex items-center gap-2 font-semibold text-amber-900">
+            <div className="rounded-xl border border-amber-200 bg-amber-50/70 p-4 space-y-1.5 text-xs text-slate-700">
+              <div className="flex items-center gap-2 font-semibold text-amber-800">
                 <ShieldAlert className="h-4 w-4" />
                 <span>Notice on Career Outcomes</span>
               </div>

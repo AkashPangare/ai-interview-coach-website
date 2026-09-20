@@ -102,16 +102,16 @@ export const GuideDetailPage: React.FC = () => {
   if (!guide) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-24 text-center">
-        <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 mb-4 border border-amber-200">
+        <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-50 text-amber-700 mb-4 border border-amber-200 shadow-xs">
           <BookOpen className="h-8 w-8" />
         </div>
-        <h1 className="text-3xl font-black text-slate-900 tracking-tight">Guide Not Found</h1>
+        <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Guide Not Found</h1>
         <p className="mt-2 text-slate-600 text-sm max-w-md mx-auto">
           The requested technical interview guide could not be located. Browse our curated library of system design and coding case studies.
         </p>
         <button
           onClick={() => navigate("/guides")}
-          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-blue-700 transition"
+          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-blue-500 transition"
         >
           <span>Browse All Guides</span>
           <ArrowRight className="h-4 w-4" />
@@ -135,9 +135,9 @@ export const GuideDetailPage: React.FC = () => {
   const otherGuides = GUIDES.filter((g) => g.slug !== guide.slug);
 
   return (
-    <article className="min-h-screen bg-white">
+    <article className="min-h-screen bg-[#fafbfc] text-slate-900 selection:bg-blue-600 selection:text-white bg-dot-grid-subtle">
       {/* Top Breadcrumbs & Meta Bar */}
-      <div className="border-b border-slate-100 bg-slate-50/70">
+      <div className="border-b border-slate-200 bg-white/80 backdrop-blur-md">
         <div className="mx-auto max-w-5xl px-4 py-3 sm:px-6 lg:px-8">
           <nav className="flex items-center gap-2 text-xs text-slate-500 font-medium">
             <Link to="/" className="hover:text-blue-600 transition">
@@ -148,7 +148,7 @@ export const GuideDetailPage: React.FC = () => {
               Technical Guides
             </Link>
             <ChevronRight className="h-3.5 w-3.5 text-slate-400" />
-            <span className="text-slate-900 truncate max-w-[200px] sm:max-w-none">
+            <span className="text-slate-800 truncate max-w-[200px] sm:max-w-none font-semibold">
               {guide.title}
             </span>
           </nav>
@@ -156,14 +156,14 @@ export const GuideDetailPage: React.FC = () => {
       </div>
 
       {/* Article Header Container */}
-      <header className="border-b border-slate-100 bg-gradient-to-b from-slate-50/50 to-white">
+      <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-5xl px-4 pt-10 pb-12 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-center gap-2.5 mb-4">
-            <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700 border border-blue-200/80">
+            <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 border border-blue-200">
               <Sparkles className="h-3 w-3 text-blue-600" />
               {guide.category}
             </span>
-            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+            <span className="rounded-full bg-slate-100 border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">
               {guide.difficulty} Level
             </span>
             <span className="inline-flex items-center gap-1 text-xs text-slate-500 font-medium">
@@ -176,7 +176,7 @@ export const GuideDetailPage: React.FC = () => {
             </span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-[1.15]">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-[-0.03em] text-slate-900 leading-[1.15]">
             {guide.title}
           </h1>
 
@@ -197,7 +197,7 @@ export const GuideDetailPage: React.FC = () => {
 
             <button
               onClick={handleCopyShareLink}
-              className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-blue-600 hover:bg-slate-100 border border-slate-200 transition cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-200 shadow-xs transition cursor-pointer"
             >
               {copiedLink ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Share2 className="h-3.5 w-3.5" />}
               <span>{copiedLink ? "Link Copied!" : "Share Guide"}</span>
@@ -213,8 +213,8 @@ export const GuideDetailPage: React.FC = () => {
           <main className="lg:col-span-8 space-y-12">
             {guide.sections.map((section, idx) => (
               <section key={section.id} id={section.id} className="scroll-mt-24 space-y-4">
-                <div className="border-b border-slate-100 pb-3">
-                  <h2 className="text-2xl font-black tracking-tight text-slate-900">
+                <div className="border-b border-slate-200 pb-3">
+                  <h2 className="text-2xl font-bold tracking-[-0.02em] text-slate-900">
                     {section.title}
                   </h2>
                   {section.subtitle && (
@@ -222,25 +222,25 @@ export const GuideDetailPage: React.FC = () => {
                   )}
                 </div>
 
-                <div className="prose prose-slate max-w-none text-slate-700 text-sm leading-relaxed whitespace-pre-line">
+                <div className="prose max-w-none text-slate-700 text-sm leading-relaxed whitespace-pre-line font-normal">
                   {section.content}
                 </div>
 
                 {/* Optional Architecture Callout Card */}
                 {section.architectureCallout && (
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 shadow-xs space-y-3 my-4">
-                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-900">
-                      <Sparkles className="h-4 w-4 text-amber-500" />
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5 shadow-xs space-y-3 my-4">
+                    <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-800">
+                      <Sparkles className="h-4 w-4 text-blue-600" />
                       <span>{section.architectureCallout.title}</span>
                     </div>
                     <div className="grid grid-cols-1 gap-2.5 text-xs">
                       {section.architectureCallout.points.map((pt, pidx) => (
                         <div
                           key={pidx}
-                          className="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 rounded-xl bg-white border border-slate-200/80 gap-1"
+                          className="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 rounded-xl bg-white border border-slate-200 gap-1 shadow-xs"
                         >
-                          <span className="font-semibold text-slate-700">{pt.label}</span>
-                          <span className="font-mono text-blue-700 bg-blue-50 px-2 py-0.5 rounded text-[11px] font-bold">
+                          <span className="font-semibold text-slate-800">{pt.label}</span>
+                          <span className="font-mono text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded text-[11px] font-bold">
                             {pt.value}
                           </span>
                         </div>
@@ -251,8 +251,8 @@ export const GuideDetailPage: React.FC = () => {
 
                 {/* Optional Syntax Highlighted Code Snippet */}
                 {section.codeBlock && (
-                  <div className="rounded-2xl border border-slate-800 bg-slate-950 overflow-hidden shadow-lg my-4 text-white">
-                    <div className="flex items-center justify-between px-4 py-2.5 bg-slate-900/90 border-b border-slate-800 text-xs text-slate-400">
+                  <div className="rounded-2xl border border-slate-800 bg-[#06070a] overflow-hidden shadow-xl my-4 text-white">
+                    <div className="flex items-center justify-between px-4 py-2.5 bg-[#0c0e17] border-b border-slate-800 text-xs text-slate-400">
                       <span className="font-mono uppercase font-bold text-amber-400">
                         {section.codeBlock.language}
                       </span>
@@ -263,7 +263,7 @@ export const GuideDetailPage: React.FC = () => {
                       )}
                       <button
                         onClick={() => handleCopyCode(section.codeBlock!.code, section.id)}
-                        className="inline-flex items-center gap-1 text-[11px] hover:text-white transition cursor-pointer"
+                        className="inline-flex items-center gap-1 text-[11px] text-slate-400 hover:text-white transition cursor-pointer"
                       >
                         {copiedCodeId === section.id ? (
                           <Check className="h-3 w-3 text-emerald-400" />
@@ -281,15 +281,15 @@ export const GuideDetailPage: React.FC = () => {
 
                 {/* Optional Key Takeaways Callout */}
                 {section.keyTakeaways && section.keyTakeaways.length > 0 && (
-                  <div className="rounded-2xl border border-amber-200 bg-amber-50/50 p-4 space-y-2">
-                    <div className="text-xs font-bold text-amber-900 flex items-center gap-1.5 uppercase tracking-wider">
+                  <div className="rounded-2xl border border-amber-200 bg-amber-50/60 p-4 space-y-2">
+                    <div className="text-xs font-bold text-amber-800 flex items-center gap-1.5 uppercase tracking-wider">
                       <CheckCircle2 className="h-3.5 w-3.5 text-amber-600" />
                       <span>Key Interview Takeaways</span>
                     </div>
                     <ul className="space-y-1.5 text-xs text-slate-700">
                       {section.keyTakeaways.map((k, kidx) => (
                         <li key={kidx} className="flex items-start gap-2">
-                          <span className="text-amber-500 font-bold">•</span>
+                          <span className="text-amber-600 font-bold">•</span>
                           <span>{k}</span>
                         </li>
                       ))}
@@ -299,7 +299,7 @@ export const GuideDetailPage: React.FC = () => {
 
                 {/* Mid-Article Practice Callout after Section 2 */}
                 {idx === 1 && (
-                  <div className="rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50/50 p-6 shadow-xs my-8 text-center sm:text-left sm:flex items-center justify-between gap-6">
+                  <div className="rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 via-indigo-50/50 to-blue-50 p-6 shadow-xs my-8 text-center sm:text-left sm:flex items-center justify-between gap-6">
                     <div className="space-y-1 mb-4 sm:mb-0">
                       <span className="inline-block text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md bg-blue-600 text-white mb-1.5">
                         Interactive PrepVisor Studio
@@ -330,14 +330,14 @@ export const GuideDetailPage: React.FC = () => {
             ))}
 
             {/* High-Conversion Footer CTA Banner */}
-            <div className="rounded-3xl border border-blue-200 bg-gradient-to-br from-blue-900 via-indigo-900 to-slate-900 p-8 text-white shadow-xl space-y-5">
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-blue-500/20 px-3 py-1 text-xs font-bold text-blue-300 border border-blue-400/30">
-                <Sparkles className="h-3.5 w-3.5 text-blue-400" />
+            <div className="rounded-3xl border border-blue-200 bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 p-8 text-white shadow-xl space-y-5 relative overflow-hidden">
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white border border-white/30 backdrop-blur-xs">
+                <Sparkles className="h-3.5 w-3.5 text-white" />
                 <span>{guide.cta.badge}</span>
               </div>
 
               <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
                   {guide.cta.heading}
                 </h2>
                 <p className="text-sm text-blue-100 max-w-xl leading-relaxed">
@@ -354,50 +354,50 @@ export const GuideDetailPage: React.FC = () => {
                       cta: "footer_card",
                     })
                   }
-                  className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-bold text-slate-900 shadow-lg hover:bg-blue-50 transition active:scale-95"
+                  className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-bold text-slate-950 shadow-md hover:bg-slate-100 transition active:scale-95"
                 >
                   <span>{guide.cta.buttonText}</span>
                   <ArrowRight className="h-4 w-4 text-blue-600" />
                 </a>
-                <p className="text-[11px] text-blue-200/80 mt-2.5">
+                <p className="text-[11px] text-blue-100/80 mt-2.5">
                   Free tier available · Instant setup · No credit card required
                 </p>
               </div>
             </div>
 
             {/* Frequently Asked Questions (FAQ Section matching FAQPage Schema) */}
-            <section id="faqs" className="scroll-mt-24 space-y-4 pt-6 border-t border-slate-100">
+            <section id="faqs" className="scroll-mt-24 space-y-4 pt-6 border-t border-slate-200">
               <div className="flex items-center gap-2">
                 <HelpCircle className="h-5 w-5 text-blue-600" />
-                <h2 className="text-2xl font-black text-slate-900 tracking-tight">
+                <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
                   Frequently Asked Questions
                 </h2>
               </div>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-600">
                 Common interviewer traps and high-frequency follow-up questions for this topic.
               </p>
 
-              <div className="space-y-3 pt-2">
+              <div className="divide-y divide-slate-200 rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-xs">
                 {guide.faqs.map((faq, fidx) => {
                   const isOpen = expandedFaqIndex === fidx;
                   return (
                     <div
                       key={fidx}
-                      className="rounded-2xl border border-slate-200 bg-slate-50/50 overflow-hidden transition-colors"
+                      className="transition-colors"
                     >
                       <button
                         onClick={() => setExpandedFaqIndex(isOpen ? null : fidx)}
-                        className="w-full flex items-center justify-between p-4 text-left text-sm font-bold text-slate-900 hover:text-blue-600 transition cursor-pointer"
+                        className="w-full flex items-center justify-between p-4 text-left text-sm font-semibold text-slate-900 hover:bg-slate-50/80 transition cursor-pointer"
                       >
                         <span>{faq.question}</span>
                         {isOpen ? (
-                          <ChevronUp className="h-4 w-4 text-slate-400 shrink-0 ml-2" />
+                          <ChevronUp className="h-4 w-4 text-blue-600 shrink-0 ml-2" />
                         ) : (
                           <ChevronDown className="h-4 w-4 text-slate-400 shrink-0 ml-2" />
                         )}
                       </button>
                       {isOpen && (
-                        <div className="px-4 pb-4 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3 bg-white">
+                        <div className="px-4 pb-4 text-xs text-slate-600 leading-relaxed border-t border-slate-200 pt-3 bg-slate-50/40">
                           {faq.answer}
                         </div>
                       )}
@@ -429,7 +429,7 @@ export const GuideDetailPage: React.FC = () => {
                   ))}
                   <a
                     href="#faqs"
-                    className="block py-1 text-slate-600 hover:text-blue-600 hover:translate-x-1 transition-transform font-semibold text-blue-600"
+                    className="block py-1 text-blue-600 hover:text-blue-700 hover:translate-x-1 transition-transform font-semibold"
                   >
                     Frequently Asked Questions
                   </a>
@@ -437,8 +437,8 @@ export const GuideDetailPage: React.FC = () => {
               </div>
 
               {/* Sidebar Mini CTA */}
-              <div className="rounded-2xl border border-amber-200 bg-amber-50/60 p-4 text-center space-y-2.5">
-                <span className="p-1.5 rounded-lg bg-amber-500/20 text-amber-700 text-xs font-bold inline-block">
+              <div className="rounded-2xl border border-blue-200 bg-blue-50/60 p-4 text-center space-y-2.5 shadow-xs">
+                <span className="p-1 rounded-md bg-blue-100 text-blue-700 text-[10px] font-bold inline-block">
                   Practice Mode
                 </span>
                 <div className="text-xs font-bold text-slate-900">
@@ -451,7 +451,7 @@ export const GuideDetailPage: React.FC = () => {
                   href={decorateUrlWithUtms(
                     `https://app.prepvisor.in/register?utm_source=organic_seo&utm_medium=guide_sidebar&utm_campaign=${guide.slug}`
                   )}
-                  className="inline-flex w-full items-center justify-center gap-1 rounded-xl bg-slate-900 py-2 text-xs font-bold text-white hover:bg-slate-800 transition"
+                  className="inline-flex w-full items-center justify-center gap-1 rounded-xl bg-blue-600 py-2 text-xs font-bold text-white hover:bg-blue-700 transition shadow-xs"
                 >
                   <span>Start Free Prep</span>
                   <ArrowRight className="h-3 w-3" />
@@ -464,7 +464,7 @@ export const GuideDetailPage: React.FC = () => {
                   <div className="text-xs font-bold uppercase tracking-wider text-slate-900">
                     Next Recommended Guides
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-2.5">
                     {otherGuides.map((og) => (
                       <Link
                         key={og.slug}
@@ -474,7 +474,7 @@ export const GuideDetailPage: React.FC = () => {
                         <div className="text-[10px] uppercase font-bold text-blue-600 mb-1">
                           {og.category} · {og.readingTimeMinutes}m read
                         </div>
-                        <div className="text-xs font-bold text-slate-900 group-hover:text-blue-600 transition leading-snug line-clamp-2">
+                        <div className="text-xs font-semibold text-slate-800 group-hover:text-blue-600 transition leading-snug line-clamp-2">
                           {og.title}
                         </div>
                       </Link>

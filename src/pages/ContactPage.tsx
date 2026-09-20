@@ -9,8 +9,16 @@ import {
   Building,
 } from "lucide-react"
 import { COMPANY_CONFIG } from "@/config/company"
+import { usePageSeo } from "@/hooks/usePageSeo"
 
 export const ContactPage: React.FC = () => {
+  usePageSeo({
+    title: "Contact PrepVisor — Customer Support & Enterprise Inquiries",
+    description: "Get in touch with PrepVisor support team and founders. Reach us via email, phone, or office address in Bengaluru for customer assistance, billing, or enterprise cohort inquiries.",
+    canonicalUrl: "https://prepvisor.in/contact",
+    keywords: "contact prepvisor, customer support prepvisor, interview prep help, prepvisor bangalore address",
+  })
+
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [category, setCategory] = useState("General Question")
@@ -55,18 +63,20 @@ export const ContactPage: React.FC = () => {
   }
 
   return (
-    <div className="py-14 sm:py-20 bg-slate-50 min-h-screen text-slate-900">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 space-y-12">
+    <div className="py-16 sm:py-24 bg-[#fafbfc] min-h-screen text-slate-900 selection:bg-blue-600 selection:text-white bg-dot-grid relative">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] glow-blue pointer-events-none opacity-40" />
+
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
         {/* Header */}
-        <div className="text-center max-w-2xl mx-auto space-y-2">
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
-            <Mail className="h-3.5 w-3.5" />
+        <div className="text-center max-w-2xl mx-auto space-y-3">
+          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1 text-xs font-mono uppercase tracking-wider text-blue-600 shadow-xs font-semibold">
+            <Mail className="h-3.5 w-3.5 text-blue-600" />
             <span>Support & Assistance</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
+          <h1 className="text-3xl sm:text-5xl font-semibold tracking-[-0.03em] text-slate-900">
             Contact PrepVisor Support
           </h1>
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-slate-600 leading-relaxed">
             Have questions about our plans, billing, or access? Reach out anytime and we’ll get back to you promptly.
           </p>
         </div>
@@ -76,19 +86,19 @@ export const ContactPage: React.FC = () => {
           <div className="lg:col-span-5 space-y-5">
             <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-5 shadow-xs">
               <div>
-                <h3 className="text-lg font-bold text-slate-900">
+                <h3 className="text-lg font-semibold text-slate-900">
                   Business & Support Details
                 </h3>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-xs text-slate-500 font-mono mt-0.5">
                   Operated by {COMPANY_CONFIG.legalEntity}
                 </p>
               </div>
 
-              <div className="space-y-3.5 text-xs text-slate-700 border-t border-slate-100 pt-4">
+              <div className="space-y-3.5 text-xs text-slate-600 border-t border-slate-100 pt-4">
                 <div className="flex items-start gap-2.5">
                   <Building className="h-4 w-4 text-blue-600 shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-semibold text-slate-900 block">Operator Name</span>
+                    <span className="font-semibold text-slate-800 block">Operator Name</span>
                     <span className="text-slate-600">{COMPANY_CONFIG.proprietorName}</span>
                   </div>
                 </div>
@@ -96,7 +106,7 @@ export const ContactPage: React.FC = () => {
                 <div className="flex items-start gap-2.5">
                   <MapPin className="h-4 w-4 text-blue-600 shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-semibold text-slate-900 block">Operational Address</span>
+                    <span className="font-semibold text-slate-800 block">Operational Address</span>
                     <span className="text-slate-600">{COMPANY_CONFIG.address.formatted}</span>
                   </div>
                 </div>
@@ -104,10 +114,10 @@ export const ContactPage: React.FC = () => {
                 <div className="flex items-start gap-2.5">
                   <Mail className="h-4 w-4 text-blue-600 shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-semibold text-slate-900 block">Email</span>
+                    <span className="font-semibold text-slate-800 block">Email</span>
                     <a
                       href={`mailto:divya@prepvisor.in`}
-                      className="text-blue-600 hover:underline"
+                      className="text-blue-600 hover:text-blue-700 underline"
                     >
                       divya@prepvisor.in
                     </a>
@@ -117,17 +127,17 @@ export const ContactPage: React.FC = () => {
                 <div className="flex items-start gap-2.5">
                   <Phone className="h-4 w-4 text-blue-600 shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-semibold text-slate-900 block">Phone</span>
-                    <span className="text-slate-700">{COMPANY_CONFIG.contact.displayPhone}</span>
+                    <span className="font-semibold text-slate-800 block">Phone</span>
+                    <span className="text-slate-600">{COMPANY_CONFIG.contact.displayPhone}</span>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-2.5">
                   <Clock className="h-4 w-4 text-blue-600 shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-semibold text-slate-900 block">Business Hours</span>
+                    <span className="font-semibold text-slate-800 block">Business Hours</span>
                     <span className="text-slate-600">{COMPANY_CONFIG.contact.hours}</span>
-                    <span className="text-[11px] text-emerald-600 block mt-0.5">
+                    <span className="text-[11px] text-emerald-700 font-mono font-medium block mt-0.5">
                       Response time: {COMPANY_CONFIG.contact.tat}
                     </span>
                   </div>
@@ -135,10 +145,10 @@ export const ContactPage: React.FC = () => {
               </div>
 
               {/* Grievance Officer */}
-              <div className="rounded-xl border border-blue-100 bg-blue-50/60 p-3.5 space-y-1 text-xs">
-                <span className="font-semibold text-blue-900 block">Grievance Redressal Officer</span>
+              <div className="rounded-xl border border-blue-200 bg-blue-50/60 p-3.5 space-y-1 text-xs text-slate-700">
+                <span className="font-semibold text-blue-700 block">Grievance Redressal Officer</span>
                 <p className="text-slate-600">
-                  Officer: <strong>{COMPANY_CONFIG.compliance.grievanceOfficer.name}</strong>
+                  Officer: <strong className="text-slate-900">{COMPANY_CONFIG.compliance.grievanceOfficer.name}</strong>
                 </p>
                 <p className="text-slate-600">
                   Email: <a href={`mailto:${COMPANY_CONFIG.compliance.grievanceOfficer.email}`} className="text-blue-600 underline">{COMPANY_CONFIG.compliance.grievanceOfficer.email}</a>
@@ -153,8 +163,8 @@ export const ContactPage: React.FC = () => {
               {!isSubmitted ? (
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <h3 className="text-xl font-bold text-slate-900">Send Us a Message</h3>
-                    <p className="text-xs text-slate-500 mt-0.5">
+                    <h3 className="text-xl font-semibold text-slate-900">Send Us a Message</h3>
+                    <p className="text-xs text-slate-600 mt-0.5">
                       We’ll get back to you at your registered email address.
                     </p>
                   </div>
@@ -170,7 +180,7 @@ export const ContactPage: React.FC = () => {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="e.g. Akash"
-                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-600 focus:outline-none"
+                        className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/10 shadow-xs"
                       />
                     </div>
 
@@ -184,7 +194,7 @@ export const ContactPage: React.FC = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="akash@example.com"
-                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-600 focus:outline-none"
+                        className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/10 shadow-xs"
                       />
                     </div>
                   </div>
@@ -196,7 +206,7 @@ export const ContactPage: React.FC = () => {
                     <select
                       value={category}
                       onChange={(e) => setCategory(e.target.value)}
-                      className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:border-blue-600 focus:outline-none"
+                      className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 focus:border-blue-600 focus:outline-none shadow-xs"
                     >
                       <option value="Billing & Payment">Billing & Payments</option>
                       <option value="Refund Request">Refund Request</option>
@@ -215,14 +225,14 @@ export const ContactPage: React.FC = () => {
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       placeholder="How can we help you?"
-                      className="w-full rounded-lg border border-slate-300 bg-white p-3 text-xs text-slate-900 placeholder-slate-400 focus:border-blue-600 focus:outline-none"
+                      className="w-full rounded-xl border border-slate-300 bg-white p-3 text-xs text-slate-900 placeholder-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/10 shadow-xs"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full flex items-center justify-center gap-1.5 rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-blue-700 transition-colors disabled:opacity-75 disabled:cursor-not-allowed"
+                    className="w-full flex items-center justify-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 py-3 text-sm font-semibold text-white transition-all active:scale-[0.99] shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Send className="h-4 w-4" />
                     <span>{isSubmitting ? "Sending Message..." : "Send Message"}</span>
@@ -230,12 +240,12 @@ export const ContactPage: React.FC = () => {
                 </form>
               ) : (
                 <div className="text-center py-6 space-y-4">
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600">
                     <CheckCircle2 className="h-7 w-7" />
                   </div>
 
                   <div className="space-y-1">
-                    <h3 className="text-xl font-bold text-slate-900">
+                    <h3 className="text-xl font-semibold text-slate-900">
                       Message Received!
                     </h3>
                     <p className="text-xs text-slate-600 max-w-sm mx-auto">
@@ -243,7 +253,7 @@ export const ContactPage: React.FC = () => {
                     </p>
                   </div>
 
-                  <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 max-w-xs mx-auto text-xs text-slate-600">
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 max-w-xs mx-auto text-xs text-slate-600 font-mono">
                     Reference Ticket: <strong className="text-blue-600">{ticketId}</strong>
                   </div>
 
@@ -252,7 +262,7 @@ export const ContactPage: React.FC = () => {
                       setIsSubmitted(false)
                       setMessage("")
                     }}
-                    className="rounded-lg bg-slate-100 hover:bg-slate-200 px-5 py-2 text-xs font-semibold text-slate-800 transition-colors"
+                    className="rounded-xl bg-white hover:bg-slate-50 border border-slate-200 px-5 py-2 text-xs font-semibold text-slate-700 shadow-xs transition-colors"
                   >
                     Send Another Message
                   </button>

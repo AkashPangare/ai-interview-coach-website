@@ -15,14 +15,15 @@ export const Navbar: React.FC<NavbarProps> = () => {
 
   const links = [
     { to: "/", label: "Home" },
+    { to: "/system-design", label: "System Design" },
+    { to: "/mock-interview", label: "Mock Interview" },
+    { to: "/coding-practice", label: "Coding Arena" },
     { to: "/guides", label: "Guides" },
     { to: "/pricing", label: "Pricing" },
-    { to: "/about", label: "About" },
-    { to: "/contact", label: "Contact" },
   ]
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Brand Logo */}
         <BrandLogo to="/" />
@@ -33,8 +34,8 @@ export const Navbar: React.FC<NavbarProps> = () => {
             <Link
               key={link.to}
               to={link.to}
-              className={`text-sm font-medium transition hover:text-blue-600 ${
-                location.pathname === link.to ? "text-blue-600" : "text-slate-600"
+              className={`text-xs font-medium tracking-tight transition-colors ${
+                location.pathname === link.to ? "text-blue-600 font-semibold" : "text-slate-600 hover:text-slate-900"
               }`}
             >
               {link.label}
@@ -47,25 +48,25 @@ export const Navbar: React.FC<NavbarProps> = () => {
           <a
             href={decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/login`)}
             onClick={() => trackEvent("landing_cta_clicked", { cta: "navbar_login", location: "desktop_navbar" })}
-            className="inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-sm font-semibold text-slate-700 hover:text-blue-600 hover:bg-slate-50 transition"
+            className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 transition"
           >
-            <LogIn className="h-4 w-4" />
-            <span>Log In</span>
+            <LogIn className="h-3.5 w-3.5" />
+            <span>Sign In</span>
           </a>
           <a
             href={decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/register`)}
             onClick={() => trackEvent("landing_cta_clicked", { cta: "navbar_get_started", location: "desktop_navbar" })}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-xs hover:bg-blue-700 transition"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-blue-700 transition shadow-xs"
           >
-            <span>Get Started</span>
-            <ArrowRight className="h-4 w-4" />
+            <span>Start Free</span>
+            <ArrowRight className="h-3.5 w-3.5" />
           </a>
         </div>
 
         {/* Mobile Hamburger Toggle */}
         <button
           onClick={() => setOpen(!open)}
-          className="p-2 text-slate-600 md:hidden"
+          className="p-2 text-slate-700 hover:text-slate-900 md:hidden"
           aria-label="Toggle menu"
         >
           {open ? <X /> : <Menu />}
@@ -74,28 +75,28 @@ export const Navbar: React.FC<NavbarProps> = () => {
 
       {/* Mobile Drawer */}
       {open && (
-        <nav className="space-y-1.5 border-t border-slate-100 bg-white px-4 py-4 md:hidden shadow-lg">
+        <nav className="space-y-1.5 border-t border-slate-200 bg-white px-4 py-4 md:hidden shadow-xl">
           {links.map((link) => (
             <Link
               key={link.to}
               onClick={() => setOpen(false)}
               to={link.to}
-              className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+              className="block rounded-lg px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900"
             >
               {link.label}
             </Link>
           ))}
-          <div className="pt-3 mt-2 border-t border-slate-100 space-y-2">
+          <div className="pt-3 mt-2 border-t border-slate-200 space-y-2">
             <a
               href={decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/login`)}
               onClick={() => {
                 setOpen(false)
                 trackEvent("landing_cta_clicked", { cta: "navbar_login", location: "mobile_drawer" })
               }}
-              className="flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+              className="flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 py-2.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
             >
-              <LogIn className="h-4 w-4" />
-              <span>Log In</span>
+              <LogIn className="h-3.5 w-3.5" />
+              <span>Sign In</span>
             </a>
             <a
               href={decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/register`)}
@@ -103,10 +104,10 @@ export const Navbar: React.FC<NavbarProps> = () => {
                 setOpen(false)
                 trackEvent("landing_cta_clicked", { cta: "navbar_get_started", location: "mobile_drawer" })
               }}
-              className="flex items-center justify-center gap-1.5 rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-blue-700"
+              className="flex items-center justify-center gap-1.5 rounded-lg bg-blue-600 py-2.5 text-xs font-semibold text-white hover:bg-blue-700 shadow-xs"
             >
-              <span>Get Started</span>
-              <ArrowRight className="h-4 w-4" />
+              <span>Start Free</span>
+              <ArrowRight className="h-3.5 w-3.5" />
             </a>
           </div>
         </nav>

@@ -103,7 +103,7 @@ export const COMPANY_CONFIG = {
         "7 Full AI Mock Interviews",
         "3 Technical Diagnostic Assessments",
         "50 AI Coach Questions & Explanations",
-        "Interactive Coding Studio & Sandbox",
+        "Interactive Coding Studio (9 Languages)",
         "Dynamic 1-Click Schedule Rebalancing",
         "Email Support within 48 hours",
       ],

@@ -84,8 +84,8 @@ export const EarlyAccessModal: React.FC<EarlyAccessModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="relative w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-150">
+      <div className="relative w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-2xl text-slate-900">
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -98,21 +98,21 @@ export const EarlyAccessModal: React.FC<EarlyAccessModalProps> = ({
         {!isSubmitted ? (
           <div>
             {/* Header */}
-            <div className="flex items-center gap-2 text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1.5">
+            <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-blue-600 mb-1.5 font-semibold">
               <CreditCard className="h-4 w-4 text-blue-600" />
               <span>Checkout & Activation</span>
             </div>
             <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-1.5">
               Order Summary & Registration
             </h2>
-            <p className="text-xs text-slate-500 mb-5">
+            <p className="text-xs text-slate-600 mb-5">
               Complete your registration below to proceed with your selected preparation pass.
             </p>
 
             {/* Selected Plan Summary Pill */}
-            <div className="mb-5 rounded-xl border border-blue-200 bg-blue-50/60 p-4 flex items-center justify-between">
+            <div className="mb-5 rounded-xl border border-blue-100 bg-blue-50/60 p-4 flex items-center justify-between">
               <div>
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-blue-700">Selected Plan:</span>
+                <span className="text-[11px] font-mono uppercase tracking-wider text-blue-700 font-semibold">Selected Plan:</span>
                 <p className="text-sm font-bold text-slate-900 mt-0.5">
                   {selectedTier.name} ({selectedTier.days} Days)
                 </p>
@@ -121,10 +121,10 @@ export const EarlyAccessModal: React.FC<EarlyAccessModalProps> = ({
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-xl font-extrabold text-blue-700">
+                <p className="text-xl font-mono font-bold text-slate-900">
                   ₹{selectedTier.priceINR}
                 </p>
-                <span className="text-[10px] text-emerald-700 font-medium">
+                <span className="text-[10px] text-emerald-700 font-mono font-medium">
                   (Incl. of all taxes)
                 </span>
               </div>
@@ -165,7 +165,7 @@ export const EarlyAccessModal: React.FC<EarlyAccessModalProps> = ({
                   Mobile Number (for Order & Access OTP) *
                 </label>
                 <div className="flex rounded-lg border border-slate-300 bg-white overflow-hidden focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
-                  <span className="inline-flex items-center px-3 bg-slate-50 text-slate-500 text-xs font-medium border-r border-slate-200">
+                  <span className="inline-flex items-center px-3 bg-slate-100 text-slate-600 text-xs font-mono border-r border-slate-300">
                     +91
                   </span>
                   <input
@@ -175,7 +175,7 @@ export const EarlyAccessModal: React.FC<EarlyAccessModalProps> = ({
                     value={phone}
                     onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
                     placeholder="9876543210"
-                    className="w-full px-3.5 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none"
+                    className="w-full bg-transparent px-3.5 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none"
                   />
                 </div>
               </div>
@@ -218,7 +218,7 @@ export const EarlyAccessModal: React.FC<EarlyAccessModalProps> = ({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 text-sm font-bold text-white shadow-md hover:bg-blue-700 active:scale-98 transition-all disabled:opacity-75 disabled:cursor-not-allowed"
+                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 py-3 text-sm font-semibold text-white shadow-xs transition-all active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Lock className="h-4 w-4" />
                   <span>
@@ -239,12 +239,12 @@ export const EarlyAccessModal: React.FC<EarlyAccessModalProps> = ({
         ) : (
           /* Order Confirmation Screen */
           <div className="text-center py-3 space-y-4">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-600">
               <CheckCircle2 className="h-8 w-8" />
             </div>
 
             <div className="space-y-1">
-              <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 border border-blue-200">
+              <span className="rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-xs font-mono text-emerald-700 font-medium">
                 Order Registered
               </span>
               <h3 className="text-2xl font-bold text-slate-900 mt-2">
@@ -258,24 +258,24 @@ export const EarlyAccessModal: React.FC<EarlyAccessModalProps> = ({
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 max-w-sm mx-auto text-left space-y-2 text-xs">
               <div className="flex justify-between border-b border-slate-200 pb-2">
                 <span className="text-slate-500">Order ID:</span>
-                <span className="font-mono font-bold text-blue-700">#{orderId}</span>
+                <span className="font-mono font-bold text-blue-600">#{orderId}</span>
               </div>
               <div className="flex justify-between border-b border-slate-200 pb-2">
                 <span className="text-slate-500">Plan & Validity:</span>
-                <span className="font-semibold text-slate-800">{selectedTier.name} ({selectedTier.days} Days)</span>
+                <span className="font-semibold text-slate-900">{selectedTier.name} ({selectedTier.days} Days)</span>
               </div>
               <div className="flex justify-between border-b border-slate-200 pb-2">
                 <span className="text-slate-500">Amount:</span>
-                <span className="font-bold text-slate-900">₹{selectedTier.priceINR} (All taxes incl.)</span>
+                <span className="font-mono font-bold text-slate-900">₹{selectedTier.priceINR} (All taxes incl.)</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">Customer Contact:</span>
-                <span className="font-medium text-slate-800">{email}</span>
+                <span className="font-mono text-slate-700">{email}</span>
               </div>
             </div>
 
-            <div className="rounded-xl border border-blue-100 bg-blue-50/70 p-3.5 text-left text-xs text-slate-700 space-y-1.5">
-              <div className="flex items-center gap-1.5 font-semibold text-blue-900">
+            <div className="rounded-xl border border-blue-200 bg-blue-50/60 p-3.5 text-left text-xs text-slate-700 space-y-1.5">
+              <div className="flex items-center gap-1.5 font-semibold text-blue-700">
                 <Zap className="h-4 w-4 text-blue-600" />
                 <span>Instant Digital Fulfillment:</span>
               </div>

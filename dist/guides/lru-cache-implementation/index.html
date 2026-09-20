@@ -7,33 +7,94 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LRU Cache Implementation Guide | O(1) Operations in Java, Python & C++ | PrepVisor</title>
     <meta name="description" content="Complete step-by-step guide to implementing an LRU Cache with O(1) get and put operations. Includes Doubly Linked List + HashMap implementations in Java, Python, and C++." />
-    <meta name="keywords" content="tech interview preparation, coding practice, system design, interview study plan" />
+    <meta
+      name="keywords"
+      content="AI tech interview coach, system design interview simulator, DSA coding practice terminal stdout, voice mock interview STAR method, tech interview study roadmap, Java interview prep, software engineer mock interview, PrepVisor"
+    />
     <meta name="author" content="PrepVisor" />
+    <link rel="canonical" href="https://prepvisor.in/" />
+    
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Preconnect & Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://app.prepvisor.in" />
+    <link rel="dns-prefetch" href="https://app.prepvisor.in" />
     
     <!-- Open Graph / Facebook / LinkedIn -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="PrepVisor | Tech Interview Preparation" />
-    <meta property="og:description" content="A simple, structured way to prepare for your next tech interview." />
+    <meta property="og:url" content="https://prepvisor.in/" />
+    <meta property="og:title" content="PrepVisor | AI Tech Interview Coach, System Design Simulator & DSA Arena" />
+    <meta property="og:description" content="Master tech interviews with dynamic AI pacing. Interactive DSA coding arena with live terminal stdout, interactive System Design whiteboard with scale math, and voice AI mock interviews." />
+    <meta property="og:image" content="https://prepvisor.in/og-image.png" />
     <meta property="og:site_name" content="PrepVisor" />
 
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="PrepVisor | Tech Interview Preparation" />
-    <meta name="twitter:description" content="A simple, structured way to prepare for your next tech interview." />
+    <meta name="twitter:url" content="https://prepvisor.in/" />
+    <meta name="twitter:title" content="PrepVisor | AI Tech Interview Coach, System Design Simulator & DSA Arena" />
+    <meta name="twitter:description" content="Master tech interviews with dynamic AI pacing. Interactive DSA coding arena with live terminal stdout, interactive System Design whiteboard with scale math, and voice AI mock interviews." />
+    <meta name="twitter:image" content="https://prepvisor.in/og-image.png" />
 
     <!-- Structured Data for Search Engines -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "PrepVisor",
-        "operatingSystem": "Web, Cloud",
-        "applicationCategory": "EducationalApplication",
-        "description": "A web-based study planner for coding and system design interview preparation."
+        "@graph": [
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://prepvisor.in/#software",
+            "name": "PrepVisor",
+            "operatingSystem": "Web, Cloud",
+            "applicationCategory": "EducationalApplication",
+            "description": "An interactive AI tech interview coach featuring time-calibrated preparation roadmaps, DSA coding studio with terminal stdout, infinite system design whiteboard with scale math, and voice STAR behavioral mock interviews.",
+            "url": "https://prepvisor.in",
+            "offers": {
+              "@type": "AggregateOffer",
+              "priceCurrency": "INR",
+              "lowPrice": "0",
+              "highPrice": "1499",
+              "offerCount": "5"
+            }
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://prepvisor.in/#organization",
+            "name": "PrepVisor",
+            "url": "https://prepvisor.in",
+            "logo": "https://prepvisor.in/logo.png",
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "telephone": "+91 7249778116",
+              "contactType": "Customer Support",
+              "areaServed": "IN",
+              "availableLanguage": ["English"]
+            },
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Flat 201, Aurum Residencies, Maruthi Nagar, BTM Layout Stage 1",
+              "addressLocality": "Bengaluru",
+              "addressRegion": "Karnataka",
+              "postalCode": "560068",
+              "addressCountry": "IN"
+            }
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://prepvisor.in/#website",
+            "url": "https://prepvisor.in",
+            "name": "PrepVisor",
+            "publisher": {
+              "@id": "https://prepvisor.in/#organization"
+            }
+          }
+        ]
       }
     </script>
-    <script type="module" crossorigin src="/assets/index-hRQBBphf.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-TsRviktK.css">
+    <script type="module" crossorigin src="/assets/index-BNJ9k_AC.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BouBhVlV.css">
   
     <link rel="canonical" href="https://prepvisor.in/guides/lru-cache-implementation" />
     <meta property="og:type" content="article" />

@@ -15,6 +15,7 @@ import {
 } from "lucide-react"
 import { COMPANY_CONFIG, type PricingTier, type AddOnPack } from "@/config/company"
 import { decorateUrlWithUtms, trackEvent } from "../lib/analytics"
+import { usePageSeo } from "@/hooks/usePageSeo"
 
 interface PricingPageProps {
   onOpenWaitlistWithPlan?: (planId: string) => void
@@ -78,6 +79,13 @@ const PRICING_FAQS: FAQItem[] = [
 ]
 
 export const PricingPage: React.FC<PricingPageProps> = () => {
+  usePageSeo({
+    title: "PrepVisor Pricing — One-Time AI Interview Prep Passes from ₹199",
+    description: "Transparent, one-time prepaid interview passes from ₹199. Zero recurring subscriptions. Full access to DSA coding studio, infinite system design whiteboard, and voice AI mocks.",
+    canonicalUrl: "https://prepvisor.in/pricing",
+    keywords: "prepvisor pricing, tech interview prep cost, interview preparation passes, coding interview cost, system design practice pricing",
+  })
+
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
 
   const toggleFaq = (index: number) => {
@@ -85,19 +93,33 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-14 sm:py-20 text-slate-900">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-16">
+    <div className="min-h-screen bg-[#fafbfc] py-16 sm:py-24 text-slate-900 selection:bg-blue-600 selection:text-white bg-dot-grid relative">
+      {/* Ambient glow behind pricing tiers */}
+      <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[800px] h-[400px] glow-blue pointer-events-none opacity-40" />
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-20 relative z-10">
         {/* Header */}
-        <div className="mx-auto max-w-3xl text-center space-y-3">
-          <p className="text-xs font-bold uppercase tracking-widest text-blue-600">
-            Transparent & Honest Pricing
-          </p>
-          <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl text-slate-900">
+        <div className="mx-auto max-w-3xl text-center space-y-4">
+          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1 text-xs font-mono uppercase tracking-wider text-blue-600 shadow-xs font-semibold">
+            <Sparkles className="h-3.5 w-3.5 text-blue-600" />
+            <span>Transparent & Honest Pricing</span>
+          </div>
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-semibold tracking-[-0.03em] text-slate-900">
             Choose a preparation plan that fits your interview timeline.
           </h1>
-          <p className="text-sm leading-relaxed text-slate-600 max-w-2xl mx-auto">
-            Instant digital access to structured preparation roadmaps, interactive coding & whiteboard practice, and AI-powered mock evaluations. One-time payment with zero hidden charges.
+          <p className="text-sm sm:text-base leading-relaxed text-slate-600 max-w-2xl mx-auto">
+            Instant digital access to calibrated daily roadmaps, interactive coding & whiteboard practice, and AI-powered mock evaluations. One-time payment with zero hidden charges.
           </p>
+
+          <div className="pt-2 flex flex-wrap items-center justify-center gap-3 text-xs text-slate-500 font-medium">
+            <span>✓ Free forever tier available</span>
+            <span className="text-slate-300">•</span>
+            <span>✓ Instant digital access (0–15 mins)</span>
+            <span className="text-slate-300">•</span>
+            <span>✓ 7-day refund window</span>
+            <span className="text-slate-300">•</span>
+            <span>✓ Zero auto-renewals</span>
+          </div>
         </div>
 
         {/* Pricing Cards Grid */}
@@ -112,16 +134,18 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
             return (
               <article
                 key={tier.id}
-                className={`relative flex flex-col justify-between rounded-2xl border bg-white p-6 shadow-xs transition-all hover:shadow-md ${
+                className={`relative flex flex-col justify-between rounded-2xl p-6 transition-all ${
                   tier.recommended
-                    ? "border-blue-500 ring-2 ring-blue-500/20 shadow-md"
-                    : "border-slate-200"
+                    ? "border-2 border-blue-600 bg-white shadow-xl shadow-blue-500/10 ring-4 ring-blue-500/10"
+                    : "border border-slate-200 bg-white hover:border-slate-300 hover:shadow-md shadow-xs"
                 }`}
               >
                 {tier.badge && (
                   <span
-                    className={`absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-xs ${
-                      tier.recommended ? "bg-blue-600" : "bg-slate-800"
+                    className={`absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3 py-0.5 text-[10px] font-mono uppercase tracking-wider shadow-xs ${
+                      tier.recommended
+                        ? "bg-blue-600 text-white shadow-blue-600/20 shadow-md font-semibold"
+                        : "bg-slate-100 text-slate-700 border border-slate-200 font-medium"
                     }`}
                   >
                     {tier.badge}
@@ -130,8 +154,8 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
 
                 <div className="space-y-4">
                   <div>
-                    <h2 className="text-lg font-bold text-slate-900">{tier.name}</h2>
-                    <p className="mt-1 min-h-[36px] text-xs leading-relaxed text-slate-500">
+                    <h2 className="text-lg font-semibold text-slate-900">{tier.name}</h2>
+                    <p className="mt-1 min-h-[36px] text-xs leading-relaxed text-slate-600">
                       {tier.subtitle}
                     </p>
                   </div>
@@ -139,32 +163,32 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
                   {/* Price Display */}
                   <div className="border-t border-slate-100 pt-4">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-3xl font-extrabold text-slate-900">
+                      <span className="text-3xl font-semibold text-slate-900 font-mono tracking-tight">
                         {isFree ? "Free" : `₹${tier.priceINR}`}
                       </span>
                       {tier.originalPriceINR > 0 && (
-                        <span className="text-xs text-slate-400 line-through">
+                        <span className="text-xs font-mono text-slate-400 line-through">
                           ₹{tier.originalPriceINR}
                         </span>
                       )}
                       {tier.originalPriceINR > 0 && (
-                        <span className="rounded-md bg-emerald-50 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700 border border-emerald-200">
-                          Save {Math.round(((tier.originalPriceINR - tier.priceINR) / tier.originalPriceINR) * 100)}%
+                        <span className="rounded-md bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 text-[10px] font-mono text-emerald-700 font-semibold">
+                          -{Math.round(((tier.originalPriceINR - tier.priceINR) / tier.originalPriceINR) * 100)}%
                         </span>
                       )}
                     </div>
                     {!isFree && (
-                      <p className="mt-1 text-[11px] font-medium text-slate-500">
+                      <p className="mt-1 text-[11px] font-mono text-slate-500">
                         One-time · {tier.days}-day access pass
                       </p>
                     )}
-                    <p className={`${isFree ? "mt-1" : "mt-0.5"} text-[10px] text-emerald-700 font-medium`}>
-                      {isFree ? "Full feature exploration" : "(Inclusive of all applicable taxes)"}
+                    <p className={`${isFree ? "mt-1" : "mt-0.5"} text-[10px] text-emerald-700 font-mono font-medium`}>
+                      {isFree ? "Full feature exploration" : "(Inclusive of all taxes)"}
                     </p>
                   </div>
 
                   {/* Feature Inclusions */}
-                  <ul className="space-y-2 border-t border-slate-100 pt-4 text-xs text-slate-600">
+                  <ul className="space-y-2 border-t border-slate-100 pt-4 text-xs text-slate-700">
                     {tier.features.map((feature) => (
                       <li key={feature} className="flex items-start gap-2">
                         <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-600 mt-0.5" />
@@ -186,18 +210,16 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
                         is_free: isFree,
                       })
                     }
-                    className={`inline-flex w-full items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-bold transition-all ${
+                    className={`inline-flex w-full items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-semibold transition-all active:scale-[0.99] ${
                       tier.recommended
-                        ? "bg-blue-600 text-white shadow-xs hover:bg-blue-700 active:scale-[0.99]"
-                        : isFree
-                        ? "bg-slate-900 text-white hover:bg-slate-800"
-                        : "bg-blue-50 text-blue-700 hover:bg-blue-100"
+                        ? "bg-blue-600 text-white hover:bg-blue-700 shadow-xs"
+                        : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900 shadow-xs"
                     }`}
                   >
                     <span>{isFree ? "Start Free" : "Get Started"}</span>
                     <ArrowRight className="h-3.5 w-3.5" />
                   </a>
-                  <p className="mt-1.5 text-center text-[10px] text-slate-400">
+                  <p className="mt-1.5 text-center text-[10px] font-mono text-slate-500">
                     {isFree ? "Instant access upon signup" : "Instant activation upon payment"}
                   </p>
                 </div>
@@ -207,21 +229,21 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
         </div>
 
         {/* Add-On Booster Packs Section */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 pb-4">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 space-y-6 shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 pb-4">
             <div>
-              <div className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 uppercase tracking-wider">
+              <div className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-blue-600 font-semibold">
                 <Sparkles className="h-3.5 w-3.5" />
                 <span>Flexible Boosters</span>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mt-1">
+              <h3 className="text-xl font-semibold text-slate-900 mt-1">
                 Add-On Booster Packs
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-600">
                 Need more mock interviews or AI Coach sessions? Boost your active plan anytime.
               </p>
             </div>
-            <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 self-start sm:self-auto">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-mono text-slate-700 self-start sm:self-auto font-medium">
               <PlusCircle className="h-3.5 w-3.5 text-blue-600" />
               Available for active passes
             </span>
@@ -231,21 +253,21 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
             {COMPANY_CONFIG.addOns.map((pack: AddOnPack) => (
               <div
                 key={pack.id}
-                className="rounded-xl border border-slate-100 bg-slate-50/60 p-4 flex flex-col justify-between hover:border-slate-200 transition"
+                className="rounded-xl border border-slate-200 bg-slate-50/60 p-4 flex flex-col justify-between hover:border-slate-300 hover:bg-white transition"
               >
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-bold text-slate-900">{pack.name}</h4>
-                    <span className="text-sm font-extrabold text-blue-600">₹{pack.priceINR}</span>
+                    <h4 className="text-sm font-semibold text-slate-900">{pack.name}</h4>
+                    <span className="text-sm font-mono font-bold text-blue-600">₹{pack.priceINR}</span>
                   </div>
                   <p className="text-xs text-slate-600 leading-relaxed">
                     {pack.description}
                   </p>
                 </div>
-                <div className="mt-3 pt-2 border-t border-slate-200/60">
+                <div className="mt-3 pt-2 border-t border-slate-200">
                   <a
                     href={`${COMPANY_CONFIG.appUrl}/pricing`}
-                    className="text-[11px] font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                    className="text-[11px] font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1"
                   >
                     <span>View in App</span>
                     <ArrowRight className="h-3 w-3" />
@@ -257,9 +279,9 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
         </div>
 
         {/* Fulfillment & Trust Highlights (Cashfree Audit Section) */}
-        <div className="rounded-2xl border border-blue-200/80 bg-blue-50/40 p-6 sm:p-8">
-          <div className="text-center max-w-xl mx-auto mb-6">
-            <h3 className="text-base font-bold text-slate-900">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
+          <div className="text-center max-w-xl mx-auto mb-8">
+            <h3 className="text-lg font-semibold text-slate-900">
               Safe, Transparent & Instant Digital Fulfillment
             </h3>
             <p className="text-xs text-slate-600 mt-1">
@@ -268,48 +290,48 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="flex gap-3 items-start">
-              <div className="rounded-xl bg-blue-100 p-2.5 text-blue-700 shrink-0">
+            <div className="flex gap-3.5 items-start">
+              <div className="rounded-xl bg-blue-50 border border-blue-200 p-2.5 text-blue-600 shrink-0">
                 <Zap className="h-5 w-5" />
               </div>
               <div className="space-y-1">
-                <h4 className="text-xs font-bold text-slate-900">Instant Access (0–15 min)</h4>
+                <h4 className="text-xs font-semibold text-slate-900">Instant Access (0–15 min)</h4>
                 <p className="text-[11px] leading-relaxed text-slate-600">
                   Electronic delivery via immediate account activation upon successful payment.
                 </p>
               </div>
             </div>
 
-            <div className="flex gap-3 items-start">
-              <div className="rounded-xl bg-emerald-100 p-2.5 text-emerald-700 shrink-0">
+            <div className="flex gap-3.5 items-start">
+              <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-2.5 text-emerald-600 shrink-0">
                 <RotateCcw className="h-5 w-5" />
               </div>
               <div className="space-y-1">
-                <h4 className="text-xs font-bold text-slate-900">7-Day Refund Policy</h4>
+                <h4 className="text-xs font-semibold text-slate-900">7-Day Refund Policy</h4>
                 <p className="text-[11px] leading-relaxed text-slate-600">
                   Eligible for a full refund within 7 days if you face unresolved issues. See policy.
                 </p>
               </div>
             </div>
 
-            <div className="flex gap-3 items-start">
-              <div className="rounded-xl bg-purple-100 p-2.5 text-purple-700 shrink-0">
+            <div className="flex gap-3.5 items-start">
+              <div className="rounded-xl bg-purple-50 border border-purple-200 p-2.5 text-purple-600 shrink-0">
                 <ShieldCheck className="h-5 w-5" />
               </div>
               <div className="space-y-1">
-                <h4 className="text-xs font-bold text-slate-900">Secure Payments</h4>
+                <h4 className="text-xs font-semibold text-slate-900">Secure Payments</h4>
                 <p className="text-[11px] leading-relaxed text-slate-600">
                   Secured by Cashfree Payments. Supports UPI, Net Banking, and major Debit/Credit Cards.
                 </p>
               </div>
             </div>
 
-            <div className="flex gap-3 items-start">
-              <div className="rounded-xl bg-amber-100 p-2.5 text-amber-700 shrink-0">
+            <div className="flex gap-3.5 items-start">
+              <div className="rounded-xl bg-amber-50 border border-amber-200 p-2.5 text-amber-600 shrink-0">
                 <Headphones className="h-5 w-5" />
               </div>
               <div className="space-y-1">
-                <h4 className="text-xs font-bold text-slate-900">Dedicated Support</h4>
+                <h4 className="text-xs font-semibold text-slate-900">Dedicated Support</h4>
                 <p className="text-[11px] leading-relaxed text-slate-600">
                   Assistance within 24–48 hours via support@prepvisor.in or +91 7249778116.
                 </p>
@@ -319,28 +341,28 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
         </div>
 
         {/* FAQ Section */}
-        <div className="max-w-3xl mx-auto space-y-6">
-          <div className="text-center space-y-1.5">
-            <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 uppercase tracking-wider">
+        <div className="max-w-3xl mx-auto space-y-8">
+          <div className="text-center space-y-2">
+            <div className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-blue-600 font-semibold">
               <HelpCircle className="h-4 w-4" />
               <span>Got Questions?</span>
             </div>
-            <h3 className="text-2xl font-bold tracking-tight text-slate-900">
+            <h3 className="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900">
               Frequently Asked Questions
             </h3>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-600">
               Everything you need to know about our billing, access, and refund terms.
             </p>
           </div>
 
-          <div className="divide-y divide-slate-200 rounded-2xl border border-slate-200 bg-white shadow-xs overflow-hidden">
+          <div className="divide-y divide-slate-200 rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-xs">
             {PRICING_FAQS.map((faq, index) => {
               const isOpen = openFaqIndex === index
               return (
                 <div key={index} className="transition-colors">
                   <button
                     onClick={() => toggleFaq(index)}
-                    className="flex w-full items-center justify-between p-5 text-left text-xs sm:text-sm font-semibold text-slate-900 hover:bg-slate-50/70 gap-4"
+                    className="flex w-full items-center justify-between p-5 text-left text-xs sm:text-sm font-medium text-slate-900 hover:bg-slate-50/80 gap-4"
                   >
                     <span>{faq.question}</span>
                     {isOpen ? (
@@ -350,7 +372,7 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
                     )}
                   </button>
                   {isOpen && (
-                    <div className="px-5 pb-5 text-xs sm:text-sm text-slate-600 leading-relaxed bg-slate-50/40">
+                    <div className="px-5 pb-5 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-3 bg-slate-50/40">
                       {faq.answer}
                     </div>
                   )}
@@ -362,7 +384,7 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
 
         {/* Legal & Statutory Note */}
         <div className="text-center border-t border-slate-200 pt-8 max-w-2xl mx-auto space-y-1.5">
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-500 font-mono">
             All prices are listed in Indian Rupees (INR) and are inclusive of all applicable statutory taxes.
           </p>
           <p className="text-[11px] text-slate-400">

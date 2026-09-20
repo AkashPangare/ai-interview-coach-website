@@ -12,6 +12,11 @@ import { TermsPage } from "@/pages/TermsPage"
 import { AboutPage } from "@/pages/AboutPage"
 import { GuidesHubPage } from "@/pages/GuidesHubPage"
 import { GuideDetailPage } from "@/pages/GuideDetailPage"
+import { SystemDesignLandingPage } from "@/pages/SystemDesignLandingPage"
+import { MockInterviewLandingPage } from "@/pages/MockInterviewLandingPage"
+import { CodingPracticeLandingPage } from "@/pages/CodingPracticeLandingPage"
+import { RoadmapPage } from "@/pages/RoadmapPage"
+import { NotFoundPage } from "@/pages/NotFoundPage"
 
 // Scroll to top helper
 function ScrollToTop() {
@@ -38,7 +43,7 @@ export function App() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900">
+    <div className="flex min-h-screen flex-col bg-[#fafbfc] text-slate-900 selection:bg-blue-600 selection:text-white">
       <ScrollToTop />
       <Navbar
         onOpenWaitlist={handleOpenWaitlist}
@@ -70,16 +75,23 @@ export function App() {
             path="/about"
             element={<AboutPage onOpenWaitlist={handleOpenWaitlist} />}
           />
-          <Route path="/guides" element={<GuidesHubPage />} />
-          <Route path="/guides/:slug" element={<GuideDetailPage />} />
-          {/* Catch-all fallback */}
+          <Route path="/system-design" element={<SystemDesignLandingPage />} />
+          <Route path="/mock-interview" element={<MockInterviewLandingPage />} />
+          <Route path="/coding-practice" element={<CodingPracticeLandingPage />} />
           <Route
-            path="*"
+            path="/roadmap"
             element={
-              <HomePage
+              <RoadmapPage
                 onOpenWaitlist={handleOpenWaitlist}
               />
             }
+          />
+          <Route path="/guides" element={<GuidesHubPage />} />
+          <Route path="/guides/:slug" element={<GuideDetailPage />} />
+          {/* Catch-all 404 fallback */}
+          <Route
+            path="*"
+            element={<NotFoundPage />}
           />
         </Routes>
       </main>

@@ -307,7 +307,7 @@ WHERE expires_at IS NOT NULL;
       "java multithreading interview questions",
       "threadpool executor interview questions",
       "volatile vs synchronized java",
-      "virtual threads java 21 interview",
+      "virtual threads java interview",
       "concurrenthashmap internal working",
     ],
     category: "Java",
@@ -319,7 +319,7 @@ WHERE expires_at IS NOT NULL;
       role: "Ex-Staff Engineer & Java Platform Specialist",
     },
     summary:
-      "Java concurrency is the #1 filter for intermediate and senior engineering candidates. This curated guide covers the Java Memory Model, happens-before consistency, synchronization internals, concurrent collections, and modern Virtual Threads in Java 21+ with verified code patterns.",
+      "Java concurrency is the #1 filter for intermediate and senior engineering candidates. This curated guide covers the Java Memory Model, happens-before consistency, synchronization internals, concurrent collections, and modern Virtual Threads in Java with verified code patterns.",
     sections: [
       {
         id: "jvm-memory-model",
@@ -452,7 +452,7 @@ public class BoundedBuffer<T> {
       },
       {
         id: "virtual-threads-java21",
-        title: "5. Virtual Threads (Project Loom) in Java 21+",
+        title: "5. Virtual Threads (Project Loom) in Java",
         subtitle: "How 1 Million lightweight user-mode threads change concurrency",
         content: `In 2026, every senior Java interview will ask you about Virtual Threads.
 
@@ -467,10 +467,10 @@ public class BoundedBuffer<T> {
 
 ### Interview Warning: The Pinning Trap!
 - A virtual thread becomes **pinned** to its carrier thread if it blocks inside a \`synchronized\` block or calls a native JNI method.
-- **Rule for Java 21+**: Replace \`synchronized\` with \`ReentrantLock\` in I/O-intensive codebases to avoid pinning carrier threads!`,
+- **Rule for Java**: Replace \`synchronized\` with \`ReentrantLock\` in I/O-intensive codebases to avoid pinning carrier threads!`,
         codeBlock: {
           language: "java",
-          caption: "Launching Virtual Threads using Java 21 Structured Concurrency",
+          caption: "Launching Virtual Threads using Java Structured Concurrency",
           code: `try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
     IntStream.range(0, 10_000).forEach(i -> {
         executor.submit(() -> {
@@ -494,7 +494,7 @@ public class BoundedBuffer<T> {
           "In a concurrent environment, if map.get(key) returned null, you could not distinguish whether the key was absent or the key was mapped to null without calling map.containsKey(key). In multithreaded systems, the key could be inserted or removed between the two calls, creating a critical race condition.",
       },
       {
-        question: "What is thread pinning in Java 21 Virtual Threads?",
+        question: "What is thread pinning in Java Virtual Threads?",
         answer:
           "Thread pinning occurs when a virtual thread enters a synchronized block or calls a native method and then attempts blocking I/O. The JVM cannot unmount the virtual thread from its underlying OS carrier thread, blocking the carrier thread and limiting throughput. Use ReentrantLock instead of synchronized in virtual-thread applications.",
       },
@@ -825,7 +825,7 @@ What happens if the Redis cluster crashes or network partitions occur?
       "spring boot interview questions for 5 years experience",
       "transactional rollback spring boot pitfalls",
       "saga pattern vs 2pc microservices",
-      "spring boot 3 virtual threads java 21",
+      "spring boot 3 virtual threads java",
       "resilience4j circuit breaker interview",
     ],
     category: "Backend Architecture",
@@ -837,7 +837,7 @@ What happens if the Redis cluster crashes or network partitions occur?
       role: "Staff Engineers & Technical Interview Panelists",
     },
     summary:
-      "For senior engineers with 3 to 6 years of experience, technical interviewers move beyond basic annotations to evaluate your mastery of Spring Boot 3 internals, proxy-based @Transactional traps, distributed transaction patterns (Saga vs 2PC), Resilience4j fault tolerance, and Java 21 Virtual Threads concurrency.",
+      "For senior engineers with 3 to 6 years of experience, technical interviewers move beyond basic annotations to evaluate your mastery of Spring Boot 3 internals, proxy-based @Transactional traps, distributed transaction patterns (Saga vs 2PC), Resilience4j fault tolerance, and Java Virtual Threads concurrency.",
     sections: [
       {
         id: "spring-internals",
@@ -1015,7 +1015,7 @@ In Spring Boot 2, distributed tracing was handled by Spring Cloud Sleuth. In Spr
         architectureCallout: {
           title: "Microservices Architecture Production Checklist",
           points: [
-            { label: "Framework Baseline", value: "Spring Boot 3.2+ on Java 21 LTS" },
+            { label: "Framework Baseline", value: "Spring Boot 3.2+ on Java" },
             { label: "Distributed Consistency", value: "Saga Pattern + Transactional Outbox (CDC)" },
             { label: "Fault Tolerance", value: "Resilience4j CircuitBreaker & Retry" },
             { label: "Distributed Tracing", value: "Micrometer Tracing + W3C TraceContext (OTel)" },
@@ -1027,10 +1027,10 @@ In Spring Boot 2, distributed tracing was handled by Spring Cloud Sleuth. In Spr
         ],
       },
       {
-        id: "java21-spring3",
-        title: "6. Java 21 & Spring Boot 3 Modern Enhancements",
+        id: "java-spring3",
+        title: "6. Java & Spring Boot 3 Modern Enhancements",
         subtitle: "Virtual Threads, RestClient, and GraalVM Native Images",
-        content: `Interviewers for senior roles will assess whether you have kept your skills up-to-date with Java 21 LTS and Spring Boot 3.2+:
+        content: `Interviewers for senior roles will assess whether you have kept your skills up-to-date with Java and Spring Boot 3.2+:
 
 ### 1. Virtual Threads (Project Loom)
 In classic Spring Boot MVC, each HTTP request ties up one operating system (OS) platform thread. Under heavy I/O (waiting for database queries or REST APIs), 200 concurrent requests exhaust Tomcat's thread pool.

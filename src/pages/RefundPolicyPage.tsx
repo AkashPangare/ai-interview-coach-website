@@ -1,10 +1,17 @@
 import React from "react"
 import { RotateCcw } from "lucide-react"
 import { COMPANY_CONFIG } from "@/config/company"
+import { usePageSeo } from "@/hooks/usePageSeo"
 
 export const RefundPolicyPage: React.FC = () => {
+  usePageSeo({
+    title: "Cancellation & Refund Policy | PrepVisor",
+    description: "Official Cancellation and Refund Policy for PrepVisor digital preparation passes. Details on 7-day refund eligibility, non-refundable cases, and payment reversal timelines.",
+    canonicalUrl: "https://prepvisor.in/refund-policy",
+  })
+
   return (
-    <div className="py-14 sm:py-20 bg-white min-h-screen text-slate-700">
+    <div className="py-14 sm:py-20 bg-[#fafbfc] min-h-screen text-slate-800 bg-dot-grid-subtle">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 space-y-8">
         {/* Header */}
         <div className="space-y-3 border-b border-slate-200 pb-6">
@@ -23,44 +30,41 @@ export const RefundPolicyPage: React.FC = () => {
         {/* Highlight Summary */}
         <div className="rounded-xl border border-blue-200 bg-blue-50/70 p-4 text-xs sm:text-sm text-slate-700 space-y-1">
           <p className="font-bold text-slate-900">Summary at a Glance</p>
-          <p className="leading-relaxed">
-            You can cancel recurring subscriptions at any time. First-time purchases carry a <strong>7-day refund window</strong>. Approved refunds are returned to your original payment method within <strong>5 to 7 business days</strong>.
+          <p className="leading-relaxed text-slate-600">
+            PrepVisor paid plans are 100% prepaid, one-time passes with zero recurring auto-debits. Purchases carry a <strong className="text-slate-900">7-day refund window</strong>. Approved refunds are returned to your original payment method within <strong className="text-slate-900">5 to 7 business days</strong>.
           </p>
         </div>
 
         {/* Core Policy Points */}
         <div className="space-y-6 text-xs sm:text-sm leading-relaxed text-slate-600">
           <section className="space-y-2">
-            <h2 className="text-base font-bold text-slate-900">1. Subscription Cancellation</h2>
+            <h2 className="text-base font-bold text-slate-900">1. One-Time Prepaid Passes (Zero Auto-Renewals)</h2>
             <p>
-              You can cancel your subscription auto-renewal at any time through your account settings or by emailing{" "}
-              <a href={`mailto:${COMPANY_CONFIG.contact.email}`} className="text-blue-600 underline">
-                {COMPANY_CONFIG.contact.email}
-              </a>.
+              All PrepVisor paid plans are one-time prepaid digital access passes for the selected duration (7, 14, 30, or 90 days). There are no automatic renewals, recurring debits, or surprise charges.
             </p>
             <p>
-              Once canceled, no further recurring charges will be made. You will retain full access to your plan until the end of your current paid billing period.
+              Your pass expires automatically at the end of its prepaid period unless you explicitly purchase another pass. If you wish to discontinue using the platform, no cancellation action is required since you will never be billed automatically.
             </p>
           </section>
 
           <section className="space-y-2">
             <h2 className="text-base font-bold text-slate-900">2. Refund Eligibility (7-Day Window)</h2>
             <p>
-              First-time subscriptions and preparation passes are eligible for a full refund within <strong>{COMPANY_CONFIG.compliance.refundWindowDays} calendar days</strong> of purchase if:
+              Preparation passes are eligible for a full refund within <strong className="text-slate-900">{COMPANY_CONFIG.compliance.refundWindowDays} calendar days</strong> of purchase if:
             </p>
-            <ul className="list-disc list-inside space-y-1.5 pl-1">
-              <li>You encounter technical issues preventing platform access that we cannot resolve.</li>
+            <ul className="list-disc list-inside space-y-1.5 pl-1 text-slate-600">
+              <li>You encounter technical issues preventing platform access that our engineering team cannot resolve.</li>
               <li>You experienced an accidental duplicate payment.</li>
               <li>You are dissatisfied under fair initial evaluation (fewer than 2 mock interviews conducted).</li>
             </ul>
             <p className="text-slate-500 text-xs">
-              *Subsequent recurring renewal charges are non-refundable once processed. Please cancel prior to your renewal date if you do not wish to continue.
+              *Because PrepVisor passes do not auto-renew, you will never be charged for subsequent periods without your explicit action.
             </p>
           </section>
 
           <section className="space-y-2">
             <h2 className="text-base font-bold text-slate-900">3. Non-Refundable Cases</h2>
-            <ul className="list-disc list-inside space-y-1.5 pl-1">
+            <ul className="list-disc list-inside space-y-1.5 pl-1 text-slate-600">
               <li>Requests submitted after 7 days from purchase.</li>
               <li>Accounts with substantial usage (e.g., extensive mock interviews completed or bulk downloads).</li>
               <li>External job interview results (PrepVisor is an educational practice tool and does not guarantee job placement).</li>
@@ -71,14 +75,14 @@ export const RefundPolicyPage: React.FC = () => {
           <section className="space-y-2">
             <h2 className="text-base font-bold text-slate-900">4. Processing Time & Mode</h2>
             <p>
-              Approved refunds are processed <strong>exclusively back to the original payment method</strong> (Bank account, Credit/Debit Card, or UPI) within <strong>{COMPANY_CONFIG.compliance.refundProcessingDays}</strong>.
+              Approved refunds are processed <strong className="text-slate-900">exclusively back to the original payment method</strong> (Bank account, Credit/Debit Card, or UPI) within <strong className="text-slate-900">{COMPANY_CONFIG.compliance.refundProcessingDays}</strong>.
             </p>
           </section>
 
           <section className="space-y-2">
             <h2 className="text-base font-bold text-slate-900">5. How to Request a Refund</h2>
             <p>
-              Send an email to <a href={`mailto:${COMPANY_CONFIG.contact.email}`} className="text-blue-600 underline font-medium">{COMPANY_CONFIG.contact.email}</a> with your registered email, payment/order ID, and reason for the refund. We review and respond within {COMPANY_CONFIG.contact.tat.toLowerCase()}.
+              Send an email to <a href={`mailto:${COMPANY_CONFIG.contact.email}`} className="text-blue-600 hover:underline font-medium">{COMPANY_CONFIG.contact.email}</a> with your registered email, payment/order ID, and reason for the refund. We review and respond within {COMPANY_CONFIG.contact.tat.toLowerCase()}.
             </p>
           </section>
 
@@ -87,13 +91,13 @@ export const RefundPolicyPage: React.FC = () => {
             <p>
               Pursuant to the Consumer Protection (E-Commerce) Rules, 2020:
             </p>
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-1.5 text-xs text-slate-700">
-              <p><strong>Grievance Officer:</strong> {COMPANY_CONFIG.compliance.grievanceOfficer.name}</p>
-              <p><strong>Entity:</strong> {COMPANY_CONFIG.legalEntity}</p>
-              <p><strong>Address:</strong> {COMPANY_CONFIG.compliance.grievanceOfficer.address}</p>
-              <p><strong>Email:</strong> <a href={`mailto:${COMPANY_CONFIG.compliance.grievanceOfficer.email}`} className="text-blue-600 underline">{COMPANY_CONFIG.compliance.grievanceOfficer.email}</a></p>
-              <p><strong>Phone:</strong> {COMPANY_CONFIG.compliance.grievanceOfficer.phone}</p>
-              <p><strong>Jurisdiction:</strong> {COMPANY_CONFIG.compliance.jurisdiction}</p>
+            <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-1.5 text-xs text-slate-700 shadow-xs">
+              <p><strong className="text-slate-900">Grievance Officer:</strong> {COMPANY_CONFIG.compliance.grievanceOfficer.name}</p>
+              <p><strong className="text-slate-900">Entity:</strong> {COMPANY_CONFIG.legalEntity}</p>
+              <p><strong className="text-slate-900">Address:</strong> {COMPANY_CONFIG.compliance.grievanceOfficer.address}</p>
+              <p><strong className="text-slate-900">Email:</strong> <a href={`mailto:${COMPANY_CONFIG.compliance.grievanceOfficer.email}`} className="text-blue-600 hover:underline">{COMPANY_CONFIG.compliance.grievanceOfficer.email}</a></p>
+              <p><strong className="text-slate-900">Phone:</strong> {COMPANY_CONFIG.compliance.grievanceOfficer.phone}</p>
+              <p><strong className="text-slate-900">Jurisdiction:</strong> {COMPANY_CONFIG.compliance.jurisdiction}</p>
             </div>
           </section>
         </div>
