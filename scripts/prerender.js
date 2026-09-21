@@ -410,9 +410,10 @@ function generateHtml(guide) {
   `;
   pageHtml = pageHtml.replace("</head>", `${headAdditions}</head>`);
 
-  // Inject static fallback markup into <div id="root">
+  // Inject static fallback markup into noscript so JS users don't see flash of unstyled content
   const staticContent = `
-    <div id="root">
+    <div id="root"></div>
+    <noscript>
       <article class="p-8 max-w-4xl mx-auto font-sans">
         <header class="mb-8">
           <p class="text-sm font-bold text-blue-600 uppercase tracking-wider">${guide.category} · ${guide.readingTimeMinutes} min read</p>
@@ -431,7 +432,7 @@ function generateHtml(guide) {
           <a href="https://app.prepvisor.in/register?utm_source=organic_seo&utm_medium=guide&utm_campaign=${guide.slug}" class="inline-block mt-4 px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl">Launch Practice Studio</a>
         </section>
       </article>
-    </div>
+    </noscript>
   `;
   pageHtml = pageHtml.replace(/<div id="root"><\/div>/, staticContent);
 
@@ -462,7 +463,8 @@ function generateHubHtml() {
   pageHtml = pageHtml.replace("</head>", `${headAdditions}</head>`);
 
   const staticContent = `
-    <div id="root">
+    <div id="root"></div>
+    <noscript>
       <main class="p-8 max-w-4xl mx-auto font-sans">
         <h1 class="text-4xl font-black text-slate-900">Technical Interview Blueprints</h1>
         <p class="text-slate-600 mt-3">Curated engineering guides on complex system design architectures, JVM internals, and coding patterns.</p>
@@ -478,7 +480,7 @@ function generateHubHtml() {
           ).join("")}
         </div>
       </main>
-    </div>
+    </noscript>
   `;
   pageHtml = pageHtml.replace(/<div id="root"><\/div>/, staticContent);
 
@@ -512,7 +514,8 @@ function generateSystemDesignHtml() {
   pageHtml = pageHtml.replace("</head>", `${headAdditions}</head>`);
 
   const staticContent = `
-    <div id="root">
+    <div id="root"></div>
+    <noscript>
       <main class="p-8 max-w-5xl mx-auto font-sans">
         <header class="mb-10 text-center">
           <p class="text-xs font-bold text-sky-600 uppercase tracking-widest">Interactive System Design Simulator</p>
@@ -541,7 +544,7 @@ function generateSystemDesignHtml() {
           <a href="https://app.prepvisor.in/register?source=system_design_ssg" class="inline-block mt-4 px-8 py-3 bg-sky-600 text-white font-bold rounded-xl shadow-sm">Launch Free System Design Studio</a>
         </div>
       </main>
-    </div>
+    </noscript>
   `;
   pageHtml = pageHtml.replace(/<div id="root"><\/div>/, staticContent);
   return pageHtml;
@@ -574,7 +577,8 @@ function generateMockInterviewHtml() {
   pageHtml = pageHtml.replace("</head>", `${headAdditions}</head>`);
 
   const staticContent = `
-    <div id="root">
+    <div id="root"></div>
+    <noscript>
       <main class="p-8 max-w-5xl mx-auto font-sans">
         <header class="mb-10 text-center">
           <p class="text-xs font-bold text-purple-600 uppercase tracking-widest">AI Voice Mock Interviewer</p>
@@ -603,7 +607,7 @@ function generateMockInterviewHtml() {
           <a href="https://app.prepvisor.in/register?source=mock_interview_ssg" class="inline-block mt-4 px-8 py-3 bg-purple-600 text-white font-bold rounded-xl shadow-sm">Start Free Voice Mock Session</a>
         </div>
       </main>
-    </div>
+    </noscript>
   `;
   pageHtml = pageHtml.replace(/<div id="root"><\/div>/, staticContent);
   return pageHtml;
@@ -636,7 +640,8 @@ function generateCodingPracticeHtml() {
   pageHtml = pageHtml.replace("</head>", `${headAdditions}</head>`);
 
   const staticContent = `
-    <div id="root">
+    <div id="root"></div>
+    <noscript>
       <main class="p-8 max-w-5xl mx-auto font-sans">
         <header class="mb-10 text-center">
           <p class="text-xs font-bold text-emerald-600 uppercase tracking-widest">DSA Coding Studio</p>
@@ -665,7 +670,7 @@ function generateCodingPracticeHtml() {
           <a href="https://app.prepvisor.in/register?source=coding_practice_ssg" class="inline-block mt-4 px-8 py-3 bg-emerald-600 text-white font-bold rounded-xl shadow-sm">Launch Free Coding Studio</a>
         </div>
       </main>
-    </div>
+    </noscript>
   `;
   pageHtml = pageHtml.replace(/<div id="root"><\/div>/, staticContent);
   return pageHtml;
@@ -675,13 +680,14 @@ function generateHomeHtml() {
   let pageHtml = template;
 
   const staticContent = `
-    <div id="root">
+    <div id="root"></div>
+    <noscript>
       <main class="p-8 max-w-6xl mx-auto font-sans">
         <header class="mb-12 text-center">
-          <p class="text-xs font-bold text-blue-600 uppercase tracking-widest">Time-Calibrated Prep • Coding, System Design & Behavioral AI</p>
-          <h1 class="text-5xl font-black text-slate-900 mt-3 leading-tight">Crush Your Tech Interviews with Dynamic AI Pacing</h1>
+          <p class="text-xs font-bold text-blue-600 uppercase tracking-widest">The Technical Interview Workbench</p>
+          <h1 class="text-5xl font-black text-slate-900 mt-3 leading-tight">Engineered for the final round.</h1>
           <p class="text-xl text-slate-600 mt-4 leading-relaxed max-w-3xl mx-auto">
-            Stop grinding LeetCode blind without a plan. Set your target timeline (7 to 60+ days) and daily hours (1.0 to 3.0+ hrs/day). PrepVisor dynamically calibrates your day-by-day curriculum, auto-rebalances your schedule with 1 click, and trains you with an interactive DSA coding arena (Java default + live terminal console), an infinite System Design canvas with scale estimation, and STAR voice coaching.
+            PrepVisor organizes your preparation around your target role and interview date. Practice DSA with a live terminal stdout console, design distributed systems with real-time scale math, and master behavioral rounds with voice AI.
           </p>
           <div class="mt-8 flex justify-center gap-4">
             <a href="https://app.prepvisor.in/register?source=home_ssg" class="px-8 py-3.5 bg-blue-600 text-white font-bold rounded-xl shadow-sm">Get Your Free Interview Roadmap →</a>
@@ -729,7 +735,7 @@ function generateHomeHtml() {
           </ul>
         </section>
       </main>
-    </div>
+    </noscript>
   `;
   pageHtml = pageHtml.replace(/<div id="root"><\/div>/, staticContent);
   return pageHtml;
@@ -749,7 +755,8 @@ function generatePricingHtml() {
   `;
   pageHtml = pageHtml.replace("</head>", `${headAdditions}</head>`);
   const staticContent = `
-    <div id="root">
+    <div id="root"></div>
+    <noscript>
       <main class="p-8 max-w-5xl mx-auto font-sans">
         <header class="mb-10 text-center">
           <p class="text-xs font-bold text-blue-600 uppercase tracking-widest">Transparent & Honest Pricing</p>
@@ -776,7 +783,7 @@ function generatePricingHtml() {
           </div>
         </div>
       </main>
-    </div>
+    </noscript>
   `;
   pageHtml = pageHtml.replace(/<div id="root"><\/div>/, staticContent);
   return pageHtml;
@@ -796,7 +803,8 @@ function generateRoadmapHtml() {
   `;
   pageHtml = pageHtml.replace("</head>", `${headAdditions}</head>`);
   const staticContent = `
-    <div id="root">
+    <div id="root"></div>
+    <noscript>
       <main class="p-8 max-w-5xl mx-auto font-sans">
         <header class="mb-10 text-center">
           <p class="text-xs font-bold text-blue-600 uppercase tracking-widest">Dynamic Daily Pacing Engine</p>
@@ -816,7 +824,7 @@ function generateRoadmapHtml() {
           </div>
         </section>
       </main>
-    </div>
+    </noscript>
   `;
   pageHtml = pageHtml.replace(/<div id="root"><\/div>/, staticContent);
   return pageHtml;
@@ -834,14 +842,15 @@ function generateAboutHtml() {
   `;
   pageHtml = pageHtml.replace("</head>", `${headAdditions}</head>`);
   const staticContent = `
-    <div id="root">
+    <div id="root"></div>
+    <noscript>
       <main class="p-8 max-w-4xl mx-auto font-sans">
         <h1 class="text-4xl font-black text-slate-900">About PrepVisor</h1>
         <p class="text-slate-600 mt-4 leading-relaxed">
           PrepVisor was founded in Bengaluru, India by Divya Rajkumar Almelkar to solve fragmented and time-blind tech interview preparation. We combine time-aware dynamic pacing, live terminal execution, distributed system design with capacity math, and voice AI behavioral mock interviews into one cohesive platform.
         </p>
       </main>
-    </div>
+    </noscript>
   `;
   pageHtml = pageHtml.replace(/<div id="root"><\/div>/, staticContent);
   return pageHtml;
@@ -855,13 +864,14 @@ function generateContactHtml() {
   const headAdditions = `<link rel="canonical" href="${canonicalUrl}" />`;
   pageHtml = pageHtml.replace("</head>", `${headAdditions}</head>`);
   const staticContent = `
-    <div id="root">
+    <div id="root"></div>
+    <noscript>
       <main class="p-8 max-w-4xl mx-auto font-sans">
         <h1 class="text-4xl font-black text-slate-900">Contact PrepVisor</h1>
         <p class="text-slate-600 mt-2">Email: support@prepvisor.in | Phone: +91 7249778116</p>
         <p class="text-slate-600 mt-1">Address: Flat 201, Aurum Residencies, Maruthi Nagar, BTM Layout Stage 1, Bengaluru, Karnataka 560068, India</p>
       </main>
-    </div>
+    </noscript>
   `;
   pageHtml = pageHtml.replace(/<div id="root"><\/div>/, staticContent);
   return pageHtml;
@@ -875,12 +885,13 @@ function generateTermsHtml() {
   const headAdditions = `<link rel="canonical" href="${canonicalUrl}" />`;
   pageHtml = pageHtml.replace("</head>", `${headAdditions}</head>`);
   const staticContent = `
-    <div id="root">
+    <div id="root"></div>
+    <noscript>
       <main class="p-8 max-w-4xl mx-auto font-sans">
         <h1 class="text-4xl font-black text-slate-900">Terms of Service</h1>
         <p class="text-slate-600 mt-4">Governed by the Laws of India. Operated by PrepVisor (Divya Rajkumar Almelkar, Individual).</p>
       </main>
-    </div>
+    </noscript>
   `;
   pageHtml = pageHtml.replace(/<div id="root"><\/div>/, staticContent);
   return pageHtml;
@@ -894,12 +905,13 @@ function generatePrivacyHtml() {
   const headAdditions = `<link rel="canonical" href="${canonicalUrl}" />`;
   pageHtml = pageHtml.replace("</head>", `${headAdditions}</head>`);
   const staticContent = `
-    <div id="root">
+    <div id="root"></div>
+    <noscript>
       <main class="p-8 max-w-4xl mx-auto font-sans">
         <h1 class="text-4xl font-black text-slate-900">Privacy Policy</h1>
         <p class="text-slate-600 mt-4">Compliant with the Digital Personal Data Protection Act (DPDP Act) 2023.</p>
       </main>
-    </div>
+    </noscript>
   `;
   pageHtml = pageHtml.replace(/<div id="root"><\/div>/, staticContent);
   return pageHtml;
@@ -913,12 +925,13 @@ function generateRefundHtml() {
   const headAdditions = `<link rel="canonical" href="${canonicalUrl}" />`;
   pageHtml = pageHtml.replace("</head>", `${headAdditions}</head>`);
   const staticContent = `
-    <div id="root">
+    <div id="root"></div>
+    <noscript>
       <main class="p-8 max-w-4xl mx-auto font-sans">
         <h1 class="text-4xl font-black text-slate-900">Cancellation & Refund Policy</h1>
         <p class="text-slate-600 mt-4">7-day refund window for first-time pass purchases under fair evaluation.</p>
       </main>
-    </div>
+    </noscript>
   `;
   pageHtml = pageHtml.replace(/<div id="root"><\/div>/, staticContent);
   return pageHtml;
@@ -929,14 +942,15 @@ function generateNotFoundHtml() {
   pageHtml = pageHtml.replace(/<title>.*?<\/title>/, "<title>404 - Page Not Found | PrepVisor</title>");
   pageHtml = pageHtml.replace(/<meta\s+name="description"\s+content=".*?"\s*\/?>/, '<meta name="description" content="The page you requested could not be found on PrepVisor." />');
   const staticContent = `
-    <div id="root">
+    <div id="root"></div>
+    <noscript>
       <main class="p-8 max-w-4xl mx-auto text-center font-sans">
         <h1 class="text-5xl font-black text-slate-900">404</h1>
         <p class="text-xl text-slate-600 mt-4">Page Not Found</p>
         <p class="text-sm text-slate-500 mt-2">The page you were looking for doesn't exist or was moved.</p>
         <a href="/" class="inline-block mt-6 px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl">Return to Homepage</a>
       </main>
-    </div>
+    </noscript>
   `;
   pageHtml = pageHtml.replace(/<div id="root"><\/div>/, staticContent);
   return pageHtml;
