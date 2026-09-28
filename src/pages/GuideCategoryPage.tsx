@@ -1,10 +1,11 @@
 import React from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link, useLocation, useParams } from "react-router-dom"
 import { ArrowRight, ChevronRight } from "lucide-react"
 import { GUIDE_INDEX } from "@/data/guideIndex"
-import { GUIDE_CATEGORY_BY_ID, type GuideCategoryId } from "@/config/guideCategories"
+import { GUIDE_CATEGORY_BY_ID } from "@/config/guideCategories"
 import { SEO_ROUTES } from "@/config/seo"
 import { usePageSeo } from "@/hooks/usePageSeo"
+import { resolveGuideCategoryId } from "@/lib/guideRouting"
 
 const seoKeyByCategory = {
   "system-design": "guideSystemDesign",
@@ -14,9 +15,11 @@ const seoKeyByCategory = {
 
 export const GuideCategoryPage: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>()
-  const category = categoryId ? GUIDE_CATEGORY_BY_ID[categoryId as GuideCategoryId] : undefined
-  const seoKey = categoryId && categoryId in seoKeyByCategory
-    ? seoKeyByCategory[categoryId as keyof typeof seoKeyByCategory]
+  const { pathname } = useLocation()
+  const resolvedCategoryId = resolveGuideCategoryId(pathname, categoryId)
+  const category = resolvedCategoryId ? GUIDE_CATEGORY_BY_ID[resolvedCategoryId] : undefined
+  const seoKey = resolvedCategoryId && resolvedCategoryId in seoKeyByCategory
+    ? seoKeyByCategory[resolvedCategoryId as keyof typeof seoKeyByCategory]
     : undefined
   usePageSeo(seoKey ? SEO_ROUTES[seoKey] : SEO_ROUTES.guides)
 
