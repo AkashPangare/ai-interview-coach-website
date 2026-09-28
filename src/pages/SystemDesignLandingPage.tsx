@@ -17,14 +17,12 @@ import {
 import { COMPANY_CONFIG } from "@/config/company"
 import { decorateUrlWithUtms, trackEvent } from "../lib/analytics"
 import { usePageSeo } from "@/hooks/usePageSeo"
+import { SEO_ROUTES } from "@/config/seo"
+import { PRODUCT_PAGE_INTROS } from "@/config/seo"
+import { RelatedGuides } from "@/components/RelatedGuides"
 
 export const SystemDesignLandingPage: React.FC = () => {
-  usePageSeo({
-    title: "System Design Interview Simulator & Cloud Architecture Canvas | PrepVisor",
-    description: "Master System Design interviews with an interactive cloud architecture canvas. Real-time back-of-the-envelope capacity estimation, QPS, storage math, and automated SPOF detection.",
-    canonicalUrl: "https://prepvisor.in/system-design",
-    keywords: "system design interview practice free, how to design twitter interview, distributed systems whiteboard, system design simulator, scale math capacity estimation",
-  })
+  usePageSeo(SEO_ROUTES.systemDesign)
 
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0)
 
@@ -71,14 +69,11 @@ export const SystemDesignLandingPage: React.FC = () => {
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-[-0.03em] text-slate-900 leading-[1.12]">
-            Design distributed architectures. <br className="hidden sm:inline" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600">
-              Validate scale math in real time.
-            </span>
+            Practice System Design Interviews on an Interactive Architecture Canvas
           </h1>
 
           <p className="mx-auto max-w-3xl text-sm sm:text-base leading-relaxed text-slate-600">
-            Stop drawing static boxes on generic paint apps. Design high-throughput distributed systems on an infinite cloud architecture canvas. Connect microservices, databases, and caches with real-world protocols—and validate your architecture with real-time back-of-the-envelope capacity calculations and AI bottleneck analysis.
+            {PRODUCT_PAGE_INTROS.systemDesign}
           </p>
 
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row items-center pt-2">
@@ -425,6 +420,8 @@ export const SystemDesignLandingPage: React.FC = () => {
           </div>
         </div>
       </section>
+
+      <RelatedGuides slugs={["system-design-tinyurl", "system-design-rate-limiter", "system-design-notification-service"]} heading="Explore system design interview guides" />
 
       {/* 6. BOTTOM CTA */}
       <section className="py-20 sm:py-28 text-center border-t border-slate-200 bg-gradient-to-b from-[#fafbfc] to-slate-100/80 relative overflow-hidden">

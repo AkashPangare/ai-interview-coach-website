@@ -17,14 +17,12 @@ import {
 import { COMPANY_CONFIG } from "@/config/company"
 import { decorateUrlWithUtms, trackEvent } from "../lib/analytics"
 import { usePageSeo } from "@/hooks/usePageSeo"
+import { SEO_ROUTES } from "@/config/seo"
+import { PRODUCT_PAGE_INTROS } from "@/config/seo"
+import { RelatedGuides } from "@/components/RelatedGuides"
 
 export const CodingPracticeLandingPage: React.FC = () => {
-  usePageSeo({
-    title: "DSA Coding Arena with Live Terminal Stdout & Big-O Feedback | PrepVisor",
-    description: "Practice DSA coding problems with Java, Python, and C++. Features a live Console Output terminal capturing print statements, automated test runner, 3-tier progressive hints, and Big-O algorithmic complexity analysis.",
-    canonicalUrl: "https://prepvisor.in/coding-practice",
-    keywords: "java dsa practice online, coding interview practice java, live code execution browser terminal, leetcode alternative java, big-o complexity analyzer",
-  })
+  usePageSeo(SEO_ROUTES.codingPractice)
 
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0)
 
@@ -71,14 +69,11 @@ export const CodingPracticeLandingPage: React.FC = () => {
           </div>
 
           <h1 className="mx-auto max-w-4xl text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-[-0.03em] text-slate-900 leading-[1.12]">
-            Solve DSA in Java, Python & C++. <br className="hidden sm:inline" />
-            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 bg-clip-text text-transparent">
-              Debug with live terminal stdout.
-            </span>
+            Practice DSA Coding Interview Problems Online
           </h1>
 
           <p className="mx-auto max-w-3xl text-sm sm:text-base leading-relaxed text-slate-600">
-            Stop debugging algorithms blindly. PrepVisor provides a full VS Code-grade Cloud IDE with <strong>Java as primary default</strong> (alongside Python, C++, and TypeScript), a live Console Output terminal that prints your stdout statements in real time, custom test runners, and instant Big-O algorithmic complexity analysis.
+            {PRODUCT_PAGE_INTROS.codingPractice}
           </p>
 
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row items-center pt-2">
@@ -198,7 +193,7 @@ export const CodingPracticeLandingPage: React.FC = () => {
                 <div className="rounded-xl border border-emerald-200 bg-emerald-50/80 p-4 text-xs text-emerald-950">
                   <p className="font-semibold text-slate-900">Big-O Complexity Verdict:</p>
                   <p className="text-[11px] text-slate-600 mt-1 leading-relaxed">
-                    Single-pass hash table lookup guarantees strict <strong>O(N) linear time</strong> complexity and <strong>O(N) auxiliary space</strong>. Matches industry-standard FAANG benchmark.
+                    Single-pass hash table lookup has expected <strong>O(N) linear time</strong> complexity and uses <strong>O(N) auxiliary space</strong>.
                   </p>
                 </div>
               </div>
@@ -395,6 +390,8 @@ export const CodingPracticeLandingPage: React.FC = () => {
           </div>
         </div>
       </section>
+
+      <RelatedGuides slugs={["lru-cache-implementation"]} heading="Read the LRU cache implementation guide" />
 
       {/* 6. BOTTOM CTA */}
       <section className="py-20 sm:py-28 text-center border-t border-slate-200 bg-gradient-to-b from-[#fafbfc] to-slate-100/80 relative overflow-hidden">

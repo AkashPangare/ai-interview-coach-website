@@ -1,0 +1,259 @@
+{
+  "schemaVersion": 1,
+  "auditedOn": "2026-09-28",
+  "scope": "Six existing PrepVisor technical guides. Current wording is captured from the pre-Phase-5 source where noted; entries record material claims prioritized for review, not every technical sentence.",
+  "claims": [
+    {
+      "guideSlug": "system-design-tinyurl",
+      "claim": "Availability and latency requirements",
+      "classification": "D",
+      "currentWording": "Redirection lookup must complete in under 20 milliseconds; High Availability (99.99%): Redirection must never drop.",
+      "evidenceRequired": "Scenario requirements or measured service SLOs; distinguish targets from observed results.",
+      "recommendedAction": "QUALIFY",
+      "implementation": "Relabeled as example targets and removed the implied delivery guarantee."
+    },
+    {
+      "guideSlug": "system-design-tinyurl",
+      "claim": "Capacity estimates and cache fit",
+      "classification": "D",
+      "currentWording": "100 million writes/month, 100:1 reads, 2x peak, 600 bytes/record, 80/20 cache estimate, and 41.4 GB can comfortably fit in one 64 GB Redis cluster node.",
+      "evidenceRequired": "Explicitly stated scenario assumptions plus deployment-specific overhead and measurements.",
+      "recommendedAction": "QUALIFY",
+      "implementation": "Labeled traffic and cache figures as assumptions; added excluded overhead caveats and example labels."
+    },
+    {
+      "guideSlug": "system-design-tinyurl",
+      "claim": "HTTP 301/302 caching and analytics behavior",
+      "classification": "A",
+      "currentWording": "301 is cached locally and prevents analytics; 302 forces all clicks through the server.",
+      "evidenceRequired": "HTTP semantics standard and caveats for cache directives and client behavior.",
+      "recommendedAction": "SOURCE",
+      "implementation": "Corrected the FAQ and cited RFC 9110; avoids asserting that either status alone determines analytics."
+    },
+    {
+      "guideSlug": "system-design-tinyurl",
+      "claim": "KGS guarantees zero collisions and instantaneous O(1) writes",
+      "classification": "F",
+      "currentWording": "KGS guarantees zero collision and O(1) instantaneous writes.",
+      "evidenceRequired": "Uniqueness and allocation invariants in a specified implementation.",
+      "recommendedAction": "QUALIFY",
+      "implementation": "Describes the KGS pattern as conditional on key creation, reservation, and allocation."
+    },
+    {
+      "guideSlug": "system-design-tinyurl",
+      "claim": "Popularity claim naming Google, Meta, and Amazon",
+      "classification": "E",
+      "currentWording": "One of the most classic system design interview problems asked at Google, Meta, and Amazon.",
+      "evidenceRequired": "Reliable, current, company-specific interview-frequency evidence.",
+      "recommendedAction": "REMOVE",
+      "implementation": "Removed the frequency and company attribution from the guide summary."
+    },
+    {
+      "guideSlug": "java-concurrency-interview-questions",
+      "claim": "Java concurrency is the #1 filter and ConcurrentHashMap is the single most asked question",
+      "classification": "E",
+      "currentWording": "Java concurrency is the #1 filter; ConcurrentHashMap is the single most frequently asked collections question.",
+      "evidenceRequired": "Representative interview data; no suitable evidence exists in the repository.",
+      "recommendedAction": "REMOVE",
+      "implementation": "Removed #1/popularity framing and described the topic as a useful interview-preparation subject."
+    },
+    {
+      "guideSlug": "java-concurrency-interview-questions",
+      "claim": "Virtual thread memory/count capacity and interview frequency",
+      "classification": "B",
+      "currentWording": "In 2026 every senior interview will ask this; virtual threads use a few hundred bytes and one million run comfortably on a standard laptop.",
+      "evidenceRequired": "Version-specific JDK documentation and workload-specific benchmark conditions.",
+      "recommendedAction": "QUALIFY",
+      "implementation": "Removed interview-frequency, memory, and laptop-scale claims; cited JEP 444 and Oracle's JDK 24 migration guide."
+    },
+    {
+      "guideSlug": "java-concurrency-interview-questions",
+      "claim": "Virtual-thread pinning requires replacing synchronized",
+      "classification": "B",
+      "currentWording": "Blocking in synchronized pins virtual threads; replace synchronized with ReentrantLock.",
+      "evidenceRequired": "JDK-version documentation for pinning behavior and the application's measured profile.",
+      "recommendedAction": "QUALIFY",
+      "implementation": "Explains JDK 21–23 versus JDK 24 monitor behavior and recommends profiling rather than blanket replacement."
+    },
+    {
+      "guideSlug": "java-concurrency-interview-questions",
+      "claim": "ConcurrentHashMap reads are always lock-free",
+      "classification": "B",
+      "currentWording": "Reads are 100% lock-free; it never locks for read operations.",
+      "evidenceRequired": "The applicable JDK API contract and implementation details for the version discussed.",
+      "recommendedAction": "QUALIFY",
+      "implementation": "Removed the absolute takeaway; guide references the official JDK API."
+    },
+    {
+      "guideSlug": "system-design-rate-limiter",
+      "claim": "Redis Lua scripts execute atomically",
+      "classification": "C",
+      "currentWording": "Lua script execution eliminates check-then-act races.",
+      "evidenceRequired": "Redis official scripting semantics plus the limits of script-level atomicity.",
+      "recommendedAction": "SOURCE",
+      "implementation": "Added Redis scripting reference and states that scripts block other server activity while running."
+    },
+    {
+      "guideSlug": "system-design-rate-limiter",
+      "claim": "Redis TIME eliminates clock skew",
+      "classification": "C",
+      "currentWording": "Always fetch the canonical timestamp from Redis to eliminate skew.",
+      "evidenceRequired": "Redis TIME semantics and distributed clock caveats.",
+      "recommendedAction": "QUALIFY",
+      "implementation": "Clarified that it returns time from the handling Redis server, not globally synchronized time; linked official command documentation."
+    },
+    {
+      "guideSlug": "system-design-rate-limiter",
+      "claim": "Redis fits 100 million keys on a standard 16 GB node; AWS network utilization is below 1%",
+      "classification": "C",
+      "currentWording": "64 bytes/key, 6.4 GB total, fits comfortably in a standard cloud Redis node; 60 Mbps is under 1% of standard 10 Gbps EC2.",
+      "evidenceRequired": "Measured memory footprint, exact Redis service/node type, payload and traffic assumptions.",
+      "recommendedAction": "QUALIFY",
+      "implementation": "Removed the 16 GB node-fit and AWS network-utilization assertions. Retained storage, QPS, and network arithmetic only as explicitly labeled scenario assumptions; validate implementation inputs before using them as a real deployment estimate."
+    },
+    {
+      "guideSlug": "system-design-rate-limiter",
+      "claim": "Token Bucket is the industry/default standard",
+      "classification": "F",
+      "currentWording": "Token Bucket is the Industry Standard and default recommendation for modern REST APIs.",
+      "evidenceRequired": "Scope-specific implementation survey or standards-level basis.",
+      "recommendedAction": "QUALIFY",
+      "implementation": "Describes it as one option where controlled bursts are a requirement."
+    },
+    {
+      "guideSlug": "system-design-rate-limiter",
+      "claim": "Rate limiter should always fail open / be placed at gateway",
+      "classification": "F",
+      "currentWording": "Fail-open is recommended for most systems; gateway placement is required.",
+      "evidenceRequired": "Threat model, downstream capacity and endpoint-specific availability/security priorities.",
+      "recommendedAction": "QUALIFY",
+      "implementation": "Explains fail-open/closed trade-offs and allows edge and service-level limits as appropriate."
+    },
+    {
+      "guideSlug": "spring-boot-microservices-interview-questions",
+      "claim": "Transactional proxy self-invocation and rollback behavior",
+      "classification": "C",
+      "currentWording": "Self-calls bypass proxy interception; default rollback only applies to unchecked exceptions and Errors.",
+      "evidenceRequired": "Spring framework version docs and proxy mode/rollback configuration caveats.",
+      "recommendedAction": "SOURCE",
+      "implementation": "Added versioned Spring documentation references; states default behavior and configurable rollback rules."
+    },
+    {
+      "guideSlug": "spring-boot-microservices-interview-questions",
+      "claim": "Virtual threads provide WebFlux-level throughput / tens of thousands of concurrent requests",
+      "classification": "C",
+      "currentWording": "Spring Boot 3.2 virtual threads achieve WebFlux-level throughput and scale to tens of thousands of concurrent requests.",
+      "evidenceRequired": "Exact Spring Boot/JDK configuration, workload, connection pools, and reproducible benchmark.",
+      "recommendedAction": "REMOVE",
+      "implementation": "Removed the throughput/concurrency guarantee and described resource and version dependencies."
+    },
+    {
+      "guideSlug": "spring-boot-microservices-interview-questions",
+      "claim": "Outbox guarantees at-least-once delivery with zero inconsistencies",
+      "classification": "F",
+      "currentWording": "CDC guarantees at-least-once delivery with zero data inconsistencies.",
+      "evidenceRequired": "Chosen database, relay/CDC, broker delivery and recovery semantics.",
+      "recommendedAction": "QUALIFY",
+      "implementation": "Describes dual-write mitigation while noting delivery semantics and recovery depend on the relay/broker."
+    },
+    {
+      "guideSlug": "lru-cache-implementation",
+      "claim": "LRU is a frequent question at named companies; Caffeine reaches tens of millions ops/sec",
+      "classification": "D",
+      "currentWording": "Most frequently asked at Meta, Google, Microsoft, Apple; Caffeine ring-buffer approach achieves tens of millions concurrent operations/sec.",
+      "evidenceRequired": "Company interview data and a reproducible benchmark for an exact Caffeine version/hardware/workload.",
+      "recommendedAction": "REMOVE",
+      "implementation": "Removed popularity/company claims; removed the benchmark and made cache concurrency strategy implementation-specific."
+    },
+    {
+      "guideSlug": "system-design-notification-service",
+      "claim": "Notification capacity and latency targets represent actual scale",
+      "classification": "D",
+      "currentWording": "100 million notifications/day, 10x peaks, 1 KB records, sub-2-second P0, and 99.99% availability.",
+      "evidenceRequired": "Clearly labeled scenario assumptions or measured service objectives.",
+      "recommendedAction": "QUALIFY",
+      "implementation": "Labels scope/targets as hypothetical examples; remaining calculation callouts are marked example values."
+    },
+    {
+      "guideSlug": "system-design-notification-service",
+      "claim": "Queues guarantee zero loss or priority isolation guarantees no delay",
+      "classification": "F",
+      "currentWording": "Queues guarantee zero notification loss; isolated workers ensure zero latency contention and never delay OTPs.",
+      "evidenceRequired": "End-to-end durability, provider, retry, partition, and shared-resource guarantees.",
+      "recommendedAction": "QUALIFY",
+      "implementation": "Explains queues reduce some failure modes but do not guarantee delivery or zero delay."
+    },
+    {
+      "guideSlug": "system-design-notification-service",
+      "claim": "Twilio/SendGrid have fixed throughput caps",
+      "classification": "C",
+      "currentWording": "Twilio may restrict to 500 SMS/sec; SendGrid may limit to 1,000/sec.",
+      "evidenceRequired": "Current provider/account-specific plan and contract documentation.",
+      "recommendedAction": "REMOVE",
+      "implementation": "Removed fixed rates and directs readers to their account/agreement."
+    },
+    {
+      "guideSlug": "system-design-notification-service",
+      "claim": "Notification questions are a premier challenge and the guide handles billions",
+      "classification": "E",
+      "currentWording": "A premier system design interview challenge; service capable of billions of notifications.",
+      "evidenceRequired": "Interview frequency evidence and deployment benchmark.",
+      "recommendedAction": "REMOVE",
+      "implementation": "Removed popularity and scale claims from title/summary copy where identified."
+    },
+    {
+      "guideSlug": "system-design-tinyurl",
+      "claim": "PrepVisor interactive-canvas evaluation and availability",
+      "classification": "G",
+      "currentWording": "The CTA describes an interactive canvas and immediate AI evaluation of capacity math and bottlenecks.",
+      "evidenceRequired": "Current product UI and behavior for this exact design exercise and evaluation feedback.",
+      "recommendedAction": "QUALIFY",
+      "implementation": "Removed immediate-evaluation wording; CTA now describes practicing on the existing interactive system design canvas."
+    },
+    {
+      "guideSlug": "java-concurrency-interview-questions",
+      "claim": "PrepVisor concurrency unit tests and real-time Big-O/thread-safety AI feedback",
+      "classification": "G",
+      "currentWording": "The CTA promises multithreaded unit tests and real-time AI feedback.",
+      "evidenceRequired": "Current coding product behavior for concurrency-specific tests and feedback.",
+      "recommendedAction": "QUALIFY",
+      "implementation": "Replaced with a narrower invitation to practice code patterns and reason through complexity and thread safety."
+    },
+    {
+      "guideSlug": "system-design-rate-limiter",
+      "claim": "PrepVisor AI system design evaluation of concurrency bottlenecks",
+      "classification": "G",
+      "currentWording": "The CTA promises evaluation by an AI-powered system design mock interviewer.",
+      "evidenceRequired": "Current product UI and behavior for this exact scenario and evaluation workflow.",
+      "recommendedAction": "QUALIFY",
+      "implementation": "Reworded as an invitation to explore the design and its trade-offs in the system design studio."
+    },
+    {
+      "guideSlug": "spring-boot-microservices-interview-questions",
+      "claim": "PrepVisor provides real-time senior evaluation",
+      "classification": "G",
+      "currentWording": "The CTA promises real-time senior evaluation from an AI evaluator.",
+      "evidenceRequired": "Product evidence for response timing and the meaning of senior evaluation; the latter could imply a human expert.",
+      "recommendedAction": "REMOVE",
+      "implementation": "Removed timing and senior-evaluator assertions from the CTA."
+    },
+    {
+      "guideSlug": "lru-cache-implementation",
+      "claim": "PrepVisor supplies real-time Big-O and edge-case AI feedback",
+      "classification": "G",
+      "currentWording": "The CTA promises real-time Big-O and edge-case feedback from an AI coding evaluator.",
+      "evidenceRequired": "Current coding product behavior for those exact feedback categories and response timing.",
+      "recommendedAction": "QUALIFY",
+      "implementation": "Reworded to describe practice exercises and reasoning through complexity and edge cases."
+    },
+    {
+      "guideSlug": "system-design-notification-service",
+      "claim": "PrepVisor supports configuration of Kafka queues in an AI-powered interview studio",
+      "classification": "G",
+      "currentWording": "The CTA promises configuring Kafka priority queues and solving idempotency races in the AI-powered studio.",
+      "evidenceRequired": "Current product interaction for Kafka-specific queue configuration and automated evaluation.",
+      "recommendedAction": "QUALIFY",
+      "implementation": "Reworded as an invitation to explore architecture and design trade-offs in the system design studio."
+    }
+  ]
+}

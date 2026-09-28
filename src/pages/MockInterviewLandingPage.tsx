@@ -17,14 +17,12 @@ import {
 import { COMPANY_CONFIG } from "@/config/company"
 import { decorateUrlWithUtms, trackEvent } from "../lib/analytics"
 import { usePageSeo } from "@/hooks/usePageSeo"
+import { SEO_ROUTES } from "@/config/seo"
+import { PRODUCT_PAGE_INTROS } from "@/config/seo"
+import { RelatedGuides } from "@/components/RelatedGuides"
 
 export const MockInterviewLandingPage: React.FC = () => {
-  usePageSeo({
-    title: "AI Voice Mock Interview Online & STAR Behavioral Coach | PrepVisor",
-    description: "Practice realistic tech mock interviews with Speech-to-Text dictation. Real-time voice practice, STAR framework scoring (Situation, Task, Action, Result), leadership ownership metrics, and multi-turn role-calibrated rounds.",
-    canonicalUrl: "https://prepvisor.in/mock-interview",
-    keywords: "AI mock interview free, behavioral interview practice with AI, STAR method interview practice online, speech to text interview prep, amazon leadership principles mock interview",
-  })
+  usePageSeo(SEO_ROUTES.mockInterview)
 
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0)
 
@@ -71,14 +69,11 @@ export const MockInterviewLandingPage: React.FC = () => {
           </div>
 
           <h1 className="mx-auto max-w-4xl text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-[-0.03em] text-slate-900 leading-[1.12]">
-            Speak out loud.{" "}
-            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 bg-clip-text text-transparent">
-              Master the STAR framework with AI critique.
-            </span>
+            Practice Technical and Behavioral Mock Interviews
           </h1>
 
           <p className="mx-auto max-w-3xl text-sm sm:text-base leading-relaxed text-slate-600">
-            Say goodbye to awkward peer interview scheduling and generic ChatGPT text prompts. Speak naturally out loud with built-in Speech-to-Text dictation, and receive instant AI critique across technical accuracy, the proven STAR framework, and leadership ownership.
+            {PRODUCT_PAGE_INTROS.mockInterview}
           </p>
 
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row items-center pt-2">
@@ -373,6 +368,8 @@ export const MockInterviewLandingPage: React.FC = () => {
           </div>
         </div>
       </section>
+
+      <RelatedGuides slugs={["java-concurrency-interview-questions"]} heading="Prepare for technical interview questions" />
 
       {/* 5. BOTTOM CTA */}
       <section className="py-20 sm:py-28 text-center border-t border-slate-200 bg-gradient-to-b from-[#fafbfc] to-slate-100/80 relative overflow-hidden">

@@ -1,3 +1,5 @@
+import { PAID_PLAN_PRICES } from "./pricing-data.js"
+
 export interface PricingTier {
   id: string
   name: string
@@ -28,7 +30,8 @@ export const COMPANY_CONFIG = {
   businessType: "Individual",
   industry: "EdTech & Interactive Educational SaaS Software",
   websiteUrl: "https://prepvisor.in",
-  appUrl: (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_APP_URL) || "https://app.prepvisor.in",
+  productSchemaDescription: "An interactive AI tech interview coach featuring time-calibrated preparation roadmaps, DSA coding studio with terminal stdout, infinite system design whiteboard with scale math, and voice STAR behavioral mock interviews.",
+  appUrl: (import.meta as ImportMeta & { env?: Record<string, string | undefined> }).env?.VITE_APP_URL || "https://app.prepvisor.in",
   
   // Physical & Communication Address
   address: {
@@ -66,7 +69,7 @@ export const COMPANY_CONFIG = {
     },
   },
 
-  // Authentic PrepVisor subscription plans matching backend & application
+  // PrepVisor free tier and fixed-duration preparation passes.
   pricing: [
     {
       id: "FREE",
@@ -93,8 +96,8 @@ export const COMPANY_CONFIG = {
       subtitle: "Last-mile intensive interview prep with coding arena & rebalancing",
       badge: "Sprint Prep",
       days: 7,
-      priceINR: 199,
-      priceUSD: 4,
+      priceINR: PAID_PLAN_PRICES[0].priceINR,
+      priceUSD: PAID_PLAN_PRICES[0].priceUSD,
       originalPriceINR: 399,
       originalPriceUSD: 8,
       features: [
@@ -114,8 +117,8 @@ export const COMPANY_CONFIG = {
       subtitle: "Complete toolkit with System Design studio and 15 mock sessions",
       badge: "Most Popular",
       days: 14,
-      priceINR: 349,
-      priceUSD: 7,
+      priceINR: PAID_PLAN_PRICES[1].priceINR,
+      priceUSD: PAID_PLAN_PRICES[1].priceUSD,
       originalPriceINR: 699,
       originalPriceUSD: 14,
       recommended: true,
@@ -137,8 +140,8 @@ export const COMPANY_CONFIG = {
       subtitle: "For product company switchers needing behavioral & deep design drills",
       badge: "Best Value",
       days: 30,
-      priceINR: 499,
-      priceUSD: 10,
+      priceINR: PAID_PLAN_PRICES[2].priceINR,
+      priceUSD: PAID_PLAN_PRICES[2].priceUSD,
       originalPriceINR: 999,
       originalPriceUSD: 20,
       features: [
@@ -160,8 +163,8 @@ export const COMPANY_CONFIG = {
       subtitle: "Long-term placement and senior/staff multi-company mastery",
       badge: "All-Inclusive",
       days: 90,
-      priceINR: 1299,
-      priceUSD: 25,
+      priceINR: PAID_PLAN_PRICES[3].priceINR,
+      priceUSD: PAID_PLAN_PRICES[3].priceUSD,
       originalPriceINR: 2599,
       originalPriceUSD: 50,
       features: [

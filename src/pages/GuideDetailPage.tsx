@@ -24,6 +24,12 @@ import {
 } from "lucide-react";
 import { decorateUrlWithUtms, trackEvent } from "@/lib/analytics";
 import { COMPANY_CONFIG } from "@/config/company";
+import { seoForGuide } from "@/config/seo";
+import { applyPageSeo } from "@/hooks/usePageSeo";
+import { GuideMarkdown } from "@/components/GuideMarkdown";
+import { guideTocEntries, safeExternalGuideUrl } from "@/lib/guideMarkdown";
+import { GUIDE_CATEGORY_BY_ID } from "@/config/guideCategories";
+import { generateBreadcrumbJsonLd } from "@/lib/structuredData";
 
 export const GuideDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -38,32 +44,7 @@ export const GuideDetailPage: React.FC = () => {
   useEffect(() => {
     if (!guide) return;
 
-    // Document Title
-    document.title = `${guide.seoTitle} | PrepVisor`;
-
-    // Meta Description
-    let metaDesc = document.querySelector('meta[name="description"]');
-    if (!metaDesc) {
-      metaDesc = document.createElement("meta");
-      metaDesc.setAttribute("name", "description");
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.setAttribute("content", guide.metaDescription);
-
-    // Meta Keywords
-    let metaKeywords = document.querySelector('meta[name="keywords"]');
-    if (!metaKeywords) {
-      metaKeywords = document.createElement("meta");
-      metaKeywords.setAttribute("name", "keywords");
-      document.head.appendChild(metaKeywords);
-    }
-    metaKeywords.setAttribute("content", guide.keywords.join(", "));
-
-    // Open Graph Title & Description
-    let ogTitle = document.querySelector('meta[property="og:title"]');
-    if (ogTitle) ogTitle.setAttribute("content", guide.title);
-    let ogDesc = document.querySelector('meta[property="og:description"]');
-    if (ogDesc) ogDesc.setAttribute("content", guide.metaDescription);
+    applyPageSeo(seoForGuide(guide));
 
     // JSON-LD Scripts (Article & FAQPage)
     const articleScriptId = "schema-article-jsonld";
@@ -86,10 +67,20 @@ export const GuideDetailPage: React.FC = () => {
     }
     faqScript.textContent = JSON.stringify(generateFaqJsonLd(guide));
 
+    const breadcrumbScriptId = "schema-breadcrumb-jsonld";
+    let breadcrumbScript = document.getElementById(breadcrumbScriptId);
+    if (!breadcrumbScript) {
+      breadcrumbScript = document.createElement("script");
+      breadcrumbScript.id = breadcrumbScriptId;
+      breadcrumbScript.setAttribute("type", "application/ld+json");
+      document.head.appendChild(breadcrumbScript);
+    }
+    breadcrumbScript.textContent = JSON.stringify(generateBreadcrumbJsonLd(guide));
+
     // Track Pageview telemetry
     trackEvent("guide_viewed", {
       slug: guide.slug,
-      category: guide.category,
+      category: GUIDE_CATEGORY_BY_ID[guide.primaryCategory].name,
       title: guide.title,
     });
 
@@ -97,6 +88,7 @@ export const GuideDetailPage: React.FC = () => {
       // Clean up injected schema on unmount
       articleScript?.remove();
       faqScript?.remove();
+      breadcrumbScript?.remove();
     };
   }, [guide]);
 
@@ -133,7 +125,10 @@ export const GuideDetailPage: React.FC = () => {
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
-  const otherGuides = GUIDES.filter((g) => g.slug !== guide.slug);
+  const otherGuides = guide.relatedGuideSlugs
+    .map((slug) => GUIDES.find((candidate) => candidate.slug === slug))
+    .filter((candidate): candidate is (typeof GUIDES)[number] => Boolean(candidate));
+  const tocEntries = guideTocEntries(guide);
 
   return (
     <article className="min-h-screen bg-[#fafbfc] text-slate-900 selection:bg-blue-600 selection:text-white">
@@ -146,7 +141,7 @@ export const GuideDetailPage: React.FC = () => {
             </Link>
             <ChevronRight className="h-3.5 w-3.5 text-slate-400" />
             <Link to="/guides" className="hover:text-blue-600 transition">
-              Technical Guides
+              Guides
             </Link>
             <ChevronRight className="h-3.5 w-3.5 text-slate-400" />
             <span className="text-slate-800 truncate max-w-[200px] sm:max-w-none font-semibold">
@@ -162,7 +157,7 @@ export const GuideDetailPage: React.FC = () => {
           <div className="flex flex-wrap items-center gap-2.5 mb-4">
             <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 border border-blue-200">
               <Sparkles className="h-3 w-3 text-blue-600" />
-              {guide.category}
+              {GUIDE_CATEGORY_BY_ID[guide.primaryCategory].name}
             </span>
             <span className="rounded-full bg-slate-100 border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">
               {guide.difficulty} Level
@@ -173,7 +168,7 @@ export const GuideDetailPage: React.FC = () => {
             </span>
             <span className="inline-flex items-center gap-1 text-xs text-slate-500 font-medium">
               <Calendar className="h-3.5 w-3.5 text-slate-400" />
-              Updated {guide.lastUpdated}
+              Updated {guide.dateModified}
             </span>
           </div>
 
@@ -212,6 +207,22 @@ export const GuideDetailPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* Main Article Body */}
           <main className="lg:col-span-8 space-y-12">
+            {guide.quickAnswer && (
+              <section id="quick-answer" className="scroll-mt-24 rounded-2xl border border-blue-200 bg-blue-50/70 p-5 space-y-2">
+                <h2 className="text-xl font-semibold text-slate-900">Quick Answer</h2>
+                <p className="text-sm leading-relaxed text-slate-700">{guide.quickAnswer}</p>
+              </section>
+            )}
+
+            {guide.keyTakeaways && guide.keyTakeaways.length > 0 && (
+              <section id="key-takeaways" className="scroll-mt-24 rounded-2xl border border-amber-200 bg-amber-50/70 p-5 space-y-3">
+                <h2 className="text-xl font-semibold text-slate-900">Key Takeaways</h2>
+                <ul className="list-disc space-y-2 pl-5 text-sm leading-relaxed text-slate-700">
+                  {guide.keyTakeaways.map((takeaway, index) => <li key={index}>{takeaway}</li>)}
+                </ul>
+              </section>
+            )}
+
             {guide.sections.map((section, idx) => (
               <section key={section.id} id={section.id} className="scroll-mt-24 space-y-4">
                 <div className="border-b border-slate-200 pb-3">
@@ -223,8 +234,8 @@ export const GuideDetailPage: React.FC = () => {
                   )}
                 </div>
 
-                <div className="prose max-w-none text-slate-700 text-sm leading-relaxed whitespace-pre-line font-normal">
-                  {section.content}
+                <div className="prose max-w-none text-slate-700 text-sm leading-relaxed font-normal">
+                  <GuideMarkdown content={section.content} idPrefix={section.id} />
                 </div>
 
                 {/* Optional Architecture Callout Card */}
@@ -275,7 +286,7 @@ export const GuideDetailPage: React.FC = () => {
                       </button>
                     </div>
                     <pre className="p-4 text-xs font-mono overflow-x-auto text-slate-200 leading-relaxed">
-                      <code>{section.codeBlock.code}</code>
+                      <code className={`language-${section.codeBlock.language}`}>{section.codeBlock.code}</code>
                     </pre>
                   </div>
                 )}
@@ -366,6 +377,23 @@ export const GuideDetailPage: React.FC = () => {
               </div>
             </div>
 
+            {guide.references && guide.references.length > 0 && (
+              <section id="references" className="scroll-mt-24 space-y-4 border-t border-slate-200 pt-6">
+                <h2 className="text-2xl font-semibold text-slate-900">References &amp; Further Reading</h2>
+                <ul className="list-disc space-y-2 pl-5 text-sm text-slate-700">
+                  {guide.references.map((reference) => {
+                    const referenceUrl = safeExternalGuideUrl(reference.url);
+                    if (!referenceUrl) return null;
+                    return (
+                    <li key={reference.url}>
+                      <a href={referenceUrl} target="_blank" rel="noopener noreferrer" className="text-blue-700 underline underline-offset-2">{reference.title}</a>
+                      <span> — {reference.publisher}</span>
+                    </li>
+                  )})}
+                </ul>
+              </section>
+            )}
+
             {/* Frequently Asked Questions (FAQ Section matching FAQPage Schema) */}
             <section id="faqs" className="scroll-mt-24 space-y-4 pt-6 border-t border-slate-200">
               <div className="flex items-center gap-2">
@@ -387,7 +415,10 @@ export const GuideDetailPage: React.FC = () => {
                       className="transition-colors"
                     >
                       <button
+                        id={`${guide.slug}-faq-${fidx}-question`}
                         onClick={() => setExpandedFaqIndex(isOpen ? null : fidx)}
+                        aria-expanded={isOpen}
+                        aria-controls={`${guide.slug}-faq-${fidx}-answer`}
                         className="w-full flex items-center justify-between p-4 text-left text-sm font-semibold text-slate-900 hover:bg-slate-50/80 transition cursor-pointer"
                       >
                         <span>{faq.question}</span>
@@ -397,11 +428,9 @@ export const GuideDetailPage: React.FC = () => {
                           <ChevronDown className="h-4 w-4 text-slate-400 shrink-0 ml-2" />
                         )}
                       </button>
-                      {isOpen && (
-                        <div className="px-4 pb-4 text-xs text-slate-600 leading-relaxed border-t border-slate-200 pt-3 bg-slate-50/40">
+                      <div id={`${guide.slug}-faq-${fidx}-answer`} role="region" aria-labelledby={`${guide.slug}-faq-${fidx}-question`} hidden={!isOpen} className="px-4 pb-4 text-xs text-slate-600 leading-relaxed border-t border-slate-200 pt-3 bg-slate-50/40">
                           {faq.answer}
-                        </div>
-                      )}
+                      </div>
                     </div>
                   );
                 })}
@@ -419,21 +448,15 @@ export const GuideDetailPage: React.FC = () => {
                   <span>Table of Contents</span>
                 </div>
                 <nav className="space-y-1.5 text-xs">
-                  {guide.sections.map((sec) => (
+                  {tocEntries.map((entry) => (
                     <a
-                      key={sec.id}
-                      href={`#${sec.id}`}
-                      className="block py-1 text-slate-600 hover:text-blue-600 hover:translate-x-1 transition-transform truncate"
+                      key={entry.id}
+                      href={`#${entry.id}`}
+                      className={`block py-1 text-slate-600 hover:text-blue-600 hover:translate-x-1 transition-transform truncate ${entry.level > 2 ? "pl-3" : ""}`}
                     >
-                      {sec.title}
+                      {entry.title}
                     </a>
                   ))}
-                  <a
-                    href="#faqs"
-                    className="block py-1 text-blue-600 hover:text-blue-700 hover:translate-x-1 transition-transform font-semibold"
-                  >
-                    Frequently Asked Questions
-                  </a>
                 </nav>
               </div>
 
@@ -465,11 +488,15 @@ export const GuideDetailPage: React.FC = () => {
                 </a>
               </div>
 
+              <Link to={guide.productPath} className="block rounded-xl border border-blue-100 bg-blue-50 p-3 text-xs font-semibold text-blue-700 hover:bg-blue-100">
+                Continue practicing with the PrepVisor {GUIDE_CATEGORY_BY_ID[guide.primaryCategory].name} tool
+              </Link>
+
               {/* Related Technical Guides */}
               {otherGuides.length > 0 && (
                 <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs space-y-3">
                   <div className="text-xs font-bold uppercase tracking-wider text-slate-900">
-                    Next Recommended Guides
+                    Related Guides
                   </div>
                   <div className="space-y-2.5">
                     {otherGuides.map((og) => (
@@ -479,7 +506,7 @@ export const GuideDetailPage: React.FC = () => {
                         className="block group p-3 rounded-xl hover:bg-slate-50 border border-slate-100 transition"
                       >
                         <div className="text-[10px] uppercase font-bold text-blue-600 mb-1">
-                          {og.category} · {og.readingTimeMinutes}m read
+                          {GUIDE_CATEGORY_BY_ID[og.primaryCategory].name} · {og.readingTimeMinutes}m read
                         </div>
                         <div className="text-xs font-semibold text-slate-800 group-hover:text-blue-600 transition leading-snug line-clamp-2">
                           {og.title}

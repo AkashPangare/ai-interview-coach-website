@@ -12,6 +12,11 @@ body {
   letter-spacing: -0.01em;
 }
 
+:focus-visible {
+  outline: 2px solid #1d4ed8;
+  outline-offset: 2px;
+}
+
 /* Linear / Stripe style dot-grid backgrounds for light mode */
 .bg-dot-grid {
   background-image: radial-gradient(rgba(15, 23, 42, 0.08) 1px, transparent 1px);
@@ -63,4 +68,3 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
-

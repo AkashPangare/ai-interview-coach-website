@@ -2,13 +2,10 @@ import React from "react"
 import { RotateCcw } from "lucide-react"
 import { COMPANY_CONFIG } from "@/config/company"
 import { usePageSeo } from "@/hooks/usePageSeo"
+import { SEO_ROUTES } from "@/config/seo"
 
 export const RefundPolicyPage: React.FC = () => {
-  usePageSeo({
-    title: "Cancellation & Refund Policy | PrepVisor",
-    description: "Official Cancellation and Refund Policy for PrepVisor digital preparation passes. Details on 7-day refund eligibility, non-refundable cases, and payment reversal timelines.",
-    canonicalUrl: "https://prepvisor.in/refund-policy",
-  })
+  usePageSeo(SEO_ROUTES.refundPolicy)
 
   return (
     <div className="py-14 sm:py-20 bg-[#fafbfc] min-h-screen text-slate-800">
@@ -108,4 +105,3 @@ export const RefundPolicyPage: React.FC = () => {
 }
 
 export default RefundPolicyPage
-

@@ -7,24 +7,21 @@
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LRU Cache Implementation Guide | O(1) Operations in Java, Python & C++ | PrepVisor</title>
-    <meta name="description" content="Complete step-by-step guide to implementing an LRU Cache with O(1) get and put operations. Includes Doubly Linked List + HashMap implementations in Java, Python, and C++." />
-    <meta
-      name="keywords"
-      content="AI tech interview coach, system design interview simulator, DSA coding practice terminal stdout, voice mock interview STAR method, tech interview study roadmap, Java interview prep, software engineer mock interview, PrepVisor"
-    />
+    <title>LRU Cache Implementation Guide | Average O(1) Operations in Java, Python &amp; C++ | PrepVisor</title>
+    <meta name="description" content="Step-by-step guide to implementing an LRU cache with expected average O(1) get and put operations under typical hash-map assumptions. Includes doubly linked list and hash map implementations in Java, Python, and C++." />
     <meta name="author" content="PrepVisor" />
-    <link rel="canonical" href="https://prepvisor.in/" />
-    
+    <link rel="canonical" href="https://prepvisor.in/guides/lru-cache-implementation" />
+
     <link rel="manifest" href="/manifest.json" />
-    
+
     <!-- Preconnect & Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" /></noscript>
     <link rel="preconnect" href="https://app.prepvisor.in" />
     <link rel="dns-prefetch" href="https://app.prepvisor.in" />
-    
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-DNM4SMR2VK"></script>
     <script>
@@ -35,111 +32,280 @@
     </script>
 
     <!-- Open Graph / Facebook / LinkedIn -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://prepvisor.in/" />
-    <meta property="og:title" content="PrepVisor | AI Tech Interview Coach, System Design Simulator & DSA Arena" />
-    <meta property="og:description" content="Master tech interviews with dynamic AI pacing. Interactive DSA coding arena with live terminal stdout, interactive System Design whiteboard with scale math, and voice AI mock interviews." />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://prepvisor.in/guides/lru-cache-implementation" />
+    <meta property="og:title" content="LRU Cache Implementation: Step-by-Step in Java, Python &amp; C++" />
+    <meta property="og:description" content="Step-by-step guide to implementing an LRU cache with expected average O(1) get and put operations under typical hash-map assumptions. Includes doubly linked list and hash map implementations in Java, Python, and C++." />
     <meta property="og:image" content="https://prepvisor.in/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="PrepVisor — AI interview preparation for software engineers" />
     <meta property="og:site_name" content="PrepVisor" />
 
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://prepvisor.in/" />
-    <meta name="twitter:title" content="PrepVisor | AI Tech Interview Coach, System Design Simulator & DSA Arena" />
-    <meta name="twitter:description" content="Master tech interviews with dynamic AI pacing. Interactive DSA coding arena with live terminal stdout, interactive System Design whiteboard with scale math, and voice AI mock interviews." />
+    <meta name="twitter:url" content="https://prepvisor.in/guides/lru-cache-implementation" />
+    <meta name="twitter:title" content="LRU Cache Implementation: Step-by-Step in Java, Python &amp; C++" />
+    <meta name="twitter:description" content="Step-by-step guide to implementing an LRU cache with expected average O(1) get and put operations under typical hash-map assumptions. Includes doubly linked list and hash map implementations in Java, Python, and C++." />
     <meta name="twitter:image" content="https://prepvisor.in/og-image.png" />
 
     <!-- Structured Data for Search Engines -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "SoftwareApplication",
-            "@id": "https://prepvisor.in/#software",
-            "name": "PrepVisor",
-            "operatingSystem": "Web, Cloud",
-            "applicationCategory": "EducationalApplication",
-            "description": "An interactive AI tech interview coach featuring time-calibrated preparation roadmaps, DSA coding studio with terminal stdout, infinite system design whiteboard with scale math, and voice STAR behavioral mock interviews.",
-            "url": "https://prepvisor.in",
-            "offers": {
-              "@type": "AggregateOffer",
-              "priceCurrency": "INR",
-              "lowPrice": "0",
-              "highPrice": "1499",
-              "offerCount": "5"
-            }
-          },
-          {
-            "@type": "Organization",
-            "@id": "https://prepvisor.in/#organization",
-            "name": "PrepVisor",
-            "url": "https://prepvisor.in",
-            "logo": "https://prepvisor.in/logo.png",
-            "contactPoint": {
-              "@type": "ContactPoint",
-              "telephone": "+91 7249778116",
-              "contactType": "Customer Support",
-              "areaServed": "IN",
-              "availableLanguage": ["English"]
-            },
-            "address": {
-              "@type": "PostalAddress",
-              "streetAddress": "Flat 201, Aurum Residencies, Maruthi Nagar, BTM Layout Stage 1",
-              "addressLocality": "Bengaluru",
-              "addressRegion": "Karnataka",
-              "postalCode": "560068",
-              "addressCountry": "IN"
-            }
-          },
-          {
-            "@type": "WebSite",
-            "@id": "https://prepvisor.in/#website",
-            "url": "https://prepvisor.in",
-            "name": "PrepVisor",
-            "publisher": {
-              "@id": "https://prepvisor.in/#organization"
-            }
-          }
-        ]
-      }
-    </script>
-    <script type="module" crossorigin src="/assets/index-D3pypZJn.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DO_PuZJO.css">
-  
-    <link rel="canonical" href="https://prepvisor.in/guides/lru-cache-implementation" />
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="LRU Cache Implementation: Step-by-Step in Java, Python & C++" />
-    <meta property="og:description" content="Complete step-by-step guide to implementing an LRU Cache with O(1) get and put operations. Includes Doubly Linked List + HashMap implementations in Java, Python, and C++." />
-    <meta property="og:url" content="https://prepvisor.in/guides/lru-cache-implementation" />
-    <meta name="twitter:title" content="LRU Cache Implementation: Step-by-Step in Java, Python & C++" />
-    <meta name="twitter:description" content="Complete step-by-step guide to implementing an LRU Cache with O(1) get and put operations. Includes Doubly Linked List + HashMap implementations in Java, Python, and C++." />
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"LRU Cache Implementation: Step-by-Step in Java, Python & C++","description":"Complete step-by-step guide to implementing an LRU Cache with O(1) get and put operations. Includes Doubly Linked List + HashMap implementations in Java, Python, and C++.","image":"https://prepvisor.in/logo.png","author":{"@type":"Organization","name":"PrepVisor Systems Engineering Team","url":"https://prepvisor.in"},"publisher":{"@type":"Organization","name":"PrepVisor","url":"https://prepvisor.in","logo":{"@type":"ImageObject","url":"https://prepvisor.in/logo.png"}},"datePublished":"2026-09-20T08:00:00+05:30","dateModified":"2026-09-20T08:00:00+05:30","mainEntityOfPage":{"@type":"WebPage","@id":"https://prepvisor.in/guides/lru-cache-implementation"},"keywords":"lru cache implementation, lru cache java step by step, lru cache python collections ordereddict, lru cache c++ list unordered_map, leetcode 146 lru cache solution, thread safe lru cache implementation"}</script>
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why is a Doubly Linked List required instead of a Singly Linked List for LRU Cache?","acceptedAnswer":{"@type":"Answer","text":"To achieve strict O(1) eviction and node repositioning, removing an arbitrary node in the middle of the list requires instant access to the preceding node (node.prev) so pointers can be reconnected. In a Singly Linked List, finding the previous node requires an O(N) traversal."}},{"@type":"Question","name":"How do dummy head and tail sentinel nodes simplify LRU cache pointer manipulation?","acceptedAnswer":{"@type":"Answer","text":"Dummy head and tail sentinels act as permanent boundaries. The real cached nodes always sit strictly between them. This eliminates edge cases (such as inserting into an empty list, removing the only node, or boundary null pointer checks), reducing code complexity and preventing runtime NullPointerExceptions."}},{"@type":"Question","name":"Why does standard ReentrantReadWriteLock fail to scale for a concurrent LRU cache?","acceptedAnswer":{"@type":"Answer","text":"In a standard cache, get() is a read operation. However, in an LRU cache, get() mutates the list pointers to reposition the accessed node to the most recently used head. Consequently, get() requires a write lock, causing all concurrent reader threads to serialize and eliminating the concurrency benefits of ReadWriteLock."}},{"@type":"Question","name":"What is the difference between LRU (Least Recently Used) and LFU (Least Frequently Used)?","acceptedAnswer":{"@type":"Answer","text":"LRU evicts the item that was accessed the furthest in the past, regardless of how many times it was used before. LFU tracks access frequency and evicts the item with the lowest hit count. LFU is better at resisting cache pollution from one-off bulk scans, but requires more complex O(1) bookkeeping and frequency decay mechanisms."}},{"@type":"Question","name":"How can you add Time-To-Live (TTL) expiration to an LRU cache?","acceptedAnswer":{"@type":"Answer","text":"Add an expiresAt timestamp field to each cache node. Implement lazy expiration on get() (if current time exceeds expiresAt, delete the node and return -1) and active background expiration using a PriorityQueue (Min-Heap) sorted by expiresAt to periodically remove expired entries."}},{"@type":"Question","name":"How does Caffeine Cache achieve high-performance lock-free concurrent caching in Java?","acceptedAnswer":{"@type":"Answer","text":"Caffeine decouples reads from eviction mutations. Reads access a ConcurrentHashMap directly without locking. Node access events are recorded to a lock-free ring buffer (MPSC queue), which is drained in batches by a background maintenance thread to update eviction data structures without blocking concurrent client threads."}}]}</script>
-  </head>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://prepvisor.in/#organization","name":"PrepVisor","url":"https://prepvisor.in","logo":"https://prepvisor.in/logo.png","contactPoint":{"@type":"ContactPoint","telephone":"+91 7249778116","email":"support@prepvisor.in","contactType":"Customer Support","areaServed":"IN","availableLanguage":["English"]},"address":{"@type":"PostalAddress","streetAddress":"Flat 201,Aurum Residencies,Maruthi Nagar,BTM Layout stage 1, Near RS High School,9th cross, Madiwala","addressLocality":"Bengaluru","addressRegion":"Karnataka","postalCode":"560068","addressCountry":"IN"}},{"@type":"WebSite","@id":"https://prepvisor.in/#website","url":"https://prepvisor.in/","name":"PrepVisor","publisher":{"@id":"https://prepvisor.in/#organization"}},{"@type":"SoftwareApplication","@id":"https://prepvisor.in/#software","name":"PrepVisor","operatingSystem":"Web, Cloud","applicationCategory":"EducationalApplication","description":"An interactive AI tech interview coach featuring time-calibrated preparation roadmaps, DSA coding studio with terminal stdout, infinite system design whiteboard with scale math, and voice STAR behavioral mock interviews.","url":"https://prepvisor.in","publisher":{"@id":"https://prepvisor.in/#organization"},"offers":{"@type":"AggregateOffer","priceCurrency":"INR","lowPrice":199,"highPrice":1299,"offerCount":4}}]}</script>
+    <script type="module" crossorigin src="/assets/index-CM9GHTF1.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DL1QVLFc.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","@id":"https://prepvisor.in/guides/lru-cache-implementation#article","headline":"LRU Cache Implementation: Step-by-Step in Java, Python & C++","description":"Step-by-step guide to implementing an LRU cache with expected average O(1) get and put operations under typical hash-map assumptions. Includes doubly linked list and hash map implementations in Java, Python, and C++.","author":{"@type":"Organization","name":"PrepVisor","@id":"https://prepvisor.in/#organization"},"publisher":{"@id":"https://prepvisor.in/#organization"},"dateModified":"2026-09-20T08:00:00+05:30","url":"https://prepvisor.in/guides/lru-cache-implementation","mainEntityOfPage":{"@type":"WebPage","@id":"https://prepvisor.in/guides/lru-cache-implementation"},"keywords":"lru cache implementation, lru cache java step by step, lru cache python collections ordereddict, lru cache c++ list unordered_map, leetcode 146 lru cache solution, thread safe lru cache implementation"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How does a Doubly Linked List enable constant-time LRU node updates?","acceptedAnswer":{"@type":"Answer","text":"To unlink a known node in constant time, a doubly linked list stores its previous and next pointers. A singly linked list normally requires traversal to find the preceding node."}},{"@type":"Question","name":"How do dummy head and tail sentinel nodes simplify LRU cache pointer manipulation?","acceptedAnswer":{"@type":"Answer","text":"Dummy head and tail sentinels act as permanent boundaries. The real cached nodes always sit strictly between them. This eliminates edge cases (such as inserting into an empty list, removing the only node, or boundary null pointer checks), reducing code complexity and preventing runtime NullPointerExceptions."}},{"@type":"Question","name":"Why does standard ReentrantReadWriteLock fail to scale for a concurrent LRU cache?","acceptedAnswer":{"@type":"Answer","text":"In a standard cache, get() is a read operation. However, in an LRU cache, get() mutates the list pointers to reposition the accessed node to the most recently used head. Consequently, get() requires a write lock, causing all concurrent reader threads to serialize and eliminating the concurrency benefits of ReadWriteLock."}},{"@type":"Question","name":"What is the difference between LRU (Least Recently Used) and LFU (Least Frequently Used)?","acceptedAnswer":{"@type":"Answer","text":"LRU evicts the item that was accessed the furthest in the past, regardless of how many times it was used before. LFU tracks access frequency and evicts the item with the lowest hit count. LFU is better at resisting cache pollution from one-off bulk scans, but requires more complex O(1) bookkeeping and frequency decay mechanisms."}},{"@type":"Question","name":"How can you add Time-To-Live (TTL) expiration to an LRU cache?","acceptedAnswer":{"@type":"Answer","text":"Add an expiresAt timestamp field to each cache node. Implement lazy expiration on get() (if current time exceeds expiresAt, delete the node and return -1) and active background expiration using a PriorityQueue (Min-Heap) sorted by expiresAt to periodically remove expired entries."}},{"@type":"Question","name":"How can concurrent cache implementations separate lookup from eviction maintenance?","acceptedAnswer":{"@type":"Answer","text":"Some cache designs separate key lookup from recency or eviction maintenance, but synchronization and buffering are implementation-specific. Consult the chosen library's current documentation and source rather than assuming a particular design."}}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://prepvisor.in/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://prepvisor.in/guides"},{"@type":"ListItem","position":3,"name":"LRU Cache Implementation: Step-by-Step in Java, Python & C++","item":"https://prepvisor.in/guides/lru-cache-implementation"}]}</script></head>
   <body class="bg-slate-50 text-slate-900 antialiased selection:bg-blue-600 selection:text-white min-h-screen">
-    
+
     <div id="root"></div>
     <noscript>
       <article class="p-8 max-w-4xl mx-auto font-sans">
+        <nav aria-label="Breadcrumb"><ol><li><a href="/">Home</a></li><li><a href="/guides">Guides</a></li><li aria-current="page">LRU Cache Implementation: Step-by-Step in Java, Python &amp; C++</li></ol></nav>
         <header class="mb-8">
-          <p class="text-sm font-bold text-blue-600 uppercase tracking-wider">Data Structures · 18 min read</p>
-          <h1 class="text-4xl font-black text-slate-900 mt-2">LRU Cache Implementation: Step-by-Step in Java, Python & C++</h1>
-          <p class="text-lg text-slate-600 mt-4 leading-relaxed">Complete step-by-step guide to implementing an LRU Cache with O(1) get and put operations. Includes Doubly Linked List + HashMap implementations in Java, Python, and C++.</p>
+          <p class="text-sm font-bold text-blue-600 uppercase tracking-wider">DSA · 18 min read</p>
+          <h1 class="text-4xl font-black text-slate-900 mt-2">LRU Cache Implementation: Step-by-Step in Java, Python &amp; C++</h1>
+          <p class="text-lg text-slate-600 mt-4 leading-relaxed">This guide walks through an LRU cache implementation in Java, Python, and C++, using a hash map and a doubly linked list, with notes on complexity and thread-safety trade-offs.</p>
+          <p class="mt-4 text-sm text-slate-600">Published by PrepVisor · Guide publisher · Updated 2026-09-20</p>
         </header>
-        <section class="space-y-6">
-          <h2 class="text-2xl font-bold text-slate-800">Key Interview Sections</h2>
-          <ul class="list-disc pl-6 space-y-2 text-slate-700">
-            <li><strong>1. LRU Cache Problem Breakdown & Complexity Requirements</strong></li><li><strong>2. The Dummy Sentinel Node Technique (Head & Tail)</strong></li><li><strong>3. Complete Production-Grade Java Implementation</strong></li><li><strong>4. Multi-Language Implementations: Python & Modern C++</strong></li><li><strong>5. Concurrency & Thread-Safety Extensions</strong></li><li><strong>6. Common Interview Follow-Ups & Edge Cases</strong></li>
-          </ul>
-        </section>
+        <nav aria-label="Table of Contents"><h2>Table of Contents</h2><ol><li><a href="#problem-breakdown">1. LRU Cache Problem Breakdown &amp; Complexity Requirements</a></li><li><a href="#problem-breakdown-why-single-data-structures-fail">Why Single Data Structures Fail</a></li><li><a href="#problem-breakdown-the-dual-data-structure-solution">The Dual Data Structure Solution</a></li><li><a href="#sentinel-nodes">2. The Dummy Sentinel Node Technique (Head &amp; Tail)</a></li><li><a href="#sentinel-nodes-the-sentinel-technique">The Sentinel Technique</a></li><li><a href="#sentinel-nodes-the-4-core-o-1-primitives">The 4 Core O(1) Primitives</a></li><li><a href="#java-implementation">3. Complete Production-Grade Java Implementation</a></li><li><a href="#python-cpp">4. Multi-Language Implementations: Python &amp; Modern C++</a></li><li><a href="#python-cpp-python-implementation-using-collections-ordereddict">Python Implementation (Using collections.OrderedDict)</a></li><li><a href="#python-cpp-c-20-implementation-std-unordered-map-std-list">C++20 Implementation (std::unordered_map + std::list)</a></li><li><a href="#concurrency-thread-safety">5. Concurrency &amp; Thread-Safety Extensions</a></li><li><a href="#concurrency-thread-safety-the-readwritelock-trap-in-lru-cache">The ReadWriteLock Trap in LRU Cache</a></li><li><a href="#concurrency-thread-safety-scalable-concurrency-solutions">Scalable Concurrency Solutions</a></li><li><a href="#interview-follow-ups">6. Common Interview Follow-Ups &amp; Edge Cases</a></li><li><a href="#interview-follow-ups-1-adding-time-to-live-ttl-expiration">1. Adding Time-To-Live (TTL) Expiration</a></li><li><a href="#interview-follow-ups-2-lru-vs-lfu-least-frequently-used">2. LRU vs LFU (Least Frequently Used)</a></li><li><a href="#references">References &amp; Further Reading</a></li><li><a href="#faqs">Frequently Asked Questions</a></li></ol></nav>
+        <main>
+    <section id="problem-breakdown">
+      <h2>1. LRU Cache Problem Breakdown &amp; Complexity Requirements</h2>
+      <p>Why individual data structures fail and why a hybrid approach is required</p>
+      <p>The LRU Cache problem asks you to design a fixed-capacity data structure that supports two operations:</p>
+<ul><li><code>get(key)</code>: Return the value if the key exists, otherwise return <code>-1</code>. Accessing an item marks it as the <em>most recently used</em>.</li><li><code>put(key, value)</code>: Update the value if the key exists, or insert the key-value pair. If the number of keys exceeds <code>capacity</code>, evict the <em>least recently used</em> key.</li><li><strong>Typical target</strong>: Both <code>get</code> and <code>put</code> can have expected average $O(1)$ time when hash-map operations are expected average $O(1)$ and list updates use known node references.</li></ul>
+<h3 id="problem-breakdown-why-single-data-structures-fail">Why Single Data Structures Fail</h3>
+<ul><li><strong>Array / Dynamic List</strong>: Provides $O(1)$ access by index, but search by key is $O(N)$ and moving an element to the front requires $O(N)$ shifts.</li><li><strong>Singly Linked List</strong>: Supports $O(1)$ insertion at the head, but searching for an arbitrary node is $O(N)$, and removing a node requires $O(N)$ traversal to find the preceding node pointer.</li><li><strong>Standard Hash Map</strong>: Provides $O(1)$ average key-value lookup, but maintains no sequential ordering of recency.</li></ul>
+<h3 id="problem-breakdown-the-dual-data-structure-solution">The Dual Data Structure Solution</h3>
+<p>To get expected average $O(1)$ lookup plus constant-time list updates, combine two data structures:</p>
+<ol><li><strong>Hash Map (<code>Map&lt;Key, Node&gt;</code>)</strong>: Maps each key to its node in the linked list. Lookup is expected average $O(1)$ under typical hash distribution assumptions.</li><li><strong>Doubly Linked List</strong>: Keeps nodes in recency order. With a direct node reference, unlinking or moving that node takes constant time.</li></ol>
+      <aside><h3>LRU Cache Architectural Blueprint</h3><ul><li><strong>Time Complexity (get):</strong> O(1) average lookup via Hash Map</li><li><strong>Time Complexity (put):</strong> O(1) insertion &amp; O(1) eviction via Doubly Linked List</li><li><strong>Space Complexity:</strong> O(Capacity) auxiliary memory</li><li><strong>Pointer Safety:</strong> Dummy Head &amp; Tail Sentinels (Zero Null Checks)</li></ul></aside>
+
+      <aside><h3>Key Interview Takeaways</h3><ul><li>A Doubly Linked List is mandatory (not singly) because removing a node in O(1) requires access to node.prev.</li><li>The HashMap must store pointers/references to the Doubly Linked List Node, not just the raw value.</li></ul></aside>
+    </section>
+
+    <section id="sentinel-nodes">
+      <h2>2. The Dummy Sentinel Node Technique (Head &amp; Tail)</h2>
+      <p>How dummy sentinels simplify pointer manipulation</p>
+      <p>Handling edge cases when inserting or removing nodes at linked-list boundaries (empty list, one element, head eviction, tail eviction) can require additional null checks:</p>
+<pre><code class="language-java">if (head == null) { ... }
+if (node == tail) { ... }
+if (node.prev != null) { ... }</code></pre>
+<p>Sentinel nodes provide permanent boundaries, which can simplify these cases and reduce conditional branches.</p>
+<h3 id="sentinel-nodes-the-sentinel-technique">The Sentinel Technique</h3>
+<p>Initialize two permanent dummy nodes: <code>head</code> and <code>tail</code>.</p>
+<ul><li>In an empty cache, connect <code>head.next = tail</code> and <code>tail.prev = head</code>.</li><li>Real cached nodes always sit <strong>strictly between</strong> <code>head</code> and <code>tail</code>.</li><li><strong>Head is the Most Recently Used (MRU)</strong> position: freshly accessed or inserted nodes are placed right after <code>head</code>.</li><li><strong>Tail is the Least Recently Used (LRU)</strong> position: the node right before <code>tail</code> (<code>tail.prev</code>) is always the eviction candidate.</li></ul>
+<h3 id="sentinel-nodes-the-4-core-o-1-primitives">The 4 Core O(1) Primitives</h3>
+<ol><li><strong><code>addNode(Node node)</code></strong>: Links <code>node</code> between <code>head</code> and <code>head.next</code>.</li><li><strong><code>removeNode(Node node)</code></strong>: Unlinks <code>node</code> by connecting <code>node.prev.next = node.next</code> and <code>node.next.prev = node.prev</code>.</li><li><strong><code>moveToHead(Node node)</code></strong>: Calls <code>removeNode(node)</code> followed by <code>addNode(node)</code>.</li><li><strong><code>popTail()</code></strong>: Calls <code>removeNode(tail.prev)</code> and returns the evicted node so its key can be purged from the HashMap.</li></ol>
+
+
+      <aside><h3>Key Interview Takeaways</h3><ul><li>With dummy head and tail sentinels, head.next and tail.prev are never null, eliminating all boundary conditional checks.</li><li>Every node manipulation reduces to simple pointer swaps with zero risk of NullPointerExceptions.</li></ul></aside>
+    </section>
+
+    <section id="java-implementation">
+      <h2>3. Complete Production-Grade Java Implementation</h2>
+      <p>Idiomatic object-oriented implementation with custom Node class</p>
+      <p>Below is the complete, self-contained Java implementation of the LRU Cache matching LeetCode 146 requirements:</p>
+
+      <figure><figcaption>Complete O(1) LRU Cache Implementation in Java with Dummy Sentinels</figcaption><pre><code class="language-java">public class LRUCache {
+
+    // Doubly Linked List Node
+    private static class Node {
+        int key;
+        int value;
+        Node prev;
+        Node next;
+
+        Node(int key, int value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+
+    private final int capacity;
+    private final Map&lt;Integer, Node&gt; cache;
+    private final Node head;
+    private final Node tail;
+
+    public LRUCache(int capacity) {
+        if (capacity &lt;= 0) {
+            throw new IllegalArgumentException(&quot;Capacity must be positive&quot;);
+        }
+        this.capacity = capacity;
+        this.cache = new HashMap&lt;&gt;(capacity);
+
+        // Initialize dummy sentinels to eliminate null pointer conditionals
+        this.head = new Node(0, 0);
+        this.tail = new Node(0, 0);
+        head.next = tail;
+        tail.prev = head;
+    }
+
+    public int get(int key) {
+        Node node = cache.get(key);
+        if (node == null) {
+            return -1;
+        }
+        // Move accessed node to head (most recently used)
+        moveToHead(node);
+        return node.value;
+    }
+
+    public void put(int key, int value) {
+        Node existingNode = cache.get(key);
+        if (existingNode != null) {
+            // Update existing value and move to MRU head
+            existingNode.value = value;
+            moveToHead(existingNode);
+        } else {
+            Node newNode = new Node(key, value);
+            cache.put(key, newNode);
+            addNode(newNode);
+
+            // If capacity exceeded, evict LRU tail
+            if (cache.size() &gt; capacity) {
+                Node lru = popTail();
+                cache.remove(lru.key);
+            }
+        }
+    }
+
+    // Helper: Insert node immediately after dummy head
+    private void addNode(Node node) {
+        node.prev = head;
+        node.next = head.next;
+        head.next.prev = node;
+        head.next = node;
+    }
+
+    // Helper: Unlink an arbitrary node in O(1)
+    private void removeNode(Node node) {
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+    }
+
+    // Helper: Move existing node to most-recently-used position
+    private void moveToHead(Node node) {
+        removeNode(node);
+        addNode(node);
+    }
+
+    // Helper: Evict least-recently-used node right before dummy tail
+    private Node popTail() {
+        Node lru = tail.prev;
+        removeNode(lru);
+        return lru;
+    }
+}</code></pre></figure>
+      <aside><h3>Key Interview Takeaways</h3><ul><li>The Node class MUST store both key and value so that when popTail() evicts a node, its key is known for cache.remove(key).</li><li>Always handle the existing key update scenario in put() before checking capacity eviction.</li></ul></aside>
+    </section>
+
+    <section id="python-cpp">
+      <h2>4. Multi-Language Implementations: Python &amp; Modern C++</h2>
+      <p>How to write idiomatic LRU Cache in Python and C++20</p>
+      <h3 id="python-cpp-python-implementation-using-collections-ordereddict">Python Implementation (Using <code>collections.OrderedDict</code>)</h3>
+<p>In Python, <code>collections.OrderedDict</code> maintains insertion order and exposes <code>move_to_end(key)</code> and <code>popitem(last=False)</code>:</p>
+<pre><code class="language-python">from collections import OrderedDict
+
+class LRUCache:
+    def __init__(self, capacity: int):
+        self.capacity = capacity
+        self.cache = OrderedDict()
+
+    def get(self, key: int) -&gt; int:
+        if key not in self.cache:
+            return -1
+        self.cache.move_to_end(key)
+        return self.cache[key]
+
+    def put(self, key: int, value: int) -&gt; None:
+        if key in self.cache:
+            self.cache.move_to_end(key)
+        self.cache[key] = value
+        if len(self.cache) &gt; self.capacity:
+            self.cache.popitem(last=False) # Evicts LRU item (front)</code></pre>
+<h3 id="python-cpp-c-20-implementation-std-unordered-map-std-list">C++20 Implementation (<code>std::unordered_map</code> + <code>std::list</code>)</h3>
+<p>In C++, use <code>std::list</code> (a doubly linked list) and <code>std::unordered_map</code> storing iterators. Use <code>std::list::splice</code> to relocate nodes in $O(1)$ without copying or memory reallocation:</p>
+<pre><code class="language-cpp">#include &lt;unordered_map&gt;
+#include &lt;list&gt;
+
+class LRUCache {
+private:
+    int capacity;
+    // List stores pair of {key, value}
+    std::list&lt;std::pair&lt;int, int&gt;&gt; dll;
+    // Map stores iterator pointing directly to node in dll
+    std::unordered_map&lt;int, std::list&lt;std::pair&lt;int, int&gt;&gt;::iterator&gt; map;
+
+public:
+    LRUCache(int cap) : capacity(cap) {}
+
+    int get(int key) {
+        auto it = map.find(key);
+        if (it == map.end()) return -1;
+        // Splice moves node to front of dll in O(1)
+        dll.splice(dll.begin(), dll, it-&gt;second);
+        return it-&gt;second-&gt;second;
+    }
+
+    void put(int key, int value) {
+        auto it = map.find(key);
+        if (it != map.end()) {
+            it-&gt;second-&gt;second = value;
+            dll.splice(dll.begin(), dll, it-&gt;second);
+            return;
+        }
+        if (dll.size() == capacity) {
+            int lruKey = dll.back().first;
+            map.erase(lruKey);
+            dll.pop_back();
+        }
+        dll.emplace_front(key, value);
+        map[key] = dll.begin();
+    }
+};</code></pre>
+
+
+      <aside><h3>Key Interview Takeaways</h3><ul><li>In C++, std::list::splice relocates list elements without copying their values; consult the selected standard-library documentation for complexity and allocator requirements.</li><li>In Python, knowing both OrderedDict and the raw Doubly Linked List approach demonstrates senior depth.</li></ul></aside>
+    </section>
+
+    <section id="concurrency-thread-safety">
+      <h2>5. Concurrency &amp; Thread-Safety Extensions</h2>
+      <p>Scaling LRU Cache across multiple concurrent threads</p>
+      <p>Concurrent cache implementations need to coordinate concurrent access. A single <code>synchronized</code> wrapper can limit parallelism when those methods are contended; the impact depends on workload and implementation.</p>
+<h3 id="concurrency-thread-safety-the-readwritelock-trap-in-lru-cache">The ReadWriteLock Trap in LRU Cache</h3>
+<p>Many candidates suggest using <code>ReentrantReadWriteLock</code>, assuming <code>get()</code> can use the read lock while <code>put()</code> uses the write lock.</p>
+<ul><li><strong>The Catch</strong>: In an LRU Cache, <strong><code>get()</code> is NOT a read-only operation</strong>! <code>get()</code> must move the accessed node to the MRU head, mutating <code>prev</code> and <code>next</code> pointers. Therefore, <code>get()</code> requires a WRITE lock, defeating the entire purpose of <code>ReadWriteLock</code>!</li></ul>
+<h3 id="concurrency-thread-safety-scalable-concurrency-solutions">Scalable Concurrency Solutions</h3>
+<ol><li><strong>Segmented Locking (Striped Locks)</strong>: Divide the key space into $S$ independent segments (like legacy <code>ConcurrentHashMap</code>). Each segment has its own capacity and independent lock.</li><li><strong>Buffered or approximate eviction maintenance</strong>:</li></ol>
+<ul><li>Some cache designs separate key lookup from recency or eviction maintenance.</li><li>Synchronization, buffering, and consistency guarantees vary by implementation; consult the selected library&#39;s current documentation and source.</li></ul>
+
+
+      <aside><h3>Key Interview Takeaways</h3><ul><li>Never claim ReadWriteLock solves LRU cache concurrency without clarifying that get() mutates list pointers.</li><li>Discuss the synchronization and eviction trade-offs of the particular cache implementation being considered.</li></ul></aside>
+    </section>
+
+    <section id="interview-follow-ups">
+      <h2>6. Common Interview Follow-Ups &amp; Edge Cases</h2>
+      <p>Handling TTL expiration, LFU comparison, and memory-bounded sizing</p>
+      <p>Interviewers will often extend the standard LRU question with these follow-ups:</p>
+<h3 id="interview-follow-ups-1-adding-time-to-live-ttl-expiration">1. Adding Time-To-Live (TTL) Expiration</h3>
+<p>How do you support cache keys that expire after a specified duration?</p>
+<ul><li><strong>Approach</strong>: Add an <code>expiresAt</code> timestamp to the <code>Node</code>.</li><li><strong>Lazy Expiration</strong>: On <code>get(key)</code>, check if <code>now &gt; node.expiresAt</code>. If expired, evict the node and return <code>-1</code>.</li><li><strong>Active Cleanup</strong>: Maintain a secondary Min-Heap (PriorityQueue) or time-wheel ordered by <code>expiresAt</code>, and run a periodic background cleanup task to purge expired entries before capacity fills up.</li></ul>
+<h3 id="interview-follow-ups-2-lru-vs-lfu-least-frequently-used">2. LRU vs LFU (Least Frequently Used)</h3>
+<ul><li><strong>LRU</strong>: Evicts based on time since last access. Susceptible to cache pollution during one-off full-table scans.</li><li><strong>LFU</strong>: Evicts based on access frequency counter. Preserves frequently used items better, but requires more memory and historical frequency counters can become stale without age decay.</li></ul>
+
+
+      <aside><h3>Key Interview Takeaways</h3><ul><li>Be prepared to explain how to augment LRU with TTL using lazy expiration and min-heap tracking.</li><li>Recognize that LRU can suffer from cache pollution during sequential scans.</li></ul></aside>
+    </section>
+  <section id="references"><h2>References &amp; Further Reading</h2><ul><li><a href="https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/LinkedHashMap.html" target="_blank" rel="noopener noreferrer">LinkedHashMap (Java SE API)</a> — Oracle Java Documentation</li></ul></section><section id="faqs"><h2>Frequently Asked Questions</h2><details><summary>How does a Doubly Linked List enable constant-time LRU node updates?</summary><p>To unlink a known node in constant time, a doubly linked list stores its previous and next pointers. A singly linked list normally requires traversal to find the preceding node.</p></details><details><summary>How do dummy head and tail sentinel nodes simplify LRU cache pointer manipulation?</summary><p>Dummy head and tail sentinels act as permanent boundaries. The real cached nodes always sit strictly between them. This eliminates edge cases (such as inserting into an empty list, removing the only node, or boundary null pointer checks), reducing code complexity and preventing runtime NullPointerExceptions.</p></details><details><summary>Why does standard ReentrantReadWriteLock fail to scale for a concurrent LRU cache?</summary><p>In a standard cache, get() is a read operation. However, in an LRU cache, get() mutates the list pointers to reposition the accessed node to the most recently used head. Consequently, get() requires a write lock, causing all concurrent reader threads to serialize and eliminating the concurrency benefits of ReadWriteLock.</p></details><details><summary>What is the difference between LRU (Least Recently Used) and LFU (Least Frequently Used)?</summary><p>LRU evicts the item that was accessed the furthest in the past, regardless of how many times it was used before. LFU tracks access frequency and evicts the item with the lowest hit count. LFU is better at resisting cache pollution from one-off bulk scans, but requires more complex O(1) bookkeeping and frequency decay mechanisms.</p></details><details><summary>How can you add Time-To-Live (TTL) expiration to an LRU cache?</summary><p>Add an expiresAt timestamp field to each cache node. Implement lazy expiration on get() (if current time exceeds expiresAt, delete the node and return -1) and active background expiration using a PriorityQueue (Min-Heap) sorted by expiresAt to periodically remove expired entries.</p></details><details><summary>How can concurrent cache implementations separate lookup from eviction maintenance?</summary><p>Some cache designs separate key lookup from recency or eviction maintenance, but synchronization and buffering are implementation-specific. Consult the chosen library's current documentation and source rather than assuming a particular design.</p></details></section></main>
+        <nav aria-label="Related guides"><h2>Related Guides</h2><ul><li><a href="/guides/java-concurrency-interview-questions">Java Concurrency Interview Questions and Concepts</a></li></ul></nav>
+        <p><a href="/coding-practice">Continue practicing with PrepVisor</a></p>
         <section class="mt-12 p-6 rounded-2xl bg-blue-50 border border-blue-200">
           <h3 class="text-xl font-bold text-slate-900">Practice this question on PrepVisor AI Studio</h3>
-          <p class="text-sm text-slate-600 mt-2">Get real-time scoring, code evaluation, and system design feedback.</p>
-          <a href="https://app.prepvisor.in/register?utm_source=organic_seo&utm_medium=guide&utm_campaign=lru-cache-implementation" class="inline-block mt-4 px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl">Launch Practice Studio</a>
+          <p class="text-sm text-slate-600 mt-2">Practice cache implementation exercises and reason through complexity, concurrency, and edge cases in the coding studio.</p>
+          <a href="https://app.prepvisor.in/register?utm_source=organic_seo&amp;utm_medium=guide&amp;utm_campaign=lru_cache_implementation" class="inline-block mt-4 px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl">Solve LRU Cache Challenges</a>
         </section>
       </article>
     </noscript>
-  
+
   </body>
 </html>

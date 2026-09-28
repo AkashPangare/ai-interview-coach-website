@@ -16,6 +16,7 @@ import {
 import { COMPANY_CONFIG, type PricingTier, type AddOnPack } from "@/config/company"
 import { decorateUrlWithUtms, trackEvent } from "../lib/analytics"
 import { usePageSeo } from "@/hooks/usePageSeo"
+import { SEO_ROUTES } from "@/config/seo"
 
 interface PricingPageProps {
   onOpenWaitlistWithPlan?: (planId: string) => void
@@ -79,12 +80,7 @@ const PRICING_FAQS: FAQItem[] = [
 ]
 
 export const PricingPage: React.FC<PricingPageProps> = () => {
-  usePageSeo({
-    title: "PrepVisor Pricing — One-Time AI Interview Prep Passes from ₹199",
-    description: "Transparent, one-time prepaid interview passes from ₹199. Zero recurring subscriptions. Full access to DSA coding studio, infinite system design whiteboard, and voice AI mocks.",
-    canonicalUrl: "https://prepvisor.in/pricing",
-    keywords: "prepvisor pricing, tech interview prep cost, interview preparation passes, coding interview cost, system design practice pricing",
-  })
+  usePageSeo(SEO_ROUTES.pricing)
 
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
 
@@ -369,7 +365,10 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
               return (
                 <div key={index} className="transition-colors">
                   <button
+                    type="button"
                     onClick={() => toggleFaq(index)}
+                    aria-expanded={isOpen}
+                    aria-controls={`pricing-faq-answer-${index}`}
                     className="flex w-full items-center justify-between p-5 text-left text-xs sm:text-sm font-medium text-slate-900 hover:bg-slate-50/80 gap-4"
                   >
                     <span>{faq.question}</span>
@@ -379,11 +378,9 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
                       <ChevronDown className="h-4 w-4 shrink-0 text-slate-400" />
                     )}
                   </button>
-                  {isOpen && (
-                    <div className="px-5 pb-5 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-3 bg-slate-50/40">
+                  <div id={`pricing-faq-answer-${index}`} role="region" hidden={!isOpen} className="px-5 pb-5 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-3 bg-slate-50/40">
                       {faq.answer}
-                    </div>
-                  )}
+                  </div>
                 </div>
               )
             })}

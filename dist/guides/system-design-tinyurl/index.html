@@ -7,24 +7,21 @@
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>System Design: How to Design TinyURL | Interview Architecture & Capacity Guide | PrepVisor</title>
+    <title>System Design: How to Design TinyURL | Interview Architecture &amp; Capacity Guide | PrepVisor</title>
     <meta name="description" content="Comprehensive system design interview guide for TinyURL / URL shortener. Learn capacity estimation, Base62 vs hashing, Key Generation Service (KGS), caching, and SPOF analysis." />
-    <meta
-      name="keywords"
-      content="AI tech interview coach, system design interview simulator, DSA coding practice terminal stdout, voice mock interview STAR method, tech interview study roadmap, Java interview prep, software engineer mock interview, PrepVisor"
-    />
     <meta name="author" content="PrepVisor" />
-    <link rel="canonical" href="https://prepvisor.in/" />
-    
+    <link rel="canonical" href="https://prepvisor.in/guides/system-design-tinyurl" />
+
     <link rel="manifest" href="/manifest.json" />
-    
+
     <!-- Preconnect & Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" /></noscript>
     <link rel="preconnect" href="https://app.prepvisor.in" />
     <link rel="dns-prefetch" href="https://app.prepvisor.in" />
-    
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-DNM4SMR2VK"></script>
     <script>
@@ -35,111 +32,170 @@
     </script>
 
     <!-- Open Graph / Facebook / LinkedIn -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://prepvisor.in/" />
-    <meta property="og:title" content="PrepVisor | AI Tech Interview Coach, System Design Simulator & DSA Arena" />
-    <meta property="og:description" content="Master tech interviews with dynamic AI pacing. Interactive DSA coding arena with live terminal stdout, interactive System Design whiteboard with scale math, and voice AI mock interviews." />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://prepvisor.in/guides/system-design-tinyurl" />
+    <meta property="og:title" content="System Design: How to Design TinyURL (Architecture, Capacity &amp; SPOF)" />
+    <meta property="og:description" content="Comprehensive system design interview guide for TinyURL / URL shortener. Learn capacity estimation, Base62 vs hashing, Key Generation Service (KGS), caching, and SPOF analysis." />
     <meta property="og:image" content="https://prepvisor.in/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="PrepVisor — AI interview preparation for software engineers" />
     <meta property="og:site_name" content="PrepVisor" />
 
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://prepvisor.in/" />
-    <meta name="twitter:title" content="PrepVisor | AI Tech Interview Coach, System Design Simulator & DSA Arena" />
-    <meta name="twitter:description" content="Master tech interviews with dynamic AI pacing. Interactive DSA coding arena with live terminal stdout, interactive System Design whiteboard with scale math, and voice AI mock interviews." />
+    <meta name="twitter:url" content="https://prepvisor.in/guides/system-design-tinyurl" />
+    <meta name="twitter:title" content="System Design: How to Design TinyURL (Architecture, Capacity &amp; SPOF)" />
+    <meta name="twitter:description" content="Comprehensive system design interview guide for TinyURL / URL shortener. Learn capacity estimation, Base62 vs hashing, Key Generation Service (KGS), caching, and SPOF analysis." />
     <meta name="twitter:image" content="https://prepvisor.in/og-image.png" />
 
     <!-- Structured Data for Search Engines -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "SoftwareApplication",
-            "@id": "https://prepvisor.in/#software",
-            "name": "PrepVisor",
-            "operatingSystem": "Web, Cloud",
-            "applicationCategory": "EducationalApplication",
-            "description": "An interactive AI tech interview coach featuring time-calibrated preparation roadmaps, DSA coding studio with terminal stdout, infinite system design whiteboard with scale math, and voice STAR behavioral mock interviews.",
-            "url": "https://prepvisor.in",
-            "offers": {
-              "@type": "AggregateOffer",
-              "priceCurrency": "INR",
-              "lowPrice": "0",
-              "highPrice": "1499",
-              "offerCount": "5"
-            }
-          },
-          {
-            "@type": "Organization",
-            "@id": "https://prepvisor.in/#organization",
-            "name": "PrepVisor",
-            "url": "https://prepvisor.in",
-            "logo": "https://prepvisor.in/logo.png",
-            "contactPoint": {
-              "@type": "ContactPoint",
-              "telephone": "+91 7249778116",
-              "contactType": "Customer Support",
-              "areaServed": "IN",
-              "availableLanguage": ["English"]
-            },
-            "address": {
-              "@type": "PostalAddress",
-              "streetAddress": "Flat 201, Aurum Residencies, Maruthi Nagar, BTM Layout Stage 1",
-              "addressLocality": "Bengaluru",
-              "addressRegion": "Karnataka",
-              "postalCode": "560068",
-              "addressCountry": "IN"
-            }
-          },
-          {
-            "@type": "WebSite",
-            "@id": "https://prepvisor.in/#website",
-            "url": "https://prepvisor.in",
-            "name": "PrepVisor",
-            "publisher": {
-              "@id": "https://prepvisor.in/#organization"
-            }
-          }
-        ]
-      }
-    </script>
-    <script type="module" crossorigin src="/assets/index-D3pypZJn.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DO_PuZJO.css">
-  
-    <link rel="canonical" href="https://prepvisor.in/guides/system-design-tinyurl" />
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="System Design: How to Design TinyURL (Architecture, Capacity & SPOF)" />
-    <meta property="og:description" content="Comprehensive system design interview guide for TinyURL / URL shortener. Learn capacity estimation, Base62 vs hashing, Key Generation Service (KGS), caching, and SPOF analysis." />
-    <meta property="og:url" content="https://prepvisor.in/guides/system-design-tinyurl" />
-    <meta name="twitter:title" content="System Design: How to Design TinyURL (Architecture, Capacity & SPOF)" />
-    <meta name="twitter:description" content="Comprehensive system design interview guide for TinyURL / URL shortener. Learn capacity estimation, Base62 vs hashing, Key Generation Service (KGS), caching, and SPOF analysis." />
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"System Design: How to Design TinyURL (Architecture, Capacity & SPOF)","description":"Comprehensive system design interview guide for TinyURL / URL shortener. Learn capacity estimation, Base62 vs hashing, Key Generation Service (KGS), caching, and SPOF analysis.","image":"https://prepvisor.in/logo.png","author":{"@type":"Organization","name":"PrepVisor Systems Engineering Team","url":"https://prepvisor.in"},"publisher":{"@type":"Organization","name":"PrepVisor","url":"https://prepvisor.in","logo":{"@type":"ImageObject","url":"https://prepvisor.in/logo.png"}},"datePublished":"2026-09-18T08:00:00+05:30","dateModified":"2026-09-18T08:00:00+05:30","mainEntityOfPage":{"@type":"WebPage","@id":"https://prepvisor.in/guides/system-design-tinyurl"},"keywords":"how to design tinyurl, system design url shortener interview, tinyurl system design high level architecture, base62 encoding tinyurl, key generation service kgs, system design interview questions"}</script>
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why use Base62 instead of Base64 for short URLs?","acceptedAnswer":{"@type":"Answer","text":"Base64 includes characters like '+' and '/', which carry special meanings in URL query strings and path segments. Base62 consists strictly of alphanumeric characters [a-z, A-Z, 0-9], making it safe across all browsers, SMS, and messaging apps."}},{"@type":"Question","name":"Should TinyURL return HTTP 301 or HTTP 302 status code?","acceptedAnswer":{"@type":"Answer","text":"HTTP 301 is a Permanent Redirect cached by browsers, preventing click tracking. HTTP 302 is a Temporary Redirect forcing clicks through your servers, allowing real-time analytics, rate-limiting, and malicious link blocking."}},{"@type":"Question","name":"What is the storage requirement for 6 billion short URLs?","acceptedAnswer":{"@type":"Answer","text":"At an average of 600 bytes per record (500 bytes original URL + 100 bytes key and metadata), 6 billion URLs require approximately 3.6 Terabytes of total database storage."}}]}</script>
-  </head>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://prepvisor.in/#organization","name":"PrepVisor","url":"https://prepvisor.in","logo":"https://prepvisor.in/logo.png","contactPoint":{"@type":"ContactPoint","telephone":"+91 7249778116","email":"support@prepvisor.in","contactType":"Customer Support","areaServed":"IN","availableLanguage":["English"]},"address":{"@type":"PostalAddress","streetAddress":"Flat 201,Aurum Residencies,Maruthi Nagar,BTM Layout stage 1, Near RS High School,9th cross, Madiwala","addressLocality":"Bengaluru","addressRegion":"Karnataka","postalCode":"560068","addressCountry":"IN"}},{"@type":"WebSite","@id":"https://prepvisor.in/#website","url":"https://prepvisor.in/","name":"PrepVisor","publisher":{"@id":"https://prepvisor.in/#organization"}},{"@type":"SoftwareApplication","@id":"https://prepvisor.in/#software","name":"PrepVisor","operatingSystem":"Web, Cloud","applicationCategory":"EducationalApplication","description":"An interactive AI tech interview coach featuring time-calibrated preparation roadmaps, DSA coding studio with terminal stdout, infinite system design whiteboard with scale math, and voice STAR behavioral mock interviews.","url":"https://prepvisor.in","publisher":{"@id":"https://prepvisor.in/#organization"},"offers":{"@type":"AggregateOffer","priceCurrency":"INR","lowPrice":199,"highPrice":1299,"offerCount":4}}]}</script>
+    <script type="module" crossorigin src="/assets/index-CM9GHTF1.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DL1QVLFc.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","@id":"https://prepvisor.in/guides/system-design-tinyurl#article","headline":"System Design: How to Design TinyURL (Architecture, Capacity & SPOF)","description":"Comprehensive system design interview guide for TinyURL / URL shortener. Learn capacity estimation, Base62 vs hashing, Key Generation Service (KGS), caching, and SPOF analysis.","author":{"@type":"Organization","name":"PrepVisor","@id":"https://prepvisor.in/#organization"},"publisher":{"@id":"https://prepvisor.in/#organization"},"dateModified":"2026-09-18T08:00:00+05:30","url":"https://prepvisor.in/guides/system-design-tinyurl","mainEntityOfPage":{"@type":"WebPage","@id":"https://prepvisor.in/guides/system-design-tinyurl"},"keywords":"how to design tinyurl, system design url shortener interview, tinyurl system design high level architecture, base62 encoding tinyurl, key generation service kgs, system design interview questions"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why use Base62 instead of Base64 for short URLs?","acceptedAnswer":{"@type":"Answer","text":"Base64 includes characters like '+' and '/', which carry special meanings in URL query strings and path segments and require percent-encoding (%2B, %2F). Base62 consists strictly of alphanumeric characters [a-z, A-Z, 0-9], making it safe for all browsers, SMS, and messaging apps."}},{"@type":"Question","name":"Should TinyURL return HTTP 301 or HTTP 302 status code?","acceptedAnswer":{"@type":"Answer","text":"HTTP 301 means the resource has moved permanently and is heuristically cacheable unless cache controls say otherwise. HTTP 302 means the move is temporary. Neither status alone guarantees analytics behavior: caching directives, clients, and the service's request flow affect whether later requests reach the origin. See RFC 9110, Sections 15.4.2–15.4.3."}},{"@type":"Question","name":"How do you handle expired short links efficiently?","acceptedAnswer":{"@type":"Answer","text":"For an illustrative large dataset, lazy expiry checks plus periodic cleanup are one option. On access, verify the timestamp, return the chosen expired-link response, and enqueue cleanup if appropriate."}},{"@type":"Question","name":"How do you prevent two users from receiving the same short URL?","acceptedAnswer":{"@type":"Answer","text":"A KGS can allocate pre-generated unique Base62 tokens to workers. Uniqueness depends on how the service creates, reserves, and allocates keys; no collision guarantee follows from the pattern alone."}},{"@type":"Question","name":"How do you protect the service from malicious spam and DDoS?","acceptedAnswer":{"@type":"Answer","text":"Implement Token Bucket rate limiting per IP address / API key, integrate Google Safe Browsing API on the write path to block phishing URLs, and enforce CAPTCHA on unauthenticated link creation."}},{"@type":"Question","name":"How can you estimate storage for a URL shortener?","acceptedAnswer":{"@type":"Answer","text":"Multiply the assumed record count by an estimated record size, then account separately for indexes, replication, backups, and storage-engine overhead. For example, 6 billion records at an assumed 600 bytes each yield 3.6 TB before those additional costs; this is scenario arithmetic, not a measured deployment size."}}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://prepvisor.in/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://prepvisor.in/guides"},{"@type":"ListItem","position":3,"name":"System Design: How to Design TinyURL (Architecture, Capacity & SPOF)","item":"https://prepvisor.in/guides/system-design-tinyurl"}]}</script></head>
   <body class="bg-slate-50 text-slate-900 antialiased selection:bg-blue-600 selection:text-white min-h-screen">
-    
+
     <div id="root"></div>
     <noscript>
       <article class="p-8 max-w-4xl mx-auto font-sans">
+        <nav aria-label="Breadcrumb"><ol><li><a href="/">Home</a></li><li><a href="/guides">Guides</a></li><li aria-current="page">System Design: How to Design TinyURL (Architecture, Capacity &amp; SPOF)</li></ol></nav>
         <header class="mb-8">
           <p class="text-sm font-bold text-blue-600 uppercase tracking-wider">System Design · 20 min read</p>
-          <h1 class="text-4xl font-black text-slate-900 mt-2">System Design: How to Design TinyURL (Architecture, Capacity & SPOF)</h1>
-          <p class="text-lg text-slate-600 mt-4 leading-relaxed">Comprehensive system design interview guide for TinyURL / URL shortener. Learn capacity estimation, Base62 vs hashing, Key Generation Service (KGS), caching, and SPOF analysis.</p>
+          <h1 class="text-4xl font-black text-slate-900 mt-2">System Design: How to Design TinyURL (Architecture, Capacity &amp; SPOF)</h1>
+          <p class="text-lg text-slate-600 mt-4 leading-relaxed">This guide walks through a URL-shortening system design, including requirements, example capacity estimates, database schema, Base62 key generation, caching strategies, and failover trade-offs.</p>
+          <p class="mt-4 text-sm text-slate-600">Published by PrepVisor · Guide publisher · Updated 2026-09-18</p>
         </header>
-        <section class="space-y-6">
-          <h2 class="text-2xl font-bold text-slate-800">Key Interview Sections</h2>
-          <ul class="list-disc pl-6 space-y-2 text-slate-700">
-            <li><strong>1. Functional & Non-Functional Requirements</strong></li><li><strong>2. Capacity Estimation & Back-of-the-Envelope Calculations</strong></li><li><strong>3. Key Generation Strategy: Base62 vs Hashing</strong></li><li><strong>4. High-Level Architecture & End-to-End Flow</strong></li><li><strong>5. Database Schema & Storage Engine Choice</strong></li><li><strong>6. Single Point of Failure (SPOF) & Fault Tolerance</strong></li>
-          </ul>
-        </section>
+        <nav aria-label="Table of Contents"><h2>Table of Contents</h2><ol><li><a href="#requirements">1. Functional &amp; Non-Functional Requirements</a></li><li><a href="#capacity-estimation">2. Capacity Estimation &amp; Back-of-the-Envelope Calculations</a></li><li><a href="#key-generation">3. Key Generation Strategy: Base62 vs Hashing</a></li><li><a href="#key-generation-option-a-hashing-md5-sha-256-base62">Option A: Hashing (MD5 / SHA-256) + Base62</a></li><li><a href="#key-generation-option-b-dedicated-key-generation-service-kgs-with-pre-generated-keys-recommended">Option B: Dedicated Key Generation Service (KGS) with Pre-Generated Keys (Recommended)</a></li><li><a href="#high-level-architecture">4. High-Level Architecture &amp; End-to-End Flow</a></li><li><a href="#high-level-architecture-read-flow-illustrative-read-heavy-workload">Read Flow (illustrative read-heavy workload):</a></li><li><a href="#high-level-architecture-write-flow-creating-short-url-1-of-traffic">Write Flow (Creating Short URL - 1% of Traffic):</a></li><li><a href="#database-schema">5. Database Schema &amp; Storage Engine Choice</a></li><li><a href="#fault-tolerance-spof">6. Single Point of Failure (SPOF) &amp; Fault Tolerance</a></li><li><a href="#references">References &amp; Further Reading</a></li><li><a href="#faqs">Frequently Asked Questions</a></li></ol></nav>
+        <main>
+    <section id="requirements">
+      <h2>1. Functional &amp; Non-Functional Requirements</h2>
+      <p>Clarifying scope before drawing a single box</p>
+      <p>In an interview, clarify requirements before drawing an architecture. Treat the values below as scenario targets to discuss with the interviewer, not measured service performance.</p>
+<p><strong>Functional Requirements:</strong></p>
+<ol><li><strong>URL Shortening</strong>: Given a long URL, generate a unique, short alias (e.g. <code>https://prepvisor.in/u/a8F9k2Z</code>).</li><li><strong>Redirection</strong>: When accessing a short URL, immediately redirect the user to the original long URL with high availability.</li><li><strong>Custom Aliases (Optional)</strong>: Users should optionally pick a custom alias if available.</li><li><strong>Link Expiration (Optional)</strong>: Short URLs expire after a default TTL (e.g., 2 or 5 years) or custom user timestamp.</li></ol>
+<p>For redirect status-code semantics, see <a href="https://www.rfc-editor.org/rfc/rfc9110.html" target="_blank" rel="noopener noreferrer">HTTP Semantics (RFC 9110), Sections 15.4.2–15.4.3</a>.</p>
+<p><strong>Non-Functional Requirements:</strong></p>
+<ul><li><strong>Latency target (example)</strong>: Set a target such as <strong>under 20 milliseconds</strong> and clarify how it is measured.</li><li><strong>Availability target (example)</strong>: A scenario may specify <strong>99.99%</strong> availability; this is a requirement, not a guarantee.</li><li><strong>Read/write workload (assumption)</strong>: Explore a <strong>100:1 to 500:1 read-to-write ratio</strong> as an input to the design.</li><li><strong>Non-Predictable URLs</strong>: Short links must not be easily guessable to prevent enumeration attacks.</li></ul>
+
+
+      <aside><h3>Key Interview Takeaways</h3><ul><li>Confirm the read/write ratio with the interviewer; any ratio used here is an assumption until confirmed.</li><li>HTTP 301 denotes a permanent redirect and is heuristically cacheable; 302 denotes a temporary redirect. Explicit cache controls and client behavior affect caching and analytics.</li><li>Ensure short tokens are non-guessable to protect private shared links.</li></ul></aside>
+    </section>
+
+    <section id="capacity-estimation">
+      <h2>2. Capacity Estimation &amp; Back-of-the-Envelope Calculations</h2>
+      <p>Quantifying traffic, storage, and memory bottlenecks</p>
+      <p>EXAMPLE / ASSUMPTION — The following arithmetic illustrates one hypothetical five-year workload. Replace every input with requirements agreed during the interview; these are not measured TinyURL or PrepVisor traffic figures.</p>
+<p><strong>Traffic Calculations:</strong></p>
+<ul><li><strong>Write QPS</strong>: Assume <strong>100 Million</strong> new short URLs generated per month:</li></ul>
+<p>$\text{Writes per second} = \frac{100,000,000}{30 \times 24 \times 3600} \approx 40 \text{ URLs/sec}$</p>
+<ul><li><strong>Read QPS (100:1 Ratio)</strong>:</li></ul>
+<p>$\text{Reads per second} = 40 \times 100 = 4,000 \text{ redirections/sec}$</p>
+<ul><li><strong>Peak Traffic</strong>: Assume a $2\times$ peak multiplier: Peak Read QPS = <strong>8,000 QPS</strong>.</li></ul>
+<p><strong>Storage Calculations (5 Years):</strong></p>
+<ul><li>Total URLs in 5 years = $100\text{M}/\text{month} \times 12 \times 5 = 6 \text{ Billion URLs}$.</li><li>Assume average original URL size = 500 bytes; metadata + short key + timestamp = 100 bytes. Total per record = <strong>600 bytes</strong>.</li><li>Total Storage in 5 years:</li></ul>
+<p>$6\text{ Billion} \times 600 \text{ Bytes} = 3.6 \text{ Terabytes}$ <em>(This estimate excludes replication, indexes, storage-engine overhead, backups, and growth headroom.)</em></p>
+<p><strong>Cache Estimation (illustrative 80/20 assumption):</strong></p>
+<ul><li>20% of the URLs generate 80% of read traffic.</li><li>Daily read requests = $4,000 \times 86,400 \approx 345 \text{ Million requests/day}$.</li><li>Daily cache requirement (20% of daily reads):</li></ul>
+<p>$0.20 \times 345\text{M} \times 600 \text{ Bytes} \approx 41.4 \text{ GB RAM}$ <em>(Payload estimate only: Redis object/allocator overhead, replication, fragmentation, and operational headroom are excluded. Validate deployment size.)</em></p>
+      <aside><h3>Capacity Estimation Cheat Sheet</h3><ul><li><strong>Write QPS (example):</strong> ~40 writes/sec normal, ~80 writes/sec at the assumed 2× peak</li><li><strong>Read QPS:</strong> 4,000 reads/sec (Normal), 8,000 reads/sec (Peak)</li><li><strong>5-Year Storage (example):</strong> 3.6 TB before indexes, replication, and overhead</li><li><strong>Cache payload estimate (example):</strong> ~42 GB under the stated 80/20 assumptions</li><li><strong>Read Bandwidth:</strong> 4,000 * 600 bytes = 2.4 MB/second</li></ul></aside>
+
+
+    </section>
+
+    <section id="key-generation">
+      <h2>3. Key Generation Strategy: Base62 vs Hashing</h2>
+      <p>Hash-derived tokens and pre-generated keys: collision trade-offs</p>
+      <p>A critical technical differentiator in this interview is how you generate the 7-character short token.</p>
+<h3 id="key-generation-option-a-hashing-md5-sha-256-base62">Option A: Hashing (MD5 / SHA-256) + Base62</h3>
+<ul><li>Hash long URL using MD5 $\rightarrow$ 128-bit hash $\rightarrow$ Base62 encode $\rightarrow$ take first 7 chars.</li><li><strong>Trade-off</strong>: Truncating a hash to a short token can produce collisions. The design needs collision detection and retry or another allocation strategy; the latency impact depends on implementation and workload.</li></ul>
+<h3 id="key-generation-option-b-dedicated-key-generation-service-kgs-with-pre-generated-keys-recommended">Option B: Dedicated Key Generation Service (KGS) with Pre-Generated Keys (Recommended)</h3>
+<ul><li><strong>Example token length:</strong></li></ul>
+<p>Using Base62 characters (<code>[a-z, A-Z, 0-9]</code>): $62^7 = 3,521,614,606,208 \approx 3.52 \text{ Trillion unique URLs}$ This is the theoretical token space before reserved values or operational constraints; it is not a forecast of capacity or lifetime.</p>
+<ul><li>A standalone Key Generation Service generates random Base62 tokens offline and loads them in batches into memory.</li><li>When an API server needs keys, it may request a block (for example, 10,000) from the KGS. A crash can orphan unused keys. Preventing duplicate allocation requires a uniqueness-enforced key space and exclusive, durable allocation coordination.</li></ul>
+
+      <figure><figcaption>Base62 Encoding Utility in Java</figcaption><pre><code class="language-java">public class Base62Encoder {
+    private static final String ALPHABET = &quot;0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;;
+    private static final int BASE = ALPHABET.length(); // 62
+
+    public static String encode(long id) {
+        StringBuilder sb = new StringBuilder();
+        while (id &gt; 0) {
+            sb.append(ALPHABET.charAt((int) (id % BASE)));
+            id /= BASE;
+        }
+        while (sb.length() &lt; 7) {
+            sb.append('0'); // Pad to 7 characters
+        }
+        return sb.reverse().toString();
+    }
+}</code></pre></figure>
+      <aside><h3>Key Interview Takeaways</h3><ul><li>Base62 is preferred over Base64 because '+' and '/' require URL encoding in browser address bars.</li><li>A pre-generated key pool can avoid hash-collision checks on the allocation path when key uniqueness and allocation are enforced correctly.</li><li>Partitioning KGS keys across used and unused stores is one possible allocation design; atomicity depends on its implementation.</li></ul></aside>
+    </section>
+
+    <section id="high-level-architecture">
+      <h2>4. High-Level Architecture &amp; End-to-End Flow</h2>
+      <p>Connecting Load Balancer, Application Nodes, Redis Cache &amp; Database</p>
+      <p>EXAMPLE / ASSUMPTION — This flow uses illustrative traffic proportions and response times, not measured production behavior.</p>
+<h3 id="high-level-architecture-read-flow-illustrative-read-heavy-workload">Read Flow (illustrative read-heavy workload):</h3>
+<ol><li>User clicks <code>https://prepvisor.in/u/x8Kp2L9</code>.</li><li>Request hits Route 53 (DNS) and resolves to an Application Load Balancer (ALB).</li><li>ALB forwards to stateless <strong>Redirection API Workers</strong>.</li><li>Worker checks <strong>Redis Cache</strong> by key <code>x8Kp2L9</code>:</li></ol>
+<ul><li><strong>Cache hit (assumed 90%+)</strong>: Returns a 302 response; measure latency in the target deployment.</li><li><strong>Cache miss (assumed remainder)</strong>: Queries a database replica, populates Redis, and returns a 302 response.</li></ul>
+<h3 id="high-level-architecture-write-flow-creating-short-url-1-of-traffic">Write Flow (Creating Short URL - 1% of Traffic):</h3>
+<ol><li>Client POSTs long URL to <code>/api/v1/shorten</code>.</li><li>Auth &amp; Rate Limiter verifies client quota.</li><li>Service grabs pre-allocated Base62 key from local worker memory (fetched from KGS).</li><li>Inserts mapping into Primary Database and async-populates Redis.</li><li>Returns short URL to candidate immediately.</li></ol>
+      <aside><h3>System Component Topology</h3><ul><li><strong>DNS / CDN:</strong> Cloudflare / Route53 with Anycast IP routing</li><li><strong>Load Balancer:</strong> NGINX / AWS ALB with round-robin health checks</li><li><strong>API Workers:</strong> Stateless Golang / Java Spring Boot instances (Autoscaled)</li><li><strong>Cache Layer:</strong> Redis Cluster with LRU eviction and replication</li><li><strong>Primary Database:</strong> PostgreSQL (or MongoDB/DynamoDB) with Multi-AZ Replication</li><li><strong>Offline KGS:</strong> Standby Key Generation cluster feeding worker memory queues</li></ul></aside>
+
+
+    </section>
+
+    <section id="database-schema">
+      <h2>5. Database Schema &amp; Storage Engine Choice</h2>
+      <p>SQL vs NoSQL trade-offs for 6 Billion rows</p>
+      <p>Because TinyURL does not require complex relational joins or multi-table ACID transactions, both <strong>NoSQL (DynamoDB/Cassandra)</strong> and <strong>Partitioned SQL (PostgreSQL)</strong> are valid choices.</p>
+<p><strong>Recommended Schema:</strong></p>
+<pre><code class="language-sql">CREATE TABLE url_mappings (
+    short_key VARCHAR(7) PRIMARY KEY,
+    original_url VARCHAR(2048) NOT NULL,
+    user_id UUID NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP WITH TIME ZONE NULL
+);
+
+-- Index for expiration cleanup worker
+CREATE INDEX idx_url_mappings_expires_at ON url_mappings(expires_at)
+WHERE expires_at IS NOT NULL;</code></pre>
+<p><strong>Sharding Strategy (one option for this example):</strong></p>
+<ul><li>Partition by a hash of the short key to distribute records across shards:</li></ul>
+<p>$\text{Shard ID} = \text{Murmur3}(\text{short\_key}) \pmod N$</p>
+<ul><li>Hash partitioning tends to spread keys, but does not guarantee uniform load or prevent hot spots for every workload.</li></ul>
+
+
+
+    </section>
+
+    <section id="fault-tolerance-spof">
+      <h2>6. Single Point of Failure (SPOF) &amp; Fault Tolerance</h2>
+      <p>What interviewers look for when testing your senior architectural maturity</p>
+      <p>A common interview pitfall is presenting a happy-path architecture without disaster recovery.</p>
+<ol><li><strong>Redis Cache Crash</strong>:</li></ol>
+<ul><li>Under the illustrative 4,000-read-QPS workload, a cache failure can shift substantial read traffic to the database and risk overload.</li><li><strong>Mitigation</strong>: Deploy Redis in Master-Replica Sentinel with auto-failover, and implement circuit breakers in API workers to gracefully throttle if DB connection pools saturate.</li></ul>
+<ol start="2"><li><strong>KGS Crash</strong>:</li></ol>
+<ul><li>A standby KGS with an explicit leader/lease or allocation-coordination protocol can support failover; recovery time depends on the design.</li></ul>
+<ol start="3"><li><strong>Database Write Master Failure</strong>:</li></ol>
+<ul><li>A database failover process may promote a replica. Recovery time and read availability depend on the database, replication mode, and application behavior; set and test a recovery objective.</li></ul>
+
+
+      <aside><h3>Key Interview Takeaways</h3><ul><li>Redirect status, cache controls, and client behavior affect whether later requests reach the service for analytics; choose them to match the requirements.</li><li>LRU is one cache eviction policy; evaluate it against the workload and alternatives.</li><li>Lazy expiry checks are one option for expired URLs; periodic cleanup and retention requirements may also affect the design.</li></ul></aside>
+    </section>
+  <section id="references"><h2>References &amp; Further Reading</h2><ul><li><a href="https://www.rfc-editor.org/rfc/rfc9110.html" target="_blank" rel="noopener noreferrer">HTTP Semantics (RFC 9110), Sections 15.4.2–15.4.3</a> — RFC Editor</li><li><a href="https://redis.io/docs/latest/develop/programmability/eval-intro/" target="_blank" rel="noopener noreferrer">Scripting with Lua</a> — Redis Documentation</li><li><a href="https://redis.io/docs/latest/operate/oss_and_stack/management/scaling/" target="_blank" rel="noopener noreferrer">Scaling with Redis Cluster</a> — Redis Documentation</li></ul></section><section id="faqs"><h2>Frequently Asked Questions</h2><details><summary>Why use Base62 instead of Base64 for short URLs?</summary><p>Base64 includes characters like '+' and '/', which carry special meanings in URL query strings and path segments and require percent-encoding (%2B, %2F). Base62 consists strictly of alphanumeric characters [a-z, A-Z, 0-9], making it safe for all browsers, SMS, and messaging apps.</p></details><details><summary>Should TinyURL return HTTP 301 or HTTP 302 status code?</summary><p>HTTP 301 means the resource has moved permanently and is heuristically cacheable unless cache controls say otherwise. HTTP 302 means the move is temporary. Neither status alone guarantees analytics behavior: caching directives, clients, and the service's request flow affect whether later requests reach the origin. See RFC 9110, Sections 15.4.2–15.4.3.</p></details><details><summary>How do you handle expired short links efficiently?</summary><p>For an illustrative large dataset, lazy expiry checks plus periodic cleanup are one option. On access, verify the timestamp, return the chosen expired-link response, and enqueue cleanup if appropriate.</p></details><details><summary>How do you prevent two users from receiving the same short URL?</summary><p>A KGS can allocate pre-generated unique Base62 tokens to workers. Uniqueness depends on how the service creates, reserves, and allocates keys; no collision guarantee follows from the pattern alone.</p></details><details><summary>How do you protect the service from malicious spam and DDoS?</summary><p>Implement Token Bucket rate limiting per IP address / API key, integrate Google Safe Browsing API on the write path to block phishing URLs, and enforce CAPTCHA on unauthenticated link creation.</p></details><details><summary>How can you estimate storage for a URL shortener?</summary><p>Multiply the assumed record count by an estimated record size, then account separately for indexes, replication, backups, and storage-engine overhead. For example, 6 billion records at an assumed 600 bytes each yield 3.6 TB before those additional costs; this is scenario arithmetic, not a measured deployment size.</p></details></section></main>
+        <nav aria-label="Related guides"><h2>Related Guides</h2><ul><li><a href="/guides/system-design-rate-limiter">System Design: How to Design an API Rate Limiter (Token Bucket vs Leaky Bucket)</a></li><li><a href="/guides/system-design-notification-service">System Design: How to Design a Notification System at Scale (SMS, Push, Email)</a></li></ul></nav>
+        <p><a href="/system-design">Continue practicing with PrepVisor</a></p>
         <section class="mt-12 p-6 rounded-2xl bg-blue-50 border border-blue-200">
           <h3 class="text-xl font-bold text-slate-900">Practice this question on PrepVisor AI Studio</h3>
-          <p class="text-sm text-slate-600 mt-2">Get real-time scoring, code evaluation, and system design feedback.</p>
-          <a href="https://app.prepvisor.in/register?utm_source=organic_seo&utm_medium=guide&utm_campaign=system-design-tinyurl" class="inline-block mt-4 px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl">Launch Practice Studio</a>
+          <p class="text-sm text-slate-600 mt-2">Practice sketching this architecture on the interactive system design canvas and work through its capacity and failure-mode trade-offs.</p>
+          <a href="https://app.prepvisor.in/register?utm_source=organic_seo&amp;utm_medium=guide&amp;utm_campaign=system_design_tinyurl" class="inline-block mt-4 px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl">Launch Interactive System Design Studio</a>
         </section>
       </article>
     </noscript>
-  
+
   </body>
 </html>

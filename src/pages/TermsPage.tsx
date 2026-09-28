@@ -3,13 +3,10 @@ import { Link } from "react-router-dom"
 import { ShieldAlert, Scale } from "lucide-react"
 import { COMPANY_CONFIG } from "@/config/company"
 import { usePageSeo } from "@/hooks/usePageSeo"
+import { SEO_ROUTES } from "@/config/seo"
 
 export const TermsPage: React.FC = () => {
-  usePageSeo({
-    title: "Terms of Service | PrepVisor",
-    description: "Terms of Service and user agreement governing access to PrepVisor educational software platform and prep passes.",
-    canonicalUrl: "https://prepvisor.in/terms",
-  })
+  usePageSeo(SEO_ROUTES.terms)
 
   return (
     <div className="py-14 sm:py-20 bg-[#fafbfc] min-h-screen text-slate-800">

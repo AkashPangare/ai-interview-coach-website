@@ -11,13 +11,11 @@ import {
   AlertCircle,
 } from "lucide-react"
 import { usePageSeo } from "@/hooks/usePageSeo"
+import { SEO_ROUTES } from "@/config/seo"
 import { COMPANY_CONFIG } from "@/config/company"
 
 export const NotFoundPage: React.FC = () => {
-  usePageSeo({
-    title: "404 - Page Not Found | PrepVisor",
-    description: "The page you are looking for does not exist on PrepVisor. Explore our System Design simulator, DSA coding studio, or voice mock interviews.",
-  })
+  usePageSeo(SEO_ROUTES.notFound)
 
   const quickLinks = [
     {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { GUIDES } from "@/data/guides";
+import { GUIDE_INDEX } from "@/data/guideIndex";
 import {
   Clock,
   Search,
@@ -14,35 +14,26 @@ import {
 } from "lucide-react";
 import { decorateUrlWithUtms, trackEvent } from "@/lib/analytics";
 import { usePageSeo } from "@/hooks/usePageSeo";
+import { SEO_ROUTES } from "@/config/seo";
 import { COMPANY_CONFIG } from "@/config/company";
+import { GUIDE_CATEGORIES, GUIDE_CATEGORY_BY_ID, GUIDE_HUB_CATEGORIES } from "@/config/guideCategories";
 
 export const GuidesHubPage: React.FC = () => {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
-  usePageSeo({
-    title: "Technical Interview Study Guides & Architecture Blueprints | PrepVisor",
-    description: "Free comprehensive engineering interview guides. Master System Design architectures, Java concurrency internals, and coding patterns with real-world case studies.",
-    canonicalUrl: "https://prepvisor.in/guides",
-    keywords: "system design interview guide, java concurrency interview questions, technical interview study guides, spring boot microservices interview, lru cache implementation",
-  });
+  usePageSeo(SEO_ROUTES.guides);
 
   useEffect(() => {
     trackEvent("guides_hub_viewed", {});
   }, []);
 
-  const categories = [
-    "All",
-    "System Design",
-    "Java",
-    "Backend Architecture",
-    "Data Structures",
-  ];
+  const categories = ["All", ...GUIDE_CATEGORIES.map((category) => category.name)];
 
   const filteredGuides = useMemo(() => {
-    return GUIDES.filter((guide) => {
+    return GUIDE_INDEX.filter((guide) => {
       const matchesCategory =
-        selectedCategory === "All" || guide.category === selectedCategory;
+        selectedCategory === "All" || GUIDE_CATEGORY_BY_ID[guide.primaryCategory].name === selectedCategory;
       const matchesSearch =
         guide.title.toLowerCase().includes(search.toLowerCase()) ||
         guide.summary.toLowerCase().includes(search.toLowerCase()) ||
@@ -71,7 +62,7 @@ export const GuidesHubPage: React.FC = () => {
           </h1>
 
           <p className="mt-4 text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            In-depth, peer-reviewed engineering guides on complex system design architectures, JVM internals, and coding patterns designed to help you clear senior technical rounds.
+            Focused engineering guides on system design, Java and backend architecture, and data-structure implementation for technical interview preparation.
           </p>
 
           {/* Search & Category Filter */}
@@ -91,7 +82,9 @@ export const GuidesHubPage: React.FC = () => {
               {categories.map((cat) => (
                 <button
                   key={cat}
+                  type="button"
                   onClick={() => setSelectedCategory(cat)}
+                  aria-pressed={selectedCategory === cat}
                   className={`rounded-full px-4 py-1.5 text-xs font-medium transition cursor-pointer ${
                     selectedCategory === cat
                       ? "bg-slate-900 text-white font-semibold shadow-xs"
@@ -108,6 +101,21 @@ export const GuidesHubPage: React.FC = () => {
 
       {/* Guides Grid */}
       <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8 relative z-10">
+        <section aria-labelledby="guide-topics-heading" className="mb-10 rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+          <h2 id="guide-topics-heading" className="text-2xl font-semibold">Browse interview topics</h2>
+          <div className="mt-5 grid gap-5 sm:grid-cols-2">
+            {GUIDE_CATEGORIES.map((category) => {
+          const categoryGuides = GUIDE_INDEX.filter((guide) => guide.primaryCategory === category.id);
+              const hasHub = GUIDE_HUB_CATEGORIES.some((hub) => hub.id === category.id);
+              return <section key={category.id} className="rounded-xl border border-slate-100 bg-slate-50 p-4">
+                <h3 className="font-semibold text-slate-900">{category.name}</h3>
+                <p className="mt-1 text-sm text-slate-600">{category.description}</p>
+                <ul className="mt-3 space-y-1 text-sm">{categoryGuides.map((guide) => <li key={guide.slug}><Link className="text-blue-700 hover:underline" to={`/guides/${guide.slug}`}>{guide.title}</Link></li>)}</ul>
+                {hasHub ? <Link className="mt-3 inline-block text-sm font-semibold text-blue-700 hover:underline" to={`/guides/${category.id}`}>Explore {category.name} topic hub</Link> : <Link className="mt-3 inline-block text-sm font-semibold text-blue-700 hover:underline" to={category.productPath}>{category.productLinkLabel}</Link>}
+              </section>
+            })}
+          </div>
+        </section>
         {filteredGuides.length === 0 ? (
           <div className="py-16 text-center text-slate-500 text-sm font-mono">
             No guides found matching "{search}". Try searching for another keyword.
@@ -122,16 +130,16 @@ export const GuidesHubPage: React.FC = () => {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between gap-2">
                     <span className="inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200 font-semibold">
-                      {guide.category === "System Design" ? (
+                      {guide.primaryCategory === "system-design" ? (
                         <Layers className="h-3 w-3" />
-                      ) : guide.category === "Backend Architecture" ? (
+                      ) : guide.primaryCategory === "java-backend" ? (
                         <Server className="h-3 w-3" />
-                      ) : guide.category === "Data Structures" ? (
+                      ) : guide.primaryCategory === "dsa" ? (
                         <Binary className="h-3 w-3" />
                       ) : (
                         <Code2 className="h-3 w-3" />
                       )}
-                      {guide.category}
+                      {GUIDE_CATEGORY_BY_ID[guide.primaryCategory].name}
                     </span>
                     <div className="flex items-center gap-2 text-xs font-mono text-slate-500">
                       <span className="flex items-center gap-1">
@@ -152,12 +160,12 @@ export const GuidesHubPage: React.FC = () => {
 
                   {/* Section Topics Preview */}
                   <div className="flex flex-wrap gap-1.5 pt-2">
-                    {guide.sections.slice(0, 3).map((sec) => (
+                    {guide.topics.map((topic) => (
                       <span
-                        key={sec.id}
+                        key={topic}
                         className="text-[11px] font-mono text-slate-600 bg-slate-50 border border-slate-200 rounded-md px-2 py-0.5"
                       >
-                        {sec.title.split(". ")[1] || sec.title}
+                        {topic}
                       </span>
                     ))}
                   </div>
@@ -166,7 +174,7 @@ export const GuidesHubPage: React.FC = () => {
                 <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
                   <span className="text-xs font-mono text-slate-500 flex items-center gap-1">
                     <Calendar className="h-3 w-3" />
-                    Updated {guide.lastUpdated}
+                    Updated {guide.dateModified}
                   </span>
                   <Link
                     to={`/guides/${guide.slug}`}

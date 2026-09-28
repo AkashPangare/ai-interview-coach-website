@@ -10,8 +10,9 @@ const projectRoot = path.resolve(__dirname, "..");
 
 test("Website Pillar Pages & SEO Architecture Suite", async (t) => {
   await t.test("1. sitemap.xml registers all feature pillar pages and primary routes", () => {
-    const sitemapPath = path.resolve(projectRoot, "public/sitemap.xml");
-    assert.ok(fs.existsSync(sitemapPath), "public/sitemap.xml must exist");
+    const generatedSitemapPath = path.resolve(projectRoot, "dist/sitemap.xml");
+    const sitemapPath = fs.existsSync(generatedSitemapPath) ? generatedSitemapPath : path.resolve(projectRoot, "public/sitemap.xml");
+    assert.ok(fs.existsSync(sitemapPath), "sitemap.xml must exist");
 
     const content = fs.readFileSync(sitemapPath, "utf-8");
     assert.ok(content.includes("https://prepvisor.in/system-design"), "Must include /system-design");
@@ -20,6 +21,10 @@ test("Website Pillar Pages & SEO Architecture Suite", async (t) => {
     assert.ok(content.includes("https://prepvisor.in/roadmap"), "Must include /roadmap");
     assert.ok(content.includes("https://prepvisor.in/pricing"), "Must include /pricing");
     assert.ok(content.includes("https://prepvisor.in/guides"), "Must include /guides");
+    for (const category of ["system-design", "java-backend", "dsa"]) {
+      assert.ok(content.includes(`https://prepvisor.in/guides/${category}`), `Must include /guides/${category}`);
+    }
+    assert.ok(content.includes("https://prepvisor.in/guides/system-design-tinyurl"), "Must include individual guide URLs");
   });
 
   await t.test("2. manifest.json and robots.txt exist with valid configurations", () => {
@@ -39,10 +44,8 @@ test("Website Pillar Pages & SEO Architecture Suite", async (t) => {
     const indexPath = path.resolve(projectRoot, "index.html");
     const content = fs.readFileSync(indexPath, "utf-8");
 
-    assert.ok(content.includes('<link rel="canonical" href="https://prepvisor.in/" />'), "Must contain canonical tag");
-    assert.ok(content.includes('SoftwareApplication'), "Must contain SoftwareApplication schema");
-    assert.ok(content.includes('Organization'), "Must contain Organization schema");
-    assert.ok(content.includes('WebSite'), "Must contain WebSite schema");
+    assert.ok(content.includes('<link rel="canonical" href="__SEO_CANONICAL_URL__" />'), "Must contain canonical template token");
+    assert.ok(content.includes('__SEO_STRUCTURED_DATA__'), "Must expose the centralized schema insertion point");
     assert.ok(content.includes('fonts.googleapis.com'), "Must preconnect Google Fonts");
     assert.ok(content.includes('app.prepvisor.in'), "Must preconnect app origin");
     assert.ok(content.includes('/manifest.json'), "Must link manifest.json");
@@ -69,6 +72,9 @@ test("Website Pillar Pages & SEO Architecture Suite", async (t) => {
     assert.ok(fs.existsSync(path.resolve(distPath, "terms/index.html")), "dist/terms/index.html must exist");
     assert.ok(fs.existsSync(path.resolve(distPath, "privacy/index.html")), "dist/privacy/index.html must exist");
     assert.ok(fs.existsSync(path.resolve(distPath, "refund-policy/index.html")), "dist/refund-policy/index.html must exist");
+    for (const category of ["system-design", "java-backend", "dsa"]) {
+      assert.ok(fs.existsSync(path.resolve(distPath, `guides/${category}/index.html`)), `dist/guides/${category}/index.html must exist`);
+    }
     assert.ok(fs.existsSync(path.resolve(distPath, "404.html")), "dist/404.html must exist");
 
     const roadmapContent = fs.readFileSync(path.resolve(distPath, "roadmap/index.html"), "utf-8");

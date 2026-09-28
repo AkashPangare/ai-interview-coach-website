@@ -1,8 +1,9 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { Target, Award, Code, Sparkles, ArrowRight, ShieldCheck, MapPin, Mail } from "lucide-react"
+import { Target, Award, Code, Sparkles, ArrowRight, MapPin, Mail, ShieldCheck } from "lucide-react"
 import { COMPANY_CONFIG } from "@/config/company"
 import { usePageSeo } from "@/hooks/usePageSeo"
+import { SEO_ROUTES } from "@/config/seo"
 import { trackEvent } from "@/lib/analytics"
 
 interface AboutPageProps {
@@ -10,12 +11,10 @@ interface AboutPageProps {
 }
 
 export const AboutPage: React.FC<AboutPageProps> = () => {
-  usePageSeo({
-    title: "About PrepVisor — Engineering Interview Preparation Built by Engineers",
-    description: "Learn why PrepVisor was created. Built by engineers in Bengaluru to solve fragmented, time-blind tech interview prep with dynamic daily pacing, live terminal execution, and distributed system design.",
-    canonicalUrl: "https://prepvisor.in/about",
-    keywords: "about prepvisor, interview prep platform, divya rajkumar almelkar, tech interview coach bangalore",
-  })
+  const minimumPaidPrice = Math.min(
+    ...COMPANY_CONFIG.pricing.filter((plan) => plan.priceINR > 0).map((plan) => plan.priceINR),
+  )
+  usePageSeo(SEO_ROUTES.about)
 
   return (
     <div className="py-16 sm:py-24 bg-[#fafbfc] min-h-screen text-slate-900 selection:bg-blue-600 selection:text-white relative overflow-hidden">
@@ -32,31 +31,31 @@ export const AboutPage: React.FC<AboutPageProps> = () => {
             <span>About PrepVisor</span>
           </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-[-0.03em] text-slate-900 leading-[1.12]">
-            Why We Built PrepVisor
+            About PrepVisor
           </h1>
           <p className="text-sm text-slate-600 leading-relaxed">
-            Making tech interview preparation structured, realistic, and respectful of your busy schedule.
+            An interview-preparation product with interactive practice tools and supporting guides.
           </p>
         </div>
 
         {/* Story Card */}
         <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 space-y-6 shadow-xs">
           <h2 className="text-xl font-semibold text-slate-900">
-            Our Mission & Origin Story
+            What PrepVisor Is
           </h2>
           <div className="space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed">
             <p>
-              Most software engineers preparing for high-stakes interviews face the exact same dilemma: they have demanding full-time jobs and only 1 to 2 hours of focused energy each evening. Traditional platforms present an overwhelming, unorganized catalog of 3,000+ isolated puzzle problems without asking when your interview is or how much time you can realistically spend.
+              <strong className="text-slate-900 font-semibold">{COMPANY_CONFIG.brandName}</strong> is an online interview-preparation product. Its preparation roadmap, coding practice, system design workspace, and mock interview tools bring several forms of interview practice together.
             </p>
             <p>
-              Candidates inevitably fall into two traps: either grinding random easy problems with no timeline discipline, or panic-reading static system design blogs that never test your actual ability to estimate scale, detect single points of failure, or articulate trade-offs out loud.
+              The product is designed to help candidates organize preparation and practice technical and behavioral interview skills. The available features and pass durations are described on the <Link className="text-blue-700 underline" to="/pricing">pricing page</Link>.
             </p>
             <p>
-              We built <strong className="text-slate-900 font-semibold">{COMPANY_CONFIG.brandName}</strong> to solve this permanently. PrepVisor creates a personalized daily preparation curriculum tailored around your target date and available daily hours. It seamlessly bridges hands-on coding (Java with terminal stdout), interactive cloud whiteboard design with capacity math, and voice AI behavioral coaching into one cohesive, time-aware cockpit.
+              The <Link className="text-blue-700 underline" to="/guides">PrepVisor guides</Link> are educational reading material that supports preparation alongside the interactive product; they are not a substitute for checking current framework or platform documentation.
             </p>
           </div>
 
-          {/* Rich Founder Profile Card */}
+          {/* Operator information from the configured business identity */}
           <div className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50/60 via-slate-50 to-white p-6 space-y-4 shadow-xs">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-4">
               <div className="flex items-center gap-4">
@@ -72,7 +71,7 @@ export const AboutPage: React.FC<AboutPageProps> = () => {
                   <div className="flex items-center gap-2">
                     <h3 className="text-base font-semibold text-slate-900">{COMPANY_CONFIG.proprietorName}</h3>
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-semibold">
-                      Founder & Lead Architect
+                      Individual operator
                     </span>
                   </div>
                   <p className="text-xs text-slate-500 flex items-center gap-1">
@@ -88,21 +87,13 @@ export const AboutPage: React.FC<AboutPageProps> = () => {
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 hover:bg-slate-50 shadow-xs transition"
                 >
                   <Mail className="h-3.5 w-3.5 text-blue-600" />
-                  <span>Contact Founder</span>
+                  <span>Contact PrepVisor</span>
                 </a>
               </div>
             </div>
 
-            <p className="text-xs sm:text-sm text-slate-700 leading-relaxed italic">
-              "We didn't build PrepVisor to add to the puzzle-grinding noise. We built it to respect engineers' time. When you sit down after a 9-hour workday, you should know exactly which 3 tasks to complete tonight to stay on track for your offer."
-            </p>
-
             <div className="pt-2 flex flex-wrap items-center gap-4 text-xs text-slate-500 font-mono">
-              <span className="flex items-center gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                Bootstrapped & Independent
-              </span>
-              <span>•</span>
+              <span>Operated by {COMPANY_CONFIG.proprietorName} as an individual.</span>
               <span>Entity: {COMPANY_CONFIG.legalEntity}</span>
             </div>
           </div>
@@ -142,7 +133,7 @@ export const AboutPage: React.FC<AboutPageProps> = () => {
               </div>
               <h3 className="text-sm font-semibold text-slate-900">Transparent & Affordable</h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Simple one-time passes starting at ₹499 with zero recurring surprises.
+                One-time preparation passes start at ₹{minimumPaidPrice}.
               </p>
             </div>
           </div>

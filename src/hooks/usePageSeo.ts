@@ -1,105 +1,44 @@
 import { useEffect } from "react"
+import type { ResolvedSeoMetadata } from "@/config/seo"
 
-export interface PageSeoOptions {
-  title: string
-  description?: string
-  canonicalUrl?: string
-  keywords?: string
-  ogType?: "website" | "article"
-  ogImage?: string
+function setMeta(selector: string, attributes: Record<string, string>, content: string) {
+  let tag = document.head.querySelector<HTMLMetaElement>(selector)
+  if (!tag) {
+    tag = document.createElement("meta")
+    Object.entries(attributes).forEach(([name, value]) => tag?.setAttribute(name, value))
+    document.head.appendChild(tag)
+  }
+  tag.setAttribute("content", content)
 }
 
-export function usePageSeo({
-  title,
-  description,
-  canonicalUrl,
-  keywords,
-  ogType = "website",
-  ogImage = "https://prepvisor.in/og-image.png",
-}: PageSeoOptions) {
-  useEffect(() => {
-    // 1. Update Document Title
-    document.title = title
+export function applyPageSeo(metadata: ResolvedSeoMetadata) {
+    document.title = metadata.title
+    setMeta('meta[name="description"]', { name: "description" }, metadata.description)
+    setMeta('meta[property="og:title"]', { property: "og:title" }, metadata.ogTitle)
+    setMeta('meta[property="og:description"]', { property: "og:description" }, metadata.ogDescription)
+    setMeta('meta[property="og:type"]', { property: "og:type" }, metadata.ogType)
+    setMeta('meta[property="og:url"]', { property: "og:url" }, metadata.canonicalUrl)
+    setMeta('meta[name="twitter:title"]', { name: "twitter:title" }, metadata.twitterTitle)
+    setMeta('meta[name="twitter:description"]', { name: "twitter:description" }, metadata.twitterDescription)
+    setMeta('meta[name="twitter:url"]', { name: "twitter:url" }, metadata.canonicalUrl)
 
-    // 2. Meta Description
-    if (description) {
-      let descTag = document.querySelector('meta[name="description"]')
-      if (!descTag) {
-        descTag = document.createElement("meta")
-        descTag.setAttribute("name", "description")
-        document.head.appendChild(descTag)
-      }
-      descTag.setAttribute("content", description)
-
-      let ogDescTag = document.querySelector('meta[property="og:description"]')
-      if (ogDescTag) {
-        ogDescTag.setAttribute("content", description)
-      }
-      let twDescTag = document.querySelector('meta[name="twitter:description"]')
-      if (twDescTag) {
-        twDescTag.setAttribute("content", description)
-      }
+    let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]')
+    if (!canonical) {
+      canonical = document.createElement("link")
+      canonical.rel = "canonical"
+      document.head.appendChild(canonical)
     }
+    canonical.href = metadata.canonicalUrl
 
-    // 3. Open Graph & Twitter Titles
-    if (title) {
-      let ogTitleTag = document.querySelector('meta[property="og:title"]')
-      if (ogTitleTag) {
-        ogTitleTag.setAttribute("content", title)
-      }
-      let twTitleTag = document.querySelector('meta[name="twitter:title"]')
-      if (twTitleTag) {
-        twTitleTag.setAttribute("content", title)
-      }
+    if (metadata.keywords) setMeta('meta[name="keywords"]', { name: "keywords" }, metadata.keywords)
+    const robots = document.head.querySelector<HTMLMetaElement>('meta[name="robots"]')
+    if (!metadata.indexable) {
+      setMeta('meta[name="robots"]', { name: "robots" }, "noindex,follow")
+    } else {
+      robots?.remove()
     }
+}
 
-    // 4. Canonical & Open Graph URLs
-    if (canonicalUrl) {
-      let canonicalTag = document.querySelector('link[rel="canonical"]')
-      if (!canonicalTag) {
-        canonicalTag = document.createElement("link")
-        canonicalTag.setAttribute("rel", "canonical")
-        document.head.appendChild(canonicalTag)
-      }
-      canonicalTag.setAttribute("href", canonicalUrl)
-
-      let ogUrlTag = document.querySelector('meta[property="og:url"]')
-      if (ogUrlTag) {
-        ogUrlTag.setAttribute("content", canonicalUrl)
-      }
-      let twUrlTag = document.querySelector('meta[name="twitter:url"]')
-      if (twUrlTag) {
-        twUrlTag.setAttribute("content", canonicalUrl)
-      }
-    }
-
-    // 5. Open Graph Type
-    let ogTypeTag = document.querySelector('meta[property="og:type"]')
-    if (ogTypeTag) {
-      ogTypeTag.setAttribute("content", ogType)
-    }
-
-    // 6. Open Graph Image
-    if (ogImage) {
-      let ogImageTag = document.querySelector('meta[property="og:image"]')
-      if (ogImageTag) {
-        ogImageTag.setAttribute("content", ogImage)
-      }
-      let twImageTag = document.querySelector('meta[name="twitter:image"]')
-      if (twImageTag) {
-        twImageTag.setAttribute("content", ogImage)
-      }
-    }
-
-    // 7. Keywords
-    if (keywords) {
-      let keywordsTag = document.querySelector('meta[name="keywords"]')
-      if (!keywordsTag) {
-        keywordsTag = document.createElement("meta")
-        keywordsTag.setAttribute("name", "keywords")
-        document.head.appendChild(keywordsTag)
-      }
-      keywordsTag.setAttribute("content", keywords)
-    }
-  }, [title, description, canonicalUrl, keywords, ogType, ogImage])
+export function usePageSeo(metadata: ResolvedSeoMetadata) {
+  useEffect(() => applyPageSeo(metadata), [metadata])
 }

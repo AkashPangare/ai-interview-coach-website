@@ -56,7 +56,7 @@ test("Programmatic SEO Guides Suite", async (t) => {
   await t.test("3. getGuideBySlug accurately retrieves matching guide", () => {
     const tinyUrl = getGuideBySlug("system-design-tinyurl");
     assert.ok(tinyUrl);
-    assert.equal(tinyUrl.category, "System Design");
+    assert.equal(tinyUrl.primaryCategory, "system-design");
     assert.equal(tinyUrl.readingTimeMinutes, 20);
 
     const nonExistent = getGuideBySlug("non-existent-guide-xyz");
@@ -72,7 +72,7 @@ test("Programmatic SEO Guides Suite", async (t) => {
     assert.equal(schema.headline, guide.title);
     assert.equal(schema.description, guide.metaDescription);
     assert.ok(schema.mainEntityOfPage["@id"].includes(guide.slug));
-    assert.ok(schema.publisher.name, "PrepVisor");
+    assert.equal(schema.publisher["@id"], "https://prepvisor.in/#organization");
   });
 
   await t.test("5. generateFaqJsonLd produces valid FAQPage schema with all question entities", () => {

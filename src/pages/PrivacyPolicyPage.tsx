@@ -2,13 +2,10 @@ import React from "react"
 import { Shield, Lock } from "lucide-react"
 import { COMPANY_CONFIG } from "@/config/company"
 import { usePageSeo } from "@/hooks/usePageSeo"
+import { SEO_ROUTES } from "@/config/seo"
 
 export const PrivacyPolicyPage: React.FC = () => {
-  usePageSeo({
-    title: "Privacy Policy | PrepVisor",
-    description: "Privacy Policy explaining how PrepVisor handles personal information in compliance with the Digital Personal Data Protection Act (DPDP Act) 2023.",
-    canonicalUrl: "https://prepvisor.in/privacy",
-  })
+  usePageSeo(SEO_ROUTES.privacy)
 
   return (
     <div className="py-14 sm:py-20 bg-[#fafbfc] min-h-screen text-slate-800">

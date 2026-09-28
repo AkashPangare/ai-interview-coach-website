@@ -10,15 +10,11 @@ import {
 } from "lucide-react"
 import { COMPANY_CONFIG } from "@/config/company"
 import { usePageSeo } from "@/hooks/usePageSeo"
+import { SEO_ROUTES } from "@/config/seo"
 import { trackEvent } from "@/lib/analytics"
 
 export const ContactPage: React.FC = () => {
-  usePageSeo({
-    title: "Contact PrepVisor — Customer Support & Enterprise Inquiries",
-    description: "Get in touch with PrepVisor support team and founders. Reach us via email, phone, or office address in Bengaluru for customer assistance, billing, or enterprise cohort inquiries.",
-    canonicalUrl: "https://prepvisor.in/contact",
-    keywords: "contact prepvisor, customer support prepvisor, interview prep help, prepvisor bangalore address",
-  })
+  usePageSeo(SEO_ROUTES.contact)
 
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
@@ -261,7 +257,7 @@ export const ContactPage: React.FC = () => {
                     className="w-full flex items-center justify-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 py-3 text-sm font-semibold text-white transition-all active:scale-[0.99] shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Send className="h-4 w-4" />
-                    <span>{isSubmitting ? "Sending Message..." : "Send Message"}</span>
+                    <span aria-live="polite">{isSubmitting ? "Sending Message..." : "Send Message"}</span>
                   </button>
                 </form>
               ) : (

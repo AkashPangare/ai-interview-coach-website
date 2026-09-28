@@ -14,7 +14,6 @@ import {
   Check,
   HelpCircle,
   Play,
-  Star,
   Sparkles,
   Timer,
   CheckCircle2,
@@ -23,6 +22,7 @@ import {
 import { COMPANY_CONFIG } from "@/config/company"
 import { decorateUrlWithUtms, trackEvent } from "../lib/analytics"
 import { usePageSeo } from "@/hooks/usePageSeo"
+import { SEO_ROUTES } from "@/config/seo"
 
 interface HomePageProps {
   onOpenWaitlist?: () => void
@@ -31,12 +31,7 @@ interface HomePageProps {
 type StudioTab = "pacing" | "dsa" | "system-design" | "behavioral"
 
 export const HomePage: React.FC<HomePageProps> = () => {
-  usePageSeo({
-    title: "PrepVisor | AI Tech Interview Coach, System Design Simulator & DSA Arena",
-    description: "Master tech interviews with dynamic AI pacing (7–60 days). Practice DSA with live terminal stdout, design architectures on an interactive whiteboard with scale math, and ace voice mock interviews with STAR scoring.",
-    canonicalUrl: "https://prepvisor.in/",
-    keywords: "AI tech interview coach, system design interview simulator, DSA coding practice terminal stdout, voice mock interview STAR method, tech interview study roadmap, Java interview prep, software engineer mock interview, PrepVisor",
-  })
+  usePageSeo(SEO_ROUTES.home)
 
   const [activeStudioTab, setActiveStudioTab] = useState<StudioTab>("pacing")
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0)
@@ -54,8 +49,8 @@ export const HomePage: React.FC<HomePageProps> = () => {
 
   const faqs = [
     {
-      q: "How does PrepVisor differ from grinding LeetCode?",
-      a: "LeetCode provides an unorganized catalog of 3,000+ isolated algorithm puzzles with zero time calibration, no system design whiteboard, and no voice behavioral coaching. PrepVisor is a structured workbench: it calibrates a daily preparation plan according to your exact target interview date (7 to 60+ days), provides an infinite architecture canvas with real-time scale math, runs your code with a live terminal stdout console in 9 languages, and conducts voice mock interviews evaluated against the STAR method.",
+      q: "How does PrepVisor organize interview practice?",
+      a: "PrepVisor brings together a personalized preparation roadmap, coding and system design practice, mock interviews, and technical interview guides. The roadmap uses your target role, interview timeline, and available study hours to organize daily preparation.",
     },
     {
       q: "Can I write and test code in Java and other modern stacks?",
@@ -109,11 +104,9 @@ export const HomePage: React.FC<HomePageProps> = () => {
 
           {/* Main Title */}
           <h1 className="mx-auto max-w-4xl text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-[-0.03em] text-slate-900 leading-[1.12]">
-            Engineered for the{" "}
-            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 bg-clip-text text-transparent">
-              final round.
-            </span>
+            AI Interview Preparation for Software Engineers
           </h1>
+          <p className="text-2xl sm:text-3xl font-semibold tracking-[-0.02em] text-blue-700">Engineered for the final round.</p>
 
           {/* Subtitle */}
           <p className="mx-auto max-w-2xl text-base sm:text-lg leading-relaxed text-slate-600 font-normal">
@@ -549,7 +542,7 @@ export const HomePage: React.FC<HomePageProps> = () => {
                 <ul className="space-y-2 text-xs text-slate-600 pt-2 border-t border-slate-200">
                   <li className="flex items-center gap-2">
                     <Check className="h-3.5 w-3.5 text-blue-600 shrink-0" />
-                    <span>Day 1 Diagnostic Baseline to surface specific blind spots</span>
+                    <span>Day 1 Diagnostic Baseline to highlight preparation gaps</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <Check className="h-3.5 w-3.5 text-blue-600 shrink-0" />
@@ -691,99 +684,63 @@ export const HomePage: React.FC<HomePageProps> = () => {
         </div>
       </section>
 
-      {/* 3.5 CANDIDATE STORIES & SOCIAL PROOF */}
+      {/* 3.5 PRODUCT CAPABILITIES */}
       <section className="py-24 bg-white border-t border-slate-200">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center space-y-3 max-w-2xl mx-auto">
-            <span className="text-xs font-mono uppercase tracking-widest text-blue-600 font-semibold">Candidate Stories</span>
+            <span className="text-xs font-mono uppercase tracking-widest text-blue-600 font-semibold">The PrepVisor Workbench</span>
             <h2 className="text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-slate-900">
-              What engineers say after practicing
+              One place for structured interview practice
             </h2>
             <p className="text-sm text-slate-600">
-              Engineers who switched from random problem grinding to structured, time-aware preparation.
+              Build a preparation plan, practice technical topics, and review your progress across the available studios.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="p-6 rounded-2xl border border-slate-200 bg-[#fafbfc] hover:border-blue-300 hover:shadow-md transition space-y-4 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="flex items-center gap-1 text-amber-400">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
-                  ))}
-                </div>
-                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed italic">
-                  "The daily pacing was the game-changer. Instead of drowning in 200 random LeetCode questions with 3 weeks left, PrepVisor gave me 2 focused hours each day. The schedule rebalance saved me when a production issue killed my weekend."
-                </p>
+            <div className="p-6 rounded-2xl border border-slate-200 bg-[#fafbfc] hover:border-blue-300 hover:shadow-md transition space-y-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 border border-blue-200 text-blue-600"><Calendar className="h-5 w-5" /></div>
+              <div>
+                <h3 className="text-base font-semibold text-slate-900">Plan around your interview date</h3>
+                <p className="text-sm text-slate-600 leading-relaxed mt-2">Create a daily preparation roadmap using your target role, interview timeline, and available study hours.</p>
               </div>
-              <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
-                <div>
-                  <h4 className="text-xs font-semibold text-slate-900">Rohit S.</h4>
-                  <p className="text-[11px] text-slate-500">Senior Backend Engineer</p>
-                </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200">
-                  Target: Tier-1 Fintech
-                </span>
+              <Link to="/roadmap" className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline">Explore the roadmap <ArrowRight className="h-3.5 w-3.5" /></Link>
+            </div>
+
+            <div className="p-6 rounded-2xl border border-slate-200 bg-[#fafbfc] hover:border-blue-300 hover:shadow-md transition space-y-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600"><Terminal className="h-5 w-5" /></div>
+              <div>
+                <h3 className="text-base font-semibold text-slate-900">Practice coding and system design</h3>
+                <p className="text-sm text-slate-600 leading-relaxed mt-2">Use the coding studio for language-based practice and the architecture canvas for system design exercises and capacity calculations.</p>
+              </div>
+              <div className="flex flex-wrap gap-4">
+                <Link to="/coding-practice" className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline">Coding practice <ArrowRight className="h-3.5 w-3.5" /></Link>
+                <Link to="/system-design" className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline">System design <ArrowRight className="h-3.5 w-3.5" /></Link>
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl border border-slate-200 bg-[#fafbfc] hover:border-blue-300 hover:shadow-md transition space-y-4 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="flex items-center gap-1 text-amber-400">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
-                  ))}
-                </div>
-                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed italic">
-                  "Most platforms ignore system design or just give you static diagrams. The cloud architecture whiteboard with live QPS, 5-year storage math, and automatic SPOF detection tested me the exact way Staff interviewers do. Absolutely worth it."
-                </p>
+            <div className="p-6 rounded-2xl border border-slate-200 bg-[#fafbfc] hover:border-blue-300 hover:shadow-md transition space-y-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 border border-purple-200 text-purple-600"><Mic className="h-5 w-5" /></div>
+              <div>
+                <h3 className="text-base font-semibold text-slate-900">Rehearse interview answers</h3>
+                <p className="text-sm text-slate-600 leading-relaxed mt-2">Practice multi-turn technical and behavioral mock interviews with AI feedback, including STAR framework dimensions.</p>
               </div>
-              <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
-                <div>
-                  <h4 className="text-xs font-semibold text-slate-900">Ananya K.</h4>
-                  <p className="text-[11px] text-slate-500">Staff Systems Architect</p>
-                </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-semibold border border-blue-200">
-                  Target: Cloud Infrastructure
-                </span>
-              </div>
-            </div>
-
-            <div className="p-6 rounded-2xl border border-slate-200 bg-[#fafbfc] hover:border-blue-300 hover:shadow-md transition space-y-4 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="flex items-center gap-1 text-amber-400">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
-                  ))}
-                </div>
-                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed italic">
-                  "I kept getting rejected in behavioral rounds without knowing why. The AI voice mock picked up that I answered 80% with 'we' instead of taking ownership with 'I'. Practicing speaking out loud with STAR scoring fixed my delivery in 4 days."
-                </p>
-              </div>
-              <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
-                <div>
-                  <h4 className="text-xs font-semibold text-slate-900">Karthik V.</h4>
-                  <p className="text-[11px] text-slate-500">SDE-2 Full Stack</p>
-                </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-50 text-purple-700 font-semibold border border-purple-200">
-                  Target: US Tech Remote
-                </span>
-              </div>
+              <Link to="/mock-interview" className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline">Explore mock interviews <ArrowRight className="h-3.5 w-3.5" /></Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4. THE SPECIFICATION COMPARISON MATRIX */}
+      {/* 4. PRODUCT CAPABILITY OVERVIEW */}
       <section className="py-24 bg-slate-50/50 border-t border-slate-200">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center space-y-3 max-w-2xl mx-auto">
-            <span className="text-xs font-mono uppercase tracking-widest text-blue-600 font-semibold">The Comparison</span>
+            <span className="text-xs font-mono uppercase tracking-widest text-blue-600 font-semibold">What PrepVisor includes</span>
             <h2 className="text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-slate-900">
-              Why engineers choose PrepVisor
+              How PrepVisor supports interview preparation
             </h2>
             <p className="text-sm text-slate-600">
-              A transparent look at how PrepVisor stacks up against isolated puzzle platforms, chat bots, and bootcamps.
+              Explore the core activities available across PrepVisor’s roadmap, practice studios, and preparation guides.
             </p>
           </div>
 
@@ -791,72 +748,48 @@ export const HomePage: React.FC<HomePageProps> = () => {
             <table className="w-full text-left border-collapse text-xs sm:text-sm font-mono">
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-100/70">
-                  <th className="p-4 font-semibold text-slate-700">Capability</th>
-                  <th className="p-4 font-bold text-blue-700 bg-blue-50 border-x border-blue-200">PrepVisor</th>
-                  <th className="p-4 font-medium text-slate-500">LeetCode</th>
-                  <th className="p-4 font-medium text-slate-500">ChatGPT Plus</th>
-                  <th className="p-4 font-medium text-slate-500">Pramp / Peer</th>
-                  <th className="p-4 font-medium text-slate-500">Coding Bootcamps</th>
+                  <th scope="col" className="p-4 font-semibold text-slate-700">Preparation activity</th>
+                  <th scope="col" className="p-4 font-bold text-blue-700 bg-blue-50 border-x border-blue-200">What you can do</th>
+                  <th scope="col" className="p-4 font-medium text-slate-700">Explore</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {[
                   {
-                    feature: "Time-Calibrated Pacing (7–60 Days)",
-                    prepvisor: "Dynamic daily tasks based on interview date",
-                    leetcode: "None (random grind)",
-                    chatgpt: "Static text response",
-                    pramp: "None (calendar barter)",
-                    bootcamp: "Rigid 6-month batch",
+                    feature: "Roadmap planning",
+                    details: "Build a daily plan around your target role, interview timeline, and available hours.",
+                    link: "/roadmap",
+                    linkLabel: "Roadmap",
                   },
                   {
-                    feature: "Interactive System Design Canvas",
-                    prepvisor: "Infinite cloud architecture canvas with scale math",
-                    leetcode: "None",
-                    chatgpt: "None (text only)",
-                    pramp: "Basic textpad",
-                    bootcamp: "Slide decks",
+                    feature: "Coding practice",
+                    details: "Practice coding in the supported languages with a console, test runner, and complexity feedback.",
+                    link: "/coding-practice",
+                    linkLabel: "Coding practice",
                   },
                   {
-                    feature: "Live Terminal Stdout in 9 Languages",
-                    prepvisor: "Full stdout console + Big-O analysis",
-                    leetcode: "Limited test runner",
-                    chatgpt: "Cannot run code",
-                    pramp: "Shared textpad",
-                    bootcamp: "Local terminal setup",
+                    feature: "System design practice",
+                    details: "Arrange architecture components on a canvas and work through capacity calculations.",
+                    link: "/system-design",
+                    linkLabel: "System design",
                   },
                   {
-                    feature: "Voice Behavioral Mocks with STAR",
-                    prepvisor: "Spoken audio with STAR metrics",
-                    leetcode: "None",
-                    chatgpt: "Voice mode without STAR grading",
-                    pramp: "Uncalibrated peer mocks",
-                    bootcamp: "1–2 scheduled peer mocks",
+                    feature: "Mock interviews",
+                    details: "Practice multi-turn mock interviews and review feedback for technical or STAR-based answers.",
+                    link: "/mock-interview",
+                    linkLabel: "Mock interviews",
                   },
                   {
-                    feature: "1-Click Schedule Rebalancing",
-                    prepvisor: "Auto-redistributes missed tasks",
-                    leetcode: "None",
-                    chatgpt: "Manual re-prompting",
-                    pramp: "None",
-                    bootcamp: "Fall behind permanently",
-                  },
-                  {
-                    feature: "Pricing Model",
-                    prepvisor: "Free Tier · Passes from ₹199 (No Auto-Renew)",
-                    leetcode: "$35/mo subscription",
-                    chatgpt: "$20/mo subscription",
-                    pramp: "Free / Limited",
-                    bootcamp: "₹50,000 – ₹1,50,000 upfront",
+                    feature: "Interview guides",
+                    details: "Read technical guides covering system design, Java, backend architecture, and data structures.",
+                    link: "/guides",
+                    linkLabel: "Browse guides",
                   },
                 ].map((row) => (
                   <tr key={row.feature} className="hover:bg-slate-50/60 transition-colors">
                     <td className="p-4 font-sans text-xs text-slate-900 font-medium">{row.feature}</td>
-                    <td className="p-4 text-xs font-semibold text-blue-900 bg-blue-50/30 border-x border-blue-200/60">{row.prepvisor}</td>
-                    <td className="p-4 text-xs text-slate-500">{row.leetcode}</td>
-                    <td className="p-4 text-xs text-slate-500">{row.chatgpt}</td>
-                    <td className="p-4 text-xs text-slate-500">{row.pramp}</td>
-                    <td className="p-4 text-xs text-slate-500">{row.bootcamp}</td>
+                    <td className="p-4 text-xs font-semibold text-blue-900 bg-blue-50/30 border-x border-blue-200/60">{row.details}</td>
+                    <td className="p-4 text-xs"><Link to={row.link} className="font-semibold text-blue-600 hover:underline">{row.linkLabel} <ArrowRight className="inline h-3 w-3" /></Link></td>
                   </tr>
                 ))}
               </tbody>
@@ -986,7 +919,7 @@ export const HomePage: React.FC<HomePageProps> = () => {
               Measure your readiness before interview day.
             </h2>
             <p className="text-sm text-slate-600 leading-relaxed">
-              Start Day 1 with a timed technical assessment to uncover hidden blind spots, then track your 0–100 Interview Readiness Score with instant AI-generated scorecards.
+              Start Day 1 with a timed technical assessment to review topic-level feedback, then track your 0–100 Interview Readiness Score with AI-generated scorecards.
             </p>
           </div>
 
@@ -1011,7 +944,7 @@ export const HomePage: React.FC<HomePageProps> = () => {
                 <ul className="space-y-2.5 text-xs text-slate-700 pt-1">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span><strong className="text-slate-900 font-medium">Initial Baseline on Day 1</strong>: Uncovers your strongest topics and biggest blind spots before starting daily tasks.</span>
+                    <span><strong className="text-slate-900 font-medium">Initial Baseline on Day 1</strong>: Highlights stronger topics and areas to revisit before starting daily tasks.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
@@ -1110,10 +1043,10 @@ export const HomePage: React.FC<HomePageProps> = () => {
 
           <div className="grid gap-6 sm:grid-cols-3">
             <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-2 text-left shadow-xs">
-              <span className="text-3xl font-extrabold font-mono text-emerald-600">85+</span>
-              <h3 className="text-sm font-semibold text-slate-900">Interview-Ready Benchmark</h3>
+              <span className="text-3xl font-extrabold font-mono text-emerald-600">Prep</span>
+              <h3 className="text-sm font-semibold text-slate-900">Structured Interview Practice</h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Candidates scoring 85+ pass on-site technical rounds at 3.4x the industry average.
+                Use the roadmap and practice studios to work through coding, system design, and behavioral preparation.
               </p>
             </div>
             <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-2 text-left shadow-xs">
@@ -1124,10 +1057,10 @@ export const HomePage: React.FC<HomePageProps> = () => {
               </p>
             </div>
             <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-2 text-left shadow-xs">
-              <span className="text-3xl font-extrabold font-mono text-purple-600">0 Blind Spots</span>
-              <h3 className="text-sm font-semibold text-slate-900">Targeted Weak Spot Alerts</h3>
+              <span className="text-3xl font-extrabold font-mono text-purple-600">Gap Analysis</span>
+              <h3 className="text-sm font-semibold text-slate-900">Identify Preparation Gaps</h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Highlights your exact weak topics before sitting in front of real hiring managers.
+                Review feedback on your answers and revisit topics that need more practice.
               </p>
             </div>
           </div>
@@ -1158,6 +1091,8 @@ export const HomePage: React.FC<HomePageProps> = () => {
                   <button
                     type="button"
                     onClick={() => toggleFaq(idx)}
+                    aria-expanded={isOpen}
+                    aria-controls={`home-faq-answer-${idx}`}
                     className="flex w-full items-center justify-between p-5 text-left text-sm font-medium text-slate-900 hover:bg-slate-100/60 gap-4"
                   >
                     <span>{faq.q}</span>
@@ -1167,11 +1102,9 @@ export const HomePage: React.FC<HomePageProps> = () => {
                       <ChevronDown className="h-4 w-4 shrink-0 text-slate-500" />
                     )}
                   </button>
-                  {isOpen && (
-                    <div className="px-5 pb-5 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-3 bg-white">
+                  <div id={`home-faq-answer-${idx}`} role="region" hidden={!isOpen} className="px-5 pb-5 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-3 bg-white">
                       {faq.a}
-                    </div>
-                  )}
+                  </div>
                 </div>
               )
             })}

@@ -237,9 +237,9 @@ export const EarlyAccessModal: React.FC<EarlyAccessModalProps> = ({
                 >
                   <Lock className="h-4 w-4" />
                   <span>
-                    {isSubmitting
+                    <span aria-live="polite">{isSubmitting
                       ? "Processing Registration..."
-                      : `Proceed to Payment (₹${selectedTier.priceINR})`}
+                      : `Proceed to Payment (₹${selectedTier.priceINR})`}</span>
                   </span>
                   {!isSubmitting && <ArrowRight className="h-4 w-4" />}
                 </button>
@@ -247,7 +247,7 @@ export const EarlyAccessModal: React.FC<EarlyAccessModalProps> = ({
 
               <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-500 pt-1">
                 <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
-                <span>100% Secure Checkout · Instant Access · 7-Day Refund Guarantee</span>
+                <span>Secure Checkout · Instant Access · 7-Day Refund Policy</span>
               </div>
             </form>
           </div>

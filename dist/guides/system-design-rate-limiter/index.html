@@ -7,24 +7,21 @@
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>System Design: How to Design an API Rate Limiter | Token Bucket & Redis Architecture | PrepVisor</title>
+    <title>System Design: How to Design an API Rate Limiter | Token Bucket &amp; Redis Architecture | PrepVisor</title>
     <meta name="description" content="Comprehensive system design interview guide for an API Rate Limiter. Compare Token Bucket, Leaky Bucket, and Sliding Window with distributed Redis Lua scripts, memory sizing, and fail-open resilience." />
-    <meta
-      name="keywords"
-      content="AI tech interview coach, system design interview simulator, DSA coding practice terminal stdout, voice mock interview STAR method, tech interview study roadmap, Java interview prep, software engineer mock interview, PrepVisor"
-    />
     <meta name="author" content="PrepVisor" />
-    <link rel="canonical" href="https://prepvisor.in/" />
-    
+    <link rel="canonical" href="https://prepvisor.in/guides/system-design-rate-limiter" />
+
     <link rel="manifest" href="/manifest.json" />
-    
+
     <!-- Preconnect & Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" /></noscript>
     <link rel="preconnect" href="https://app.prepvisor.in" />
     <link rel="dns-prefetch" href="https://app.prepvisor.in" />
-    
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-DNM4SMR2VK"></script>
     <script>
@@ -35,111 +32,195 @@
     </script>
 
     <!-- Open Graph / Facebook / LinkedIn -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://prepvisor.in/" />
-    <meta property="og:title" content="PrepVisor | AI Tech Interview Coach, System Design Simulator & DSA Arena" />
-    <meta property="og:description" content="Master tech interviews with dynamic AI pacing. Interactive DSA coding arena with live terminal stdout, interactive System Design whiteboard with scale math, and voice AI mock interviews." />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://prepvisor.in/guides/system-design-rate-limiter" />
+    <meta property="og:title" content="System Design: How to Design an API Rate Limiter (Token Bucket vs Leaky Bucket)" />
+    <meta property="og:description" content="Comprehensive system design interview guide for an API Rate Limiter. Compare Token Bucket, Leaky Bucket, and Sliding Window with distributed Redis Lua scripts, memory sizing, and fail-open resilience." />
     <meta property="og:image" content="https://prepvisor.in/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="PrepVisor — AI interview preparation for software engineers" />
     <meta property="og:site_name" content="PrepVisor" />
 
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://prepvisor.in/" />
-    <meta name="twitter:title" content="PrepVisor | AI Tech Interview Coach, System Design Simulator & DSA Arena" />
-    <meta name="twitter:description" content="Master tech interviews with dynamic AI pacing. Interactive DSA coding arena with live terminal stdout, interactive System Design whiteboard with scale math, and voice AI mock interviews." />
+    <meta name="twitter:url" content="https://prepvisor.in/guides/system-design-rate-limiter" />
+    <meta name="twitter:title" content="System Design: How to Design an API Rate Limiter (Token Bucket vs Leaky Bucket)" />
+    <meta name="twitter:description" content="Comprehensive system design interview guide for an API Rate Limiter. Compare Token Bucket, Leaky Bucket, and Sliding Window with distributed Redis Lua scripts, memory sizing, and fail-open resilience." />
     <meta name="twitter:image" content="https://prepvisor.in/og-image.png" />
 
     <!-- Structured Data for Search Engines -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "SoftwareApplication",
-            "@id": "https://prepvisor.in/#software",
-            "name": "PrepVisor",
-            "operatingSystem": "Web, Cloud",
-            "applicationCategory": "EducationalApplication",
-            "description": "An interactive AI tech interview coach featuring time-calibrated preparation roadmaps, DSA coding studio with terminal stdout, infinite system design whiteboard with scale math, and voice STAR behavioral mock interviews.",
-            "url": "https://prepvisor.in",
-            "offers": {
-              "@type": "AggregateOffer",
-              "priceCurrency": "INR",
-              "lowPrice": "0",
-              "highPrice": "1499",
-              "offerCount": "5"
-            }
-          },
-          {
-            "@type": "Organization",
-            "@id": "https://prepvisor.in/#organization",
-            "name": "PrepVisor",
-            "url": "https://prepvisor.in",
-            "logo": "https://prepvisor.in/logo.png",
-            "contactPoint": {
-              "@type": "ContactPoint",
-              "telephone": "+91 7249778116",
-              "contactType": "Customer Support",
-              "areaServed": "IN",
-              "availableLanguage": ["English"]
-            },
-            "address": {
-              "@type": "PostalAddress",
-              "streetAddress": "Flat 201, Aurum Residencies, Maruthi Nagar, BTM Layout Stage 1",
-              "addressLocality": "Bengaluru",
-              "addressRegion": "Karnataka",
-              "postalCode": "560068",
-              "addressCountry": "IN"
-            }
-          },
-          {
-            "@type": "WebSite",
-            "@id": "https://prepvisor.in/#website",
-            "url": "https://prepvisor.in",
-            "name": "PrepVisor",
-            "publisher": {
-              "@id": "https://prepvisor.in/#organization"
-            }
-          }
-        ]
-      }
-    </script>
-    <script type="module" crossorigin src="/assets/index-D3pypZJn.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DO_PuZJO.css">
-  
-    <link rel="canonical" href="https://prepvisor.in/guides/system-design-rate-limiter" />
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="System Design: How to Design an API Rate Limiter (Token Bucket vs Leaky Bucket)" />
-    <meta property="og:description" content="Comprehensive system design interview guide for an API Rate Limiter. Compare Token Bucket, Leaky Bucket, and Sliding Window with distributed Redis Lua scripts, memory sizing, and fail-open resilience." />
-    <meta property="og:url" content="https://prepvisor.in/guides/system-design-rate-limiter" />
-    <meta name="twitter:title" content="System Design: How to Design an API Rate Limiter (Token Bucket vs Leaky Bucket)" />
-    <meta name="twitter:description" content="Comprehensive system design interview guide for an API Rate Limiter. Compare Token Bucket, Leaky Bucket, and Sliding Window with distributed Redis Lua scripts, memory sizing, and fail-open resilience." />
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"System Design: How to Design an API Rate Limiter (Token Bucket vs Leaky Bucket)","description":"Comprehensive system design interview guide for an API Rate Limiter. Compare Token Bucket, Leaky Bucket, and Sliding Window with distributed Redis Lua scripts, memory sizing, and fail-open resilience.","image":"https://prepvisor.in/logo.png","author":{"@type":"Organization","name":"PrepVisor Systems Engineering Team","url":"https://prepvisor.in"},"publisher":{"@type":"Organization","name":"PrepVisor","url":"https://prepvisor.in","logo":{"@type":"ImageObject","url":"https://prepvisor.in/logo.png"}},"datePublished":"2026-09-20T08:00:00+05:30","dateModified":"2026-09-20T08:00:00+05:30","mainEntityOfPage":{"@type":"WebPage","@id":"https://prepvisor.in/guides/system-design-rate-limiter"},"keywords":"how to design an api rate limiter, system design rate limiter interview, token bucket vs leaky bucket, redis rate limiter lua script, distributed rate limiting architecture, sliding window counter rate limit, api gateway rate limiting envoy kong"}</script>
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the primary difference between Token Bucket and Leaky Bucket?","acceptedAnswer":{"@type":"Answer","text":"Token Bucket allows controlled traffic bursts up to the bucket capacity while maintaining an average rate, making it ideal for general web APIs. Leaky Bucket flattens traffic into a strictly constant output rate without burst tolerance, making it ideal for egress traffic shaping toward fragile downstream services."}},{"@type":"Question","name":"How do you prevent race conditions in a distributed rate limiter?","acceptedAnswer":{"@type":"Answer","text":"Naive GET and SET operations in Redis suffer from check-then-act race conditions. In production, race conditions are eliminated by executing rate limit checks inside an atomic Redis Lua script, which runs to completion on Redis's single-threaded event loop without interleaving."}},{"@type":"Question","name":"Where should the rate limiter be positioned in modern microservices?","acceptedAnswer":{"@type":"Answer","text":"The rate limiter should be positioned at the edge API Gateway (e.g. Envoy, Kong, Cloudflare) rather than inside individual application microservices. This blocks unauthorized or throttled requests before they consume application server CPU, thread pools, or database connections."}},{"@type":"Question","name":"What HTTP status code and response headers should be returned when rate limited?","acceptedAnswer":{"@type":"Answer","text":"The server should return HTTP 429 (Too Many Requests) along with headers: X-RateLimit-Limit (total quota), X-RateLimit-Remaining (tokens left in current window), X-RateLimit-Reset (epoch timestamp when quota refreshes), and Retry-After (seconds until retry is permitted)."}},{"@type":"Question","name":"Should a rate limiter fail open or fail closed during a Redis outage?","acceptedAnswer":{"@type":"Answer","text":"For standard web and mobile applications, the rate limiter should fail open with an active circuit breaker. If Redis times out, requests are allowed through while alerting DevOps, avoiding a total platform outage. For strict financial transaction or security-critical endpoints, a fail-closed policy may be chosen."}},{"@type":"Question","name":"How do you handle clock drift across distributed rate limiting servers?","acceptedAnswer":{"@type":"Answer","text":"Server clocks drift due to NTP synchronization intervals. To eliminate skew, never use client or gateway application timestamps; instead, obtain the canonical time directly within Redis using the redis.call('TIME') command inside the Lua script."}}]}</script>
-  </head>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://prepvisor.in/#organization","name":"PrepVisor","url":"https://prepvisor.in","logo":"https://prepvisor.in/logo.png","contactPoint":{"@type":"ContactPoint","telephone":"+91 7249778116","email":"support@prepvisor.in","contactType":"Customer Support","areaServed":"IN","availableLanguage":["English"]},"address":{"@type":"PostalAddress","streetAddress":"Flat 201,Aurum Residencies,Maruthi Nagar,BTM Layout stage 1, Near RS High School,9th cross, Madiwala","addressLocality":"Bengaluru","addressRegion":"Karnataka","postalCode":"560068","addressCountry":"IN"}},{"@type":"WebSite","@id":"https://prepvisor.in/#website","url":"https://prepvisor.in/","name":"PrepVisor","publisher":{"@id":"https://prepvisor.in/#organization"}},{"@type":"SoftwareApplication","@id":"https://prepvisor.in/#software","name":"PrepVisor","operatingSystem":"Web, Cloud","applicationCategory":"EducationalApplication","description":"An interactive AI tech interview coach featuring time-calibrated preparation roadmaps, DSA coding studio with terminal stdout, infinite system design whiteboard with scale math, and voice STAR behavioral mock interviews.","url":"https://prepvisor.in","publisher":{"@id":"https://prepvisor.in/#organization"},"offers":{"@type":"AggregateOffer","priceCurrency":"INR","lowPrice":199,"highPrice":1299,"offerCount":4}}]}</script>
+    <script type="module" crossorigin src="/assets/index-CM9GHTF1.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DL1QVLFc.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","@id":"https://prepvisor.in/guides/system-design-rate-limiter#article","headline":"System Design: How to Design an API Rate Limiter (Token Bucket vs Leaky Bucket)","description":"Comprehensive system design interview guide for an API Rate Limiter. Compare Token Bucket, Leaky Bucket, and Sliding Window with distributed Redis Lua scripts, memory sizing, and fail-open resilience.","author":{"@type":"Organization","name":"PrepVisor","@id":"https://prepvisor.in/#organization"},"publisher":{"@id":"https://prepvisor.in/#organization"},"dateModified":"2026-09-20T08:00:00+05:30","url":"https://prepvisor.in/guides/system-design-rate-limiter","mainEntityOfPage":{"@type":"WebPage","@id":"https://prepvisor.in/guides/system-design-rate-limiter"},"keywords":"how to design an api rate limiter, system design rate limiter interview, token bucket vs leaky bucket, redis rate limiter lua script, distributed rate limiting architecture, sliding window counter rate limit, api gateway rate limiting envoy kong"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the primary difference between Token Bucket and Leaky Bucket?","acceptedAnswer":{"@type":"Answer","text":"Token Bucket can allow bursts up to its configured capacity while enforcing a longer-term refill rate. A Leaky Bucket can smooth output when paired with a queue; exact behavior depends on implementation and configuration."}},{"@type":"Question","name":"How do you prevent race conditions in a distributed rate limiter?","acceptedAnswer":{"@type":"Answer","text":"Separate Redis GET and SET operations can interleave and create check-then-act races. A short Redis Lua script can perform the check and update atomically; Redis blocks other server activity while the script runs. See Redis scripting documentation."}},{"@type":"Question","name":"Where can a rate limiter be positioned in a microservice architecture?","acceptedAnswer":{"@type":"Answer","text":"An edge gateway can reject requests before they consume application resources. Service-level limits may also be useful for internal calls or specific resources; place controls according to the threat model and architecture."}},{"@type":"Question","name":"What HTTP status code and response headers should be returned when rate limited?","acceptedAnswer":{"@type":"Answer","text":"HTTP 429 indicates that the client has sent too many requests; RFC 6585 says a response may include Retry-After. Other rate-limit headers are design choices and should be documented consistently by the API."}},{"@type":"Question","name":"Should a rate limiter fail open or fail closed during a Redis outage?","acceptedAnswer":{"@type":"Answer","text":"Choose fail-open or fail-closed behavior per endpoint. Fail-open favors availability but can expose downstream services to excess traffic; fail-closed preserves the limit but can reject legitimate traffic during an outage."}},{"@type":"Question","name":"How do you handle clock drift across distributed rate limiting servers?","acceptedAnswer":{"@type":"Answer","text":"Redis TIME returns the current time from the Redis server handling the command. It avoids relying on a gateway-provided timestamp for that operation, but it does not establish globally synchronized time across servers."}}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://prepvisor.in/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://prepvisor.in/guides"},{"@type":"ListItem","position":3,"name":"System Design: How to Design an API Rate Limiter (Token Bucket vs Leaky Bucket)","item":"https://prepvisor.in/guides/system-design-rate-limiter"}]}</script></head>
   <body class="bg-slate-50 text-slate-900 antialiased selection:bg-blue-600 selection:text-white min-h-screen">
-    
+
     <div id="root"></div>
     <noscript>
       <article class="p-8 max-w-4xl mx-auto font-sans">
+        <nav aria-label="Breadcrumb"><ol><li><a href="/">Home</a></li><li><a href="/guides">Guides</a></li><li aria-current="page">System Design: How to Design an API Rate Limiter (Token Bucket vs Leaky Bucket)</li></ol></nav>
         <header class="mb-8">
           <p class="text-sm font-bold text-blue-600 uppercase tracking-wider">System Design · 22 min read</p>
           <h1 class="text-4xl font-black text-slate-900 mt-2">System Design: How to Design an API Rate Limiter (Token Bucket vs Leaky Bucket)</h1>
-          <p class="text-lg text-slate-600 mt-4 leading-relaxed">Comprehensive system design interview guide for an API Rate Limiter. Compare Token Bucket, Leaky Bucket, and Sliding Window with distributed Redis Lua scripts, memory sizing, and fail-open resilience.</p>
+          <p class="text-lg text-slate-600 mt-4 leading-relaxed">This guide explores a distributed API rate limiter design, including Token Bucket, Leaky Bucket, Sliding Window Counter, synchronization across gateways, Redis scripting, capacity estimation, and failure-mode trade-offs.</p>
+          <p class="mt-4 text-sm text-slate-600">Published by PrepVisor · Guide publisher · Updated 2026-09-20</p>
         </header>
-        <section class="space-y-6">
-          <h2 class="text-2xl font-bold text-slate-800">Key Interview Sections</h2>
-          <ul class="list-disc pl-6 space-y-2 text-slate-700">
-            <li><strong>1. Functional & Non-Functional Requirements</strong></li><li><strong>2. Algorithm Comparison: Token Bucket vs Leaky Bucket vs Sliding Window</strong></li><li><strong>3. High-Level Architecture & Gateway Placement</strong></li><li><strong>4. Distributed Concurrency & The Race Condition Trap</strong></li><li><strong>5. Capacity Estimation & Redis Memory Sizing</strong></li><li><strong>6. Edge Cases, Multi-Tier Limits & Failover Resilience</strong></li>
-          </ul>
-        </section>
+        <nav aria-label="Table of Contents"><h2>Table of Contents</h2><ol><li><a href="#quick-answer">Quick Answer</a></li><li><a href="#key-takeaways">Key Takeaways</a></li><li><a href="#requirements">1. Functional &amp; Non-Functional Requirements</a></li><li><a href="#algorithms">2. Algorithm Comparison: Token Bucket vs Leaky Bucket vs Sliding Window</a></li><li><a href="#algorithms-1-token-bucket">1. Token Bucket</a></li><li><a href="#algorithms-2-leaky-bucket-traffic-shaping">2. Leaky Bucket (Traffic Shaping)</a></li><li><a href="#algorithms-3-fixed-window-counter">3. Fixed Window Counter</a></li><li><a href="#algorithms-4-sliding-window-log">4. Sliding Window Log</a></li><li><a href="#algorithms-5-sliding-window-counter-weighted-estimate">5. Sliding Window Counter (weighted estimate)</a></li><li><a href="#architecture">3. High-Level Architecture &amp; Gateway Placement</a></li><li><a href="#concurrency-lua">4. Distributed Concurrency &amp; The Race Condition Trap</a></li><li><a href="#concurrency-lua-the-race-condition-trap-check-then-act">The Race Condition Trap (Check-then-Act)</a></li><li><a href="#concurrency-lua-the-solution-redis-lua-scripts">The Solution: Redis Lua Scripts</a></li><li><a href="#capacity-estimation">5. Capacity Estimation &amp; Redis Memory Sizing</a></li><li><a href="#edge-cases-resilience">6. Edge Cases, Multi-Tier Limits &amp; Failover Resilience</a></li><li><a href="#edge-cases-resilience-1-the-clock-skew-problem">1. The Clock Skew Problem</a></li><li><a href="#edge-cases-resilience-2-multi-tier-rate-limiting-defense">2. Multi-Tier Rate Limiting Defense</a></li><li><a href="#edge-cases-resilience-3-cache-outage-fail-open-vs-fail-closed">3. Cache Outage: Fail-Open vs Fail-Closed</a></li><li><a href="#references">References &amp; Further Reading</a></li><li><a href="#faqs">Frequently Asked Questions</a></li></ol></nav>
+        <main><section id="quick-answer"><h2>Quick Answer</h2><p>An API rate limiter controls request volume by client, IP, or endpoint. For distributed gateways, a Token Bucket backed by Redis can allow controlled bursts. Place checks at the API Gateway and use atomic Redis Lua updates to avoid race conditions. When a limit is exceeded, return HTTP 429 with Retry-After; choose fail-open or fail-closed behavior for outages based on system priorities.</p></section><section id="key-takeaways"><h2>Key Takeaways</h2><ul><li>Clarify whether limits apply globally, per user, per IP, or per endpoint.</li><li>Token Bucket permits controlled bursts; Leaky Bucket smooths output at a constant rate.</li><li>Place rate limiting at the API Gateway to reject throttled traffic before it consumes backend resources.</li><li>Use atomic Redis Lua scripts to avoid check-then-act races across gateway servers.</li><li>Choose fail-open or fail-closed behavior deliberately, and use Redis server time where token refill depends on time.</li></ul></section>
+    <section id="requirements">
+      <h2>1. Functional &amp; Non-Functional Requirements</h2>
+      <p>Clarifying limits, granularity, and failure modes</p>
+      <p>Before architecting a rate limiter, clarify the limit granularity and failure behavior. The numerical limits below are EXAMPLE / ASSUMPTION values for discussion, not universal tiers or measured service requirements.</p>
+<p><strong>Functional Requirements:</strong></p>
+<ol><li><strong>Granular Rate Limiting</strong>: Limit requests based on client identifier (authenticated user ID, API token) or IP address for unauthenticated traffic.</li><li><strong>Configurable Tiers</strong>: Support multiple rate limiting tiers (e.g. Free Tier: 100 req/min; Enterprise: 5,000 req/min; Login Endpoint: 5 attempts/min to prevent brute-force attacks).</li><li><strong>Informative HTTP Headers (design choice)</strong>: Consider documenting quota and reset headers (for example, <code>X-RateLimit-Limit</code>, <code>X-RateLimit-Remaining</code>, and <code>X-RateLimit-Reset</code>) for clients.</li><li><strong>Graceful Throttling</strong>: When limits are breached, return <strong>HTTP 429 (Too Many Requests)</strong>; RFC 6585 permits a <code>Retry-After</code> header indicating how long to wait.</li></ol>
+<p><strong>Non-Functional Requirements:</strong></p>
+<ul><li><strong>Latency target (example)</strong>: A scenario might set an overhead target of <strong>2 to 3 milliseconds</strong>; define the measurement boundary and percentile.</li><li><strong>Availability target (example)</strong>: A scenario might specify <strong>99.999%</strong> availability; this is a target, not a guarantee.</li><li><strong>Distributed State Synchronization</strong>: Support hundreds of edge API gateway nodes querying a distributed, consistent token store.</li><li><strong>Memory efficiency (example scale assumption)</strong>: A scenario could ask the design to track hundreds of millions of active IP addresses and user accounts; estimate state from the chosen key and data representation, then validate it against deployment limits.</li></ul>
+
+
+      <aside><h3>Key Interview Takeaways</h3><ul><li>Always confirm whether rate limiting applies globally, per user, per IP, or per endpoint.</li><li>Establish the failure policy upfront: fail-open (prioritize user experience) vs fail-closed (prioritize backend protection).</li><li>Document any rate-limit headers your API returns so clients can interpret quotas and retry timing.</li></ul></aside>
+    </section>
+
+    <section id="algorithms">
+      <h2>2. Algorithm Comparison: Token Bucket vs Leaky Bucket vs Sliding Window</h2>
+      <p>Selecting a rate-limiting algorithm for the workload</p>
+      <p>Compare rate-limiting algorithms against the traffic shape, state model, and failure requirements of the system being designed:</p>
+<h3 id="algorithms-1-token-bucket">1. Token Bucket</h3>
+<ul><li><strong>Mechanism</strong>: A bucket holds up to a maximum of $b$ tokens. Tokens are continuously added at a fixed rate of $r$ tokens per second. Each incoming request consumes 1 token. If the bucket is empty, the request is dropped (or throttled).</li><li><strong>Burst Behavior</strong>: <strong>Allows controlled bursts</strong>. If the bucket is full, up to $b$ requests can be processed immediately in a single instant.</li><li><strong>Memory Footprint</strong>: Extremely compact ($O(1)$ space). You only need to store two numbers per user: the remaining token count and the last refill timestamp.</li></ul>
+<h3 id="algorithms-2-leaky-bucket-traffic-shaping">2. Leaky Bucket (Traffic Shaping)</h3>
+<ul><li><strong>Mechanism</strong>: Incoming requests enter a FIFO queue of fixed capacity. Requests are pulled from the queue and processed at a constant, fixed rate (the &#39;leak&#39;). If the queue is full, incoming requests overflow and are discarded.</li><li><strong>Burst Behavior</strong>: <strong>Zero burst tolerance</strong>. Flattens traffic spikes into a smooth, steady output stream.</li><li><strong>Trade-off</strong>: Not ideal for general user-facing APIs where bursty web traffic is normal. However, it is ideal for egress traffic shaping when calling downstream legacy services that cannot tolerate sudden spikes.</li></ul>
+<h3 id="algorithms-3-fixed-window-counter">3. Fixed Window Counter</h3>
+<ul><li><strong>Mechanism</strong>: Divides time into fixed windows (e.g. 1 minute from 12:00 to 12:01). A counter increments with each request.</li><li><strong>The Boundary Burst Trap</strong>: A client can send 100 requests at 12:00:59 and another 100 requests at 12:01:01. In a 2-second interval, 200 requests were processed, doubling the intended rate limit!</li></ul>
+<h3 id="algorithms-4-sliding-window-log">4. Sliding Window Log</h3>
+<ul><li><strong>Mechanism</strong>: Stores the epoch timestamp of every request in a sorted set (such as Redis ZSET). When a request arrives, all timestamps older than <code>now - window_size</code> are purged, and the remaining elements are counted.</li><li><strong>Trade-off</strong>: Tracks requests in the configured rolling window without the fixed-window boundary approximation, but uses $O(N)$ state for the requests in that window. Size and protect the state store for the expected workload.</li></ul>
+<h3 id="algorithms-5-sliding-window-counter-weighted-estimate">5. Sliding Window Counter (weighted estimate)</h3>
+<ul><li><strong>Mechanism</strong>: Combines the fixed window of the previous interval and the current interval using a weighted formula:</li></ul>
+<p>$\text{Estimated Count} = \text{Previous Window Count} \times (1 - \text{elapsed fraction}) + \text{Current Window Count}$</p>
+<ul><li><strong>Trade-off</strong>: Uses constant state per client for a fixed number of windows and estimates usage across a boundary. Accuracy depends on traffic distribution and assumptions; no universal error rate is implied here.</li></ul>
+      <aside><h3>Rate Limiting Algorithm Comparison Summary</h3><ul><li><strong>Token Bucket:</strong> O(1) state per client | Permits configured bursts</li><li><strong>Leaky Bucket:</strong> Queue-based | Can shape output toward a configured rate</li><li><strong>Fixed Window:</strong> O(1) Memory | Boundary Spike Flaw | Simple Counters Only</li><li><strong>Sliding Window Counter:</strong> Constant state per client for a fixed number of windows | Approximate count</li></ul></aside>
+
+      <aside><h3>Key Interview Takeaways</h3><ul><li>Token Bucket is one option when controlled bursts are part of the requirement; choose an algorithm based on the desired traffic behavior.</li><li>Consider the per-request state cost of a Sliding Window Log and its implications under high traffic.</li></ul></aside>
+    </section>
+
+    <section id="architecture">
+      <h2>3. High-Level Architecture &amp; Gateway Placement</h2>
+      <p>Where should the rate limiter live in the infrastructure?</p>
+      <p>In a modern microservices architecture, placing the rate limiter in individual application services causes duplication and wastes application CPU cycles.</p>
+<p><strong>Recommended Topology: Edge API Gateway with Distributed Cache</strong></p>
+<ol><li><strong>Client Request</strong>: The mobile app or third-party client makes an HTTPS call to <code>api.prepvisor.in</code>.</li><li><strong>Reverse Proxy / API Gateway</strong>: A selected gateway can terminate TLS, authenticate JWTs or API keys, and extract the client identifier.</li><li><strong>Rate Limiter Middleware</strong>: Before routing to backend microservices, the gateway queries an in-memory distributed cache cluster (<strong>Redis Cluster</strong>).</li><li><strong>Decision Evaluation</strong>:</li></ol>
+<ul><li><strong>Allowed</strong>: Gateway appends headers (<code>X-RateLimit-Remaining: 42</code>) and proxies the request to the upstream target service.</li><li><strong>Throttled</strong>: Gateway immediately short-circuits with <strong>HTTP 429 Too Many Requests</strong>, payload <code>{&quot;error&quot;: &quot;rate_limit_exceeded&quot;, &quot;retry_after&quot;: 6}</code>, saving backend compute.</li></ul>
+
+
+      <aside><h3>Key Interview Takeaways</h3><ul><li>Placing rate limiting at the API Gateway prevents unauthorized or throttled traffic from saturating downstream backend databases.</li><li>Consider connection reuse between API gateways and Redis, then measure end-to-end latency in the target deployment.</li></ul></aside>
+    </section>
+
+    <section id="concurrency-lua">
+      <h2>4. Distributed Concurrency &amp; The Race Condition Trap</h2>
+      <p>Why naive GET + SET fails and Redis Lua scripts provide atomic execution</p>
+      <p>A useful concurrency question is: <strong>&quot;What happens when two concurrent requests arrive at different gateway servers simultaneously?&quot;</strong></p>
+<h3 id="concurrency-lua-the-race-condition-trap-check-then-act">The Race Condition Trap (Check-then-Act)</h3>
+<p>Suppose a user has 1 token remaining.</p>
+<ol><li>Server A receives Request 1, calls <code>GET user:123</code>, and reads <code>tokens = 1</code>.</li><li>Server B receives Request 2, calls <code>GET user:123</code>, and also reads <code>tokens = 1</code>.</li><li>Server A calculates <code>tokens - 1 = 0</code> and writes <code>SET user:123 tokens=0</code>.</li><li>Server B calculates <code>tokens - 1 = 0</code> and writes <code>SET user:123 tokens=0</code>.</li></ol>
+<p><strong>Result</strong>: Both requests can succeed even though only 1 token was available. Under a high-throughput workload (for example, an assumed 50,000 requests/second), the race can cause quota overruns.</p>
+<h3 id="concurrency-lua-the-solution-redis-lua-scripts">The Solution: Redis Lua Scripts</h3>
+<p>Redis guarantees atomic script execution: while a script runs, other server activity is blocked. Keep scripts short because they occupy the server during execution. The following is an illustrative Token Bucket script, not a production-ready implementation. <a href="https://redis.io/docs/latest/develop/programmability/eval-intro/" target="_blank" rel="noopener noreferrer">Redis scripting documentation</a></p>
+
+      <figure><figcaption>Illustrative Redis Lua Script for an Atomic Token Bucket Update</figcaption><pre><code class="language-lua">-- KEYS[1]: rate limit key (e.g., &quot;ratelimit:user_12345&quot;)
+-- ARGV[1]: bucket capacity (e.g., 100)
+-- ARGV[2]: refill rate per second (e.g., 10 tokens/sec)
+-- ARGV[3]: requested tokens (e.g., 1)
+-- ARGV[4]: current server epoch timestamp in seconds
+
+local key = KEYS[1]
+local capacity = tonumber(ARGV[1])
+local refill_rate = tonumber(ARGV[2])
+local requested = tonumber(ARGV[3])
+local now = tonumber(ARGV[4])
+
+-- Retrieve current bucket state: [tokens, last_refill_time]
+local data = redis.call(&quot;HMGET&quot;, key, &quot;tokens&quot;, &quot;last_refill&quot;)
+local current_tokens = tonumber(data[1])
+local last_refill = tonumber(data[2])
+
+if current_tokens == nil then
+  -- Bucket does not exist yet; initialize to full capacity
+  current_tokens = capacity
+  last_refill = now
+else
+  -- Calculate tokens accumulated since last request
+  local elapsed = math.max(0, now - last_refill)
+  local generated_tokens = elapsed * refill_rate
+  current_tokens = math.min(capacity, current_tokens + generated_tokens)
+  last_refill = now
+end
+
+-- Evaluate if sufficient tokens exist
+if current_tokens &gt;= requested then
+  current_tokens = current_tokens - requested
+  redis.call(&quot;HMSET&quot;, key, &quot;tokens&quot;, current_tokens, &quot;last_refill&quot;, last_refill)
+  -- Set TTL to allow automatic cleanup of inactive keys (e.g. 1 hour)
+  redis.call(&quot;EXPIRE&quot;, key, 3600)
+  -- Return [1 = allowed, remaining_tokens, retry_after_seconds = 0]
+  return { 1, math.floor(current_tokens), 0 }
+else
+  -- Rate limited; calculate seconds until next token is available
+  local missing = requested - current_tokens
+  local retry_after = math.ceil(missing / refill_rate)
+  -- Persist state with updated refill timestamp
+  redis.call(&quot;HMSET&quot;, key, &quot;tokens&quot;, current_tokens, &quot;last_refill&quot;, last_refill)
+  redis.call(&quot;EXPIRE&quot;, key, 3600)
+  -- Return [0 = denied, remaining_tokens = 0, retry_after_seconds]
+  return { 0, 0, retry_after }
+end</code></pre></figure>
+      <aside><h3>Key Interview Takeaways</h3><ul><li>Lua scripts execute atomically in Redis without requiring expensive distributed locks (like Redlock).</li><li>Always set a TTL on the Redis key (e.g., 3600 seconds) so that inactive users do not leak memory.</li></ul></aside>
+    </section>
+
+    <section id="capacity-estimation">
+      <h2>5. Capacity Estimation &amp; Redis Memory Sizing</h2>
+      <p>Back-of-the-envelope capacity calculation (example assumptions)</p>
+      <p>EXAMPLE / ASSUMPTION — The following values are hypothetical inputs for demonstrating a sizing method, not observed user counts, Redis object sizes, or benchmark results.</p>
+<p><strong>Assumptions:</strong></p>
+<ul><li><strong>Total User Base</strong>: 100 Million registered accounts.</li><li><strong>Daily Active Users (DAU)</strong>: 10 Million users.</li><li><strong>Average QPS</strong>: 10,000 requests/second.</li><li><strong>Peak Burst QPS</strong>: 50,000 requests/second.</li></ul>
+<p><strong>Redis Memory Footprint per Client Key:</strong></p>
+<ul><li><strong>Key</strong>: <code>&quot;rl:usr:10008492&quot;</code> $\approx$ 16 bytes.</li><li><strong>Fields</strong>: <code>tokens</code> (8-byte double/int) + <code>last_refill</code> (8-byte epoch int) $\approx$ 16 bytes.</li><li><strong>Redis Internal Hash Overhead</strong>: Hash entry overhead, dict pointers, <code>robj</code> metadata, and jemalloc chunk alignment $\approx$ 32 bytes.</li><li><strong>Total per Key</strong>: $\approx 64\text{ bytes}$.</li></ul>
+<p><strong>Total Memory for Active Working Set:</strong></p>
+<ul><li>If tracking all 100 Million users simultaneously:</li></ul>
+<p>$100{,}000{,}000 \times 64 \text{ bytes} = 6{,}400{,}000{,}000 \text{ bytes} \approx 6.4 \text{ GB}$</p>
+<ul><li><strong>Interpretation</strong>: The simple estimate is 6.4 GB of payload under these assumptions. Redis overhead, allocator behavior, replication, and headroom are omitted, so this arithmetic does not establish a suitable node size.</li></ul>
+<p><strong>Network Bandwidth:</strong></p>
+<ul><li>$50{,}000 \text{ QPS} \times 150 \text{ bytes per Lua payload} \approx 7.5 \text{ MB/sec}$.</li><li>$7.5 \text{ MB/sec} = 60 \text{ Mbps}$ at the assumed inputs, excluding protocol overhead; network suitability depends on the deployment and competing traffic.</li></ul>
+      <aside><h3>Rate Limiter Capacity Sizing Blueprint</h3><ul><li><strong>Peak ingress (example):</strong> 50,000 requests/sec assumed</li><li><strong>Latency target (example):</strong> &lt; 2.5 ms, to be measured</li><li><strong>Payload estimate (example):</strong> ~6.4 GB under stated assumptions, excluding overhead</li><li><strong>Network payload (example):</strong> ~7.5 MB/sec at assumed QPS and payload size</li></ul></aside>
+
+      <aside><h3>Key Interview Takeaways</h3><ul><li>Explain which overheads the estimate omits before drawing conclusions about deployment feasibility.</li><li>Use Redis cluster sharding (hash slots based on client ID) to distribute QPS load across multiple Redis nodes.</li></ul></aside>
+    </section>
+
+    <section id="edge-cases-resilience">
+      <h2>6. Edge Cases, Multi-Tier Limits &amp; Failover Resilience</h2>
+      <p>Bulletproofing against DDoS, clock drift, and cache outages</p>
+      <p>Discuss operational resilience and failure modes explicitly:</p>
+<h3 id="edge-cases-resilience-1-the-clock-skew-problem">1. The Clock Skew Problem</h3>
+<p>In distributed environments, server system clocks drift by milliseconds (NTP synchronization skew). If API Gateways pass their local machine timestamp to Redis, race conditions and negative time deltas can corrupt token refills.</p>
+<ul><li><strong>One option</strong>: Use Redis <code>TIME</code> within the script to obtain a timestamp from the Redis server handling that operation. This avoids comparing gateway-supplied timestamps for the operation; it does not synchronize clocks across Redis nodes. <a href="https://redis.io/docs/latest/commands/time/" target="_blank" rel="noopener noreferrer">Redis TIME command</a></li></ul>
+<h3 id="edge-cases-resilience-2-multi-tier-rate-limiting-defense">2. Multi-Tier Rate Limiting Defense</h3>
+<p>A single rate limiter cannot solve all security and operational problems. Employ a multi-tier defense:</p>
+<ol><li><strong>L1 Edge Protection</strong>: An edge provider or managed DDoS protection service may filter traffic before it reaches the application network.</li><li><strong>L2 API Gateway Rate Limiting (Token Bucket in Redis)</strong>: Per-user and per-API-key quotas to enforce billing plans.</li><li><strong>L3 Service-Level Circuit Breakers</strong>: Protect internal databases and microservices from cascading failures if a specific endpoint experiences unexpected load.</li></ol>
+<h3 id="edge-cases-resilience-3-cache-outage-fail-open-vs-fail-closed">3. Cache Outage: Fail-Open vs Fail-Closed</h3>
+<p>What happens if the Redis cluster crashes or network partitions occur?</p>
+<ul><li><strong>Fail-Closed</strong>: Reject requests when the limiter is unavailable; this preserves the configured limit but may deny legitimate requests.</li><li><strong>Fail-Open</strong>: Allow requests when the limiter is unavailable; this favors availability but can expose downstream services to excess traffic. Choose per endpoint and risk model.</li></ul>
+
+
+      <aside><h3>Key Interview Takeaways</h3><ul><li>Consider a circuit breaker around Redis calls and select failure behavior according to endpoint security and availability requirements.</li><li>Defend against clock drift by relying on Redis server time rather than gateway application clocks.</li></ul></aside>
+    </section>
+  <section id="references"><h2>References &amp; Further Reading</h2><ul><li><a href="https://redis.io/docs/latest/develop/programmability/eval-intro/" target="_blank" rel="noopener noreferrer">Scripting with Lua</a> — Redis Documentation</li><li><a href="https://redis.io/docs/latest/commands/time/" target="_blank" rel="noopener noreferrer">TIME command</a> — Redis Documentation</li><li><a href="https://redis.io/docs/latest/operate/oss_and_stack/management/scaling/" target="_blank" rel="noopener noreferrer">Scaling with Redis Cluster</a> — Redis Documentation</li><li><a href="https://www.rfc-editor.org/rfc/rfc6585.html" target="_blank" rel="noopener noreferrer">RFC 6585: Additional HTTP Status Codes</a> — RFC Editor</li></ul></section><section id="faqs"><h2>Frequently Asked Questions</h2><details><summary>What is the primary difference between Token Bucket and Leaky Bucket?</summary><p>Token Bucket can allow bursts up to its configured capacity while enforcing a longer-term refill rate. A Leaky Bucket can smooth output when paired with a queue; exact behavior depends on implementation and configuration.</p></details><details><summary>How do you prevent race conditions in a distributed rate limiter?</summary><p>Separate Redis GET and SET operations can interleave and create check-then-act races. A short Redis Lua script can perform the check and update atomically; Redis blocks other server activity while the script runs. See Redis scripting documentation.</p></details><details><summary>Where can a rate limiter be positioned in a microservice architecture?</summary><p>An edge gateway can reject requests before they consume application resources. Service-level limits may also be useful for internal calls or specific resources; place controls according to the threat model and architecture.</p></details><details><summary>What HTTP status code and response headers should be returned when rate limited?</summary><p>HTTP 429 indicates that the client has sent too many requests; RFC 6585 says a response may include Retry-After. Other rate-limit headers are design choices and should be documented consistently by the API.</p></details><details><summary>Should a rate limiter fail open or fail closed during a Redis outage?</summary><p>Choose fail-open or fail-closed behavior per endpoint. Fail-open favors availability but can expose downstream services to excess traffic; fail-closed preserves the limit but can reject legitimate traffic during an outage.</p></details><details><summary>How do you handle clock drift across distributed rate limiting servers?</summary><p>Redis TIME returns the current time from the Redis server handling the command. It avoids relying on a gateway-provided timestamp for that operation, but it does not establish globally synchronized time across servers.</p></details></section></main>
+        <nav aria-label="Related guides"><h2>Related Guides</h2><ul><li><a href="/guides/system-design-tinyurl">System Design: How to Design TinyURL (Architecture, Capacity &amp; SPOF)</a></li><li><a href="/guides/system-design-notification-service">System Design: How to Design a Notification System at Scale (SMS, Push, Email)</a></li></ul></nav>
+        <p><a href="/system-design">Continue practicing with PrepVisor</a></p>
         <section class="mt-12 p-6 rounded-2xl bg-blue-50 border border-blue-200">
           <h3 class="text-xl font-bold text-slate-900">Practice this question on PrepVisor AI Studio</h3>
-          <p class="text-sm text-slate-600 mt-2">Get real-time scoring, code evaluation, and system design feedback.</p>
-          <a href="https://app.prepvisor.in/register?utm_source=organic_seo&utm_medium=guide&utm_campaign=system-design-rate-limiter" class="inline-block mt-4 px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl">Launch Practice Studio</a>
+          <p class="text-sm text-slate-600 mt-2">Explore a distributed rate limiter design, compare bucket algorithms, and reason through concurrent request handling in the system design studio.</p>
+          <a href="https://app.prepvisor.in/register?utm_source=organic_seo&amp;utm_medium=guide&amp;utm_campaign=system_design_rate_limiter" class="inline-block mt-4 px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl">Design Rate Limiter in Studio</a>
         </section>
       </article>
     </noscript>
-  
+
   </body>
 </html>

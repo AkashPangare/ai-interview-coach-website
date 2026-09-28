@@ -24,8 +24,11 @@ import {
   PlayCircle,
 } from "lucide-react"
 import { usePageSeo } from "@/hooks/usePageSeo"
+import { SEO_ROUTES } from "@/config/seo"
 import { COMPANY_CONFIG } from "@/config/company"
 import { decorateUrlWithUtms, trackEvent } from "@/lib/analytics"
+import { PRODUCT_PAGE_INTROS } from "@/config/seo"
+import { RelatedGuides } from "@/components/RelatedGuides"
 
 interface RoadmapPageProps {
   onOpenWaitlist?: () => void
@@ -74,12 +77,7 @@ const TARGET_ROLES: RoleOption[] = [
 ]
 
 export const RoadmapPage: React.FC<RoadmapPageProps> = () => {
-  usePageSeo({
-    title: "Time-Aware Tech Interview Roadmap & Daily Pacing | PrepVisor",
-    description: "Calibrate your technical interview study schedule around your exact deadline, target role, and daily hours. Adaptive curriculum across DSA, System Design, and STAR behavioral mocks with 1-click schedule rebalancing.",
-    canonicalUrl: "https://prepvisor.in/roadmap",
-    keywords: "tech interview roadmap, daily pacing schedule, interview study planner, system design preparation timeline, leetcode study plan 30 days, java interview roadmap",
-  })
+  usePageSeo(SEO_ROUTES.roadmap)
 
   // State for interactive pacing calculator
   const [selectedRole, setSelectedRole] = useState<RoleId>("backend")
@@ -417,13 +415,10 @@ export const RoadmapPage: React.FC<RoadmapPageProps> = () => {
             <span>Dynamic Daily Pacing Engine</span>
           </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-[-0.03em] text-slate-900 leading-[1.12]">
-            Calibrated for your{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-sky-600 bg-clip-text text-transparent">
-              interview date.
-            </span>
+            Software Engineer Interview Preparation Plan
           </h1>
           <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto">
-            Stop grinding LeetCode blind. PrepVisor creates a personalized daily preparation curriculum tailored to your target date, available daily hours, and exact seniority level.
+            {PRODUCT_PAGE_INTROS.roadmap}
           </p>
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
             <a
@@ -1124,6 +1119,8 @@ export const RoadmapPage: React.FC<RoadmapPageProps> = () => {
             })}
           </div>
         </div>
+
+        <RelatedGuides slugs={["system-design-tinyurl", "java-concurrency-interview-questions", "lru-cache-implementation"]} heading="Guides to support your technical preparation" />
 
         {/* Bottom CTA Banner */}
         <div className="rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 via-indigo-50/40 to-blue-50 p-8 sm:p-12 text-center text-slate-900 space-y-5 shadow-xs relative overflow-hidden">

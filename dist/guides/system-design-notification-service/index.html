@@ -7,24 +7,21 @@
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>System Design: How to Design a Notification System | SMS, Push & Email at Scale | PrepVisor</title>
-    <meta name="description" content="Architect a scalable, fault-tolerant notification service handling billions of notifications. Learn priority queues, idempotency, rate limiting, and third-party gateway integrations." />
-    <meta
-      name="keywords"
-      content="AI tech interview coach, system design interview simulator, DSA coding practice terminal stdout, voice mock interview STAR method, tech interview study roadmap, Java interview prep, software engineer mock interview, PrepVisor"
-    />
+    <title>System Design: How to Design a Notification System | SMS, Push &amp; Email at Scale | PrepVisor</title>
+    <meta name="description" content="Explore a notification-service design for push, SMS, and email, including priority queues, idempotency, rate limiting, and provider integrations." />
     <meta name="author" content="PrepVisor" />
-    <link rel="canonical" href="https://prepvisor.in/" />
-    
+    <link rel="canonical" href="https://prepvisor.in/guides/system-design-notification-service" />
+
     <link rel="manifest" href="/manifest.json" />
-    
+
     <!-- Preconnect & Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" /></noscript>
     <link rel="preconnect" href="https://app.prepvisor.in" />
     <link rel="dns-prefetch" href="https://app.prepvisor.in" />
-    
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-DNM4SMR2VK"></script>
     <script>
@@ -35,111 +32,204 @@
     </script>
 
     <!-- Open Graph / Facebook / LinkedIn -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://prepvisor.in/" />
-    <meta property="og:title" content="PrepVisor | AI Tech Interview Coach, System Design Simulator & DSA Arena" />
-    <meta property="og:description" content="Master tech interviews with dynamic AI pacing. Interactive DSA coding arena with live terminal stdout, interactive System Design whiteboard with scale math, and voice AI mock interviews." />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://prepvisor.in/guides/system-design-notification-service" />
+    <meta property="og:title" content="System Design: How to Design a Notification System at Scale (SMS, Push, Email)" />
+    <meta property="og:description" content="Explore a notification-service design for push, SMS, and email, including priority queues, idempotency, rate limiting, and provider integrations." />
     <meta property="og:image" content="https://prepvisor.in/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="PrepVisor — AI interview preparation for software engineers" />
     <meta property="og:site_name" content="PrepVisor" />
 
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://prepvisor.in/" />
-    <meta name="twitter:title" content="PrepVisor | AI Tech Interview Coach, System Design Simulator & DSA Arena" />
-    <meta name="twitter:description" content="Master tech interviews with dynamic AI pacing. Interactive DSA coding arena with live terminal stdout, interactive System Design whiteboard with scale math, and voice AI mock interviews." />
+    <meta name="twitter:url" content="https://prepvisor.in/guides/system-design-notification-service" />
+    <meta name="twitter:title" content="System Design: How to Design a Notification System at Scale (SMS, Push, Email)" />
+    <meta name="twitter:description" content="Explore a notification-service design for push, SMS, and email, including priority queues, idempotency, rate limiting, and provider integrations." />
     <meta name="twitter:image" content="https://prepvisor.in/og-image.png" />
 
     <!-- Structured Data for Search Engines -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "SoftwareApplication",
-            "@id": "https://prepvisor.in/#software",
-            "name": "PrepVisor",
-            "operatingSystem": "Web, Cloud",
-            "applicationCategory": "EducationalApplication",
-            "description": "An interactive AI tech interview coach featuring time-calibrated preparation roadmaps, DSA coding studio with terminal stdout, infinite system design whiteboard with scale math, and voice STAR behavioral mock interviews.",
-            "url": "https://prepvisor.in",
-            "offers": {
-              "@type": "AggregateOffer",
-              "priceCurrency": "INR",
-              "lowPrice": "0",
-              "highPrice": "1499",
-              "offerCount": "5"
-            }
-          },
-          {
-            "@type": "Organization",
-            "@id": "https://prepvisor.in/#organization",
-            "name": "PrepVisor",
-            "url": "https://prepvisor.in",
-            "logo": "https://prepvisor.in/logo.png",
-            "contactPoint": {
-              "@type": "ContactPoint",
-              "telephone": "+91 7249778116",
-              "contactType": "Customer Support",
-              "areaServed": "IN",
-              "availableLanguage": ["English"]
-            },
-            "address": {
-              "@type": "PostalAddress",
-              "streetAddress": "Flat 201, Aurum Residencies, Maruthi Nagar, BTM Layout Stage 1",
-              "addressLocality": "Bengaluru",
-              "addressRegion": "Karnataka",
-              "postalCode": "560068",
-              "addressCountry": "IN"
-            }
-          },
-          {
-            "@type": "WebSite",
-            "@id": "https://prepvisor.in/#website",
-            "url": "https://prepvisor.in",
-            "name": "PrepVisor",
-            "publisher": {
-              "@id": "https://prepvisor.in/#organization"
-            }
-          }
-        ]
-      }
-    </script>
-    <script type="module" crossorigin src="/assets/index-D3pypZJn.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DO_PuZJO.css">
-  
-    <link rel="canonical" href="https://prepvisor.in/guides/system-design-notification-service" />
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="System Design: How to Design a Notification System at Scale (SMS, Push, Email)" />
-    <meta property="og:description" content="Architect a scalable, fault-tolerant notification service handling billions of notifications. Learn priority queues, idempotency, rate limiting, and third-party gateway integrations." />
-    <meta property="og:url" content="https://prepvisor.in/guides/system-design-notification-service" />
-    <meta name="twitter:title" content="System Design: How to Design a Notification System at Scale (SMS, Push, Email)" />
-    <meta name="twitter:description" content="Architect a scalable, fault-tolerant notification service handling billions of notifications. Learn priority queues, idempotency, rate limiting, and third-party gateway integrations." />
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"System Design: How to Design a Notification System at Scale (SMS, Push, Email)","description":"Architect a scalable, fault-tolerant notification service handling billions of notifications. Learn priority queues, idempotency, rate limiting, and third-party gateway integrations.","image":"https://prepvisor.in/logo.png","author":{"@type":"Organization","name":"PrepVisor Systems Engineering Team","url":"https://prepvisor.in"},"publisher":{"@type":"Organization","name":"PrepVisor","url":"https://prepvisor.in","logo":{"@type":"ImageObject","url":"https://prepvisor.in/logo.png"}},"datePublished":"2026-09-20T08:00:00+05:30","dateModified":"2026-09-20T08:00:00+05:30","mainEntityOfPage":{"@type":"WebPage","@id":"https://prepvisor.in/guides/system-design-notification-service"},"keywords":"system design notification system, notification service architecture, how to design notification system interview, notification deduplication idempotency, apple apns twilio sendgrid architecture, kafka priority queue notification system"}</script>
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do you guarantee high-priority OTP notifications are never delayed by marketing campaigns?","acceptedAnswer":{"@type":"Answer","text":"Separate notifications into dedicated priority Kafka topics (e.g. notifications.p0.transactional vs notifications.p2.marketing) consumed by isolated worker fleets. Even if marketing topics have millions of pending messages, transactional workers pull exclusively from the P0 topic with zero latency contention."}},{"@type":"Question","name":"How do you prevent users from receiving duplicate push notifications or SMS?","acceptedAnswer":{"@type":"Answer","text":"Implement client-driven idempotency keys stored in a distributed Redis cache with atomic SET NX and a 24-hour TTL. In addition, pass the idempotency key to downstream vendor APIs (like Stripe, Twilio, SendGrid) so that transient network retries do not trigger duplicate dispatches."}},{"@type":"Question","name":"How does the notification service integrate with APNs and FCM?","acceptedAnswer":{"@type":"Answer","text":"The service maintains persistent HTTP/2 connections to Apple Push Notification service (APNs) using TLS provider certificates or JWT authentication tokens. For Android, it integrates with Firebase Cloud Messaging (FCM) v1 REST API. Device tokens are stored per user in the database, and when APNs/FCM returns Unregistered, the token is automatically deactivated."}},{"@type":"Question","name":"How do you handle third-party vendor rate limits and downtime (e.g., Twilio outage)?","acceptedAnswer":{"@type":"Answer","text":"Use a distributed Token Bucket in Redis to throttle outbound worker dispatch rates to the vendor's agreed QPS limit. For vendor outages, configure circuit breakers with multi-vendor failover (e.g., if Twilio fails, route SMS through Infobip or AWS SNS) and retry transient errors with exponential backoff and jitter."}},{"@type":"Question","name":"What is the Dead Letter Queue (DLQ) strategy for failed notifications?","acceptedAnswer":{"@type":"Answer","text":"When a notification exhausts its retry attempts (e.g., 3 retries with exponential backoff) or encounters a non-retryable error (e.g., invalid phone number or unparseable payload), it is moved to a Dead Letter Queue. DLQ messages trigger alerts and allow engineers to inspect, correct, and re-drive failed events."}},{"@type":"Question","name":"How do you implement localized quiet hours across global user timezones?","acceptedAnswer":{"@type":"Answer","text":"Store the recipient's timezone or inferred location in their profile. Before queueing non-urgent marketing notifications, check if the recipient's current local time falls between quiet hours (e.g. 9 PM to 8 AM). If so, compute the delay until 8:01 AM local time and schedule delivery via a delayed queue or scheduled Redis sorted set."}}]}</script>
-  </head>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://prepvisor.in/#organization","name":"PrepVisor","url":"https://prepvisor.in","logo":"https://prepvisor.in/logo.png","contactPoint":{"@type":"ContactPoint","telephone":"+91 7249778116","email":"support@prepvisor.in","contactType":"Customer Support","areaServed":"IN","availableLanguage":["English"]},"address":{"@type":"PostalAddress","streetAddress":"Flat 201,Aurum Residencies,Maruthi Nagar,BTM Layout stage 1, Near RS High School,9th cross, Madiwala","addressLocality":"Bengaluru","addressRegion":"Karnataka","postalCode":"560068","addressCountry":"IN"}},{"@type":"WebSite","@id":"https://prepvisor.in/#website","url":"https://prepvisor.in/","name":"PrepVisor","publisher":{"@id":"https://prepvisor.in/#organization"}},{"@type":"SoftwareApplication","@id":"https://prepvisor.in/#software","name":"PrepVisor","operatingSystem":"Web, Cloud","applicationCategory":"EducationalApplication","description":"An interactive AI tech interview coach featuring time-calibrated preparation roadmaps, DSA coding studio with terminal stdout, infinite system design whiteboard with scale math, and voice STAR behavioral mock interviews.","url":"https://prepvisor.in","publisher":{"@id":"https://prepvisor.in/#organization"},"offers":{"@type":"AggregateOffer","priceCurrency":"INR","lowPrice":199,"highPrice":1299,"offerCount":4}}]}</script>
+    <script type="module" crossorigin src="/assets/index-CM9GHTF1.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DL1QVLFc.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","@id":"https://prepvisor.in/guides/system-design-notification-service#article","headline":"System Design: How to Design a Notification System at Scale (SMS, Push, Email)","description":"Explore a notification-service design for push, SMS, and email, including priority queues, idempotency, rate limiting, and provider integrations.","author":{"@type":"Organization","name":"PrepVisor","@id":"https://prepvisor.in/#organization"},"publisher":{"@id":"https://prepvisor.in/#organization"},"dateModified":"2026-09-20T08:00:00+05:30","url":"https://prepvisor.in/guides/system-design-notification-service","mainEntityOfPage":{"@type":"WebPage","@id":"https://prepvisor.in/guides/system-design-notification-service"},"keywords":"system design notification system, notification service architecture, how to design notification system interview, notification deduplication idempotency, apple apns twilio sendgrid architecture, kafka priority queue notification system"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How can a design reduce the chance that bulk notifications delay high-priority OTP traffic?","acceptedAnswer":{"@type":"Answer","text":"Separate priority topics and worker capacity can reduce competition between bulk and urgent traffic. They do not guarantee zero delay: shared providers, partitions, databases, and infrastructure can still be bottlenecks, so define objectives and monitor end-to-end latency."}},{"@type":"Question","name":"How do you prevent users from receiving duplicate push notifications or SMS?","acceptedAnswer":{"@type":"Answer","text":"Use an idempotency key and an atomic deduplication record with a retention period suited to the retry window. Provider support varies; do not assume an external messaging API honors arbitrary idempotency keys."}},{"@type":"Question","name":"How does the notification service integrate with APNs and FCM?","acceptedAnswer":{"@type":"Answer","text":"The service maintains persistent HTTP/2 connections to Apple Push Notification service (APNs) using TLS provider certificates or JWT authentication tokens. For Android, it integrates with Firebase Cloud Messaging (FCM) v1 REST API. Device tokens are stored per user in the database, and when APNs/FCM returns Unregistered, the token is automatically deactivated."}},{"@type":"Question","name":"How do you handle third-party vendor rate limits and downtime (e.g., Twilio outage)?","acceptedAnswer":{"@type":"Answer","text":"Use a distributed Token Bucket in Redis to throttle outbound worker dispatch rates to the vendor's agreed QPS limit. For vendor outages, configure circuit breakers with multi-vendor failover (e.g., if Twilio fails, route SMS through Infobip or AWS SNS) and retry transient errors with exponential backoff and jitter."}},{"@type":"Question","name":"What is the Dead Letter Queue (DLQ) strategy for failed notifications?","acceptedAnswer":{"@type":"Answer","text":"When a notification exhausts its retry attempts (e.g., 3 retries with exponential backoff) or encounters a non-retryable error (e.g., invalid phone number or unparseable payload), it is moved to a Dead Letter Queue. DLQ messages trigger alerts and allow engineers to inspect, correct, and re-drive failed events."}},{"@type":"Question","name":"How do you implement localized quiet hours across global user timezones?","acceptedAnswer":{"@type":"Answer","text":"Store the recipient's timezone or inferred location in their profile. Before queueing non-urgent marketing notifications, check if the recipient's current local time falls between quiet hours (e.g. 9 PM to 8 AM). If so, compute the delay until 8:01 AM local time and schedule delivery via a delayed queue or scheduled Redis sorted set."}}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://prepvisor.in/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://prepvisor.in/guides"},{"@type":"ListItem","position":3,"name":"System Design: How to Design a Notification System at Scale (SMS, Push, Email)","item":"https://prepvisor.in/guides/system-design-notification-service"}]}</script></head>
   <body class="bg-slate-50 text-slate-900 antialiased selection:bg-blue-600 selection:text-white min-h-screen">
-    
+
     <div id="root"></div>
     <noscript>
       <article class="p-8 max-w-4xl mx-auto font-sans">
+        <nav aria-label="Breadcrumb"><ol><li><a href="/">Home</a></li><li><a href="/guides">Guides</a></li><li aria-current="page">System Design: How to Design a Notification System at Scale (SMS, Push, Email)</li></ol></nav>
         <header class="mb-8">
           <p class="text-sm font-bold text-blue-600 uppercase tracking-wider">System Design · 24 min read</p>
           <h1 class="text-4xl font-black text-slate-900 mt-2">System Design: How to Design a Notification System at Scale (SMS, Push, Email)</h1>
-          <p class="text-lg text-slate-600 mt-4 leading-relaxed">Architect a scalable, fault-tolerant notification service handling billions of notifications. Learn priority queues, idempotency, rate limiting, and third-party gateway integrations.</p>
+          <p class="text-lg text-slate-600 mt-4 leading-relaxed">This guide explores a notification-service design for push, SMS, and email, including priority queues, idempotency, rate limiting, provider integrations, and operational trade-offs.</p>
+          <p class="mt-4 text-sm text-slate-600">Published by PrepVisor · Guide publisher · Updated 2026-09-20</p>
         </header>
-        <section class="space-y-6">
-          <h2 class="text-2xl font-bold text-slate-800">Key Interview Sections</h2>
-          <ul class="list-disc pl-6 space-y-2 text-slate-700">
-            <li><strong>1. Clarifying Requirements & Notification Types</strong></li><li><strong>2. Back-of-the-Envelope Capacity Estimation</strong></li><li><strong>3. High-Level Architecture & End-to-End Flow</strong></li><li><strong>4. Deduplication, Idempotency & Exactly-Once Semantics</strong></li><li><strong>5. Worker Fleet Design, Priority Queues & Vendor Rate Limiting</strong></li><li><strong>6. User Preferences, Quiet Hours & Global Compliance</strong></li>
-          </ul>
-        </section>
+        <nav aria-label="Table of Contents"><h2>Table of Contents</h2><ol><li><a href="#requirements">1. Clarifying Requirements &amp; Notification Types</a></li><li><a href="#capacity-estimation">2. Back-of-the-Envelope Capacity Estimation</a></li><li><a href="#high-level-architecture">3. High-Level Architecture &amp; End-to-End Flow</a></li><li><a href="#high-level-architecture-the-decoupled-event-driven-flow">The Decoupled Event-Driven Flow</a></li><li><a href="#deduplication-idempotency">4. Deduplication, Idempotency &amp; Exactly-Once Semantics</a></li><li><a href="#deduplication-idempotency-the-3-tier-idempotency-solution">The 3-Tier Idempotency Solution</a></li><li><a href="#worker-fleet-priority">5. Worker Fleet Design, Priority Queues &amp; Vendor Rate Limiting</a></li><li><a href="#worker-fleet-priority-1-dedicated-priority-worker-fleets">1. Dedicated Priority Worker Fleets</a></li><li><a href="#worker-fleet-priority-2-vendor-rate-limiting-account-ceilings">2. Vendor Rate Limiting &amp; Account Ceilings</a></li><li><a href="#worker-fleet-priority-3-exponential-backoff-with-jitter-dead-letter-queues-dlq">3. Exponential Backoff with Jitter &amp; Dead Letter Queues (DLQ)</a></li><li><a href="#user-preferences-compliance">6. User Preferences, Quiet Hours &amp; Global Compliance</a></li><li><a href="#user-preferences-compliance-1-user-preference-data-model">1. User Preference Data Model</a></li><li><a href="#user-preferences-compliance-2-timezone-aware-quiet-hours">2. Timezone-Aware Quiet Hours</a></li><li><a href="#user-preferences-compliance-3-legal-compliance-regulations">3. Legal Compliance Regulations</a></li><li><a href="#references">References &amp; Further Reading</a></li><li><a href="#faqs">Frequently Asked Questions</a></li></ol></nav>
+        <main>
+    <section id="requirements">
+      <h2>1. Clarifying Requirements &amp; Notification Types</h2>
+      <p>Channel protocols, priority tiers, and delivery guarantees</p>
+      <p>When designing a notification service, clarify the channels and delivery objectives first. The latency and scale values below are EXAMPLE / ASSUMPTION targets for a hypothetical interview scenario, not provider guarantees or measured system performance:</p>
+<p><strong>Supported Delivery Channels:</strong></p>
+<ul><li><strong>iOS Push Notifications</strong>: Apple Push Notification service (APNs) using HTTP/2 persistent connections and TLS provider certificates.</li><li><strong>Android Push Notifications</strong>: Firebase Cloud Messaging (FCM).</li><li><strong>SMS</strong>: Twilio, Infobip, AWS SNS (international delivery with dynamic carrier routing).</li><li><strong>Email</strong>: SendGrid, Resend, Amazon SES.</li></ul>
+<p><strong>Notification Priority Tiers:</strong></p>
+<ol><li><strong>Critical Transactional (P0)</strong>: One-Time Passwords (OTP), 2-Factor Authentication codes, fraudulent login alerts. Example target: under <strong>2 seconds</strong> with no intentional queueing behind bulk traffic.</li><li><strong>Time-Sensitive Alerts (P1)</strong>: Ride arrival updates, direct chat messages, flight gate changes. Example target: under <strong>30 seconds</strong>.</li><li><strong>Marketing &amp; Promotions (P2)</strong>: Flash sale announcements, weekly digests, engagement reminders. Example target: delivery within hours during configured recipient-local windows.</li></ol>
+<p><strong>Non-Functional Requirements:</strong></p>
+<ul><li><strong>Scale assumption</strong>: Model <strong>100 million notifications per day</strong> with an explicitly selected peak multiplier.</li><li><strong>Availability objective (example)</strong>: A scenario may target <strong>99.99%</strong> availability; queues and retries reduce some loss modes but do not guarantee delivery during provider outages.</li><li><strong>Idempotency &amp; Deduplication</strong>: Prevent users from receiving duplicate SMS or push alerts during network retries.</li><li><strong>User Preference Engine</strong>: Strict adherence to user opt-outs, quiet hours, and legal regulations (GDPR, CAN-SPAM, TCPA).</li></ul>
+
+
+      <aside><h3>Key Interview Takeaways</h3><ul><li>Priority tiers can separate time-sensitive and bulk traffic; the isolation strategy depends on latency, fairness, and cost objectives.</li><li>Idempotency can reduce duplicate processing, but it does not by itself guarantee exactly-once delivery across external providers.</li></ul></aside>
+    </section>
+
+    <section id="capacity-estimation">
+      <h2>2. Back-of-the-Envelope Capacity Estimation</h2>
+      <p>Calculating throughput, storage, and network bandwidth</p>
+      <p>EXAMPLE / ASSUMPTION — These calculations illustrate one hypothetical workload. Substitute agreed scenario inputs and validate record sizes, provider limits, and measured latency for the chosen implementation.</p>
+<p><strong>Throughput Calculations:</strong></p>
+<ul><li><strong>Daily Volume</strong>: 100 Million notifications/day.</li><li><strong>Average QPS</strong>:</li></ul>
+<p>$\frac{100{,}000{,}000 \text{ notifications}}{86{,}400 \text{ seconds}} \approx 1{,}160 \text{ notifications/second}$</p>
+<ul><li><strong>Peak Burst Ratio</strong>: 10x average (during flash sales, breaking news, or app-wide alerts).</li><li><strong>Peak Ingress QPS</strong>: $1{,}160 \times 10 \approx 11{,}600 \text{ notifications/second}$.</li></ul>
+<p><strong>Storage Sizing:</strong></p>
+<ul><li><strong>Metadata Payload</strong>: User ID (UUID 16 bytes) + Channel ID (2 bytes) + Timestamp (8 bytes) + Template ID (8 bytes) + Status (4 bytes) + Idempotency Key (32 bytes) + Variables JSON (approx. 500 bytes) $\approx 1 \text{ KB}$ per record.</li><li><strong>Daily Storage</strong>: $100\text{M} \times 1 \text{ KB} = 100 \text{ GB/day}$.</li><li><strong>90-Day Operational Log Retention (illustrative)</strong>: $100 \text{ GB} \times 90 = 9 \text{ TB}$ before replication, indexes, compression, and retention-policy effects. Suitability depends on the selected database and configuration.</li></ul>
+<p><strong>Egress Network Bandwidth:</strong></p>
+<ul><li>At the assumed peak of 11,600 notifications/sec and 1 KB payload, payload bandwidth is approximately 11.6 MB/sec (about 93 Mbps), excluding protocol overhead. Whether this is a bottleneck depends on the deployment and competing traffic.</li></ul>
+      <aside><h3>Notification Platform Capacity Sizing</h3><ul><li><strong>Daily notification volume (example):</strong> 100 million/day assumed</li><li><strong>Peak ingress (example):</strong> ~11,600 notifications/second under 10× peak assumption</li><li><strong>OTP latency target (example):</strong> &lt; 1.5 seconds end-to-end, to be measured</li><li><strong>Log storage estimate (example):</strong> ~9 TB before database overhead</li></ul></aside>
+
+      <aside><h3>Key Interview Takeaways</h3><ul><li>Highlight that peak burst handling (10x average) dictates message broker partition counts and worker autoscale limits.</li><li>Partition operational history by date or user ID for cost-effective lifecycle archiving.</li></ul></aside>
+    </section>
+
+    <section id="high-level-architecture">
+      <h2>3. High-Level Architecture &amp; End-to-End Flow</h2>
+      <p>Decoupled microservice architecture with message brokers</p>
+      <p>A direct synchronous call from microservices to third-party vendors (Twilio, SendGrid) can couple upstream availability and latency to the provider. For example, a delayed provider response can hold upstream request and connection-pool resources.</p>
+<h3 id="high-level-architecture-the-decoupled-event-driven-flow">The Decoupled Event-Driven Flow</h3>
+<ol><li><strong>Client / Upstream Services</strong>: Services (Order Service, Auth Service) send a notification request to the <strong>Notification Gateway API</strong>.</li><li><strong>Gateway Validation &amp; Authentication</strong>: Validates payload schema, verifies internal service authentication tokens, and checks rate limits.</li><li><strong>Idempotency Filter</strong>: Queries a distributed Redis cluster using the request&#39;s <code>idempotency_key</code>. If already processed, the duplicate is dropped immediately.</li><li><strong>User Preference &amp; Quiet Hours Filter</strong>: Checks user notification preferences in a fast cache. If the user opted out of email or if marketing quiet hours are active, the event is filtered or rescheduled.</li><li><strong>Templating Engine</strong>: Injects dynamic values (e.g. <code>{{user_name}}</code>, <code>{{order_total}}</code>) into localized, versioned notification templates.</li><li><strong>Partitioned Apache Kafka Message Queues</strong>: Publishes events into isolated priority topics:</li></ol>
+<ul><li><code>notifications.p0.transactional</code></li><li><code>notifications.p1.alerts</code></li><li><code>notifications.p2.marketing</code></li></ul>
+<ol start="7"><li><strong>Specialized Worker Fleets</strong>: Independent consumer worker groups pull messages from dedicated topics and call the respective vendor adapters (APNs, FCM, Twilio, SendGrid).</li><li><strong>Vendor Webhook Collectors</strong>: Receives delivery receipts and bounce events from third-party vendors and updates analytics tables asynchronously.</li></ol>
+
+
+      <aside><h3>Key Interview Takeaways</h3><ul><li>Durable queues and retries can reduce loss from transient failures, but delivery depends on persistence, retry policy, provider behavior, and dead-letter handling.</li><li>Separate worker pools can reduce competition between priorities; shared downstream dependencies can still delay urgent notifications.</li></ul></aside>
+    </section>
+
+    <section id="deduplication-idempotency">
+      <h2>4. Deduplication, Idempotency &amp; Exactly-Once Semantics</h2>
+      <p>Preventing duplicate SMS charges and annoying multiple push alerts</p>
+      <p>In distributed systems, network packets time out. If an upstream order service triggers a payment confirmation SMS and experiences a network glitch before receiving HTTP 200, it retries. Without idempotency, the user receives two identical SMS messages.</p>
+<h3 id="deduplication-idempotency-the-3-tier-idempotency-solution">The 3-Tier Idempotency Solution</h3>
+<ol><li><strong>Deterministic Idempotency Key</strong>:</li></ol>
+<ul><li>The upstream service creates a unique key:</li></ul>
+<p><code>idempotency_key = SHA256(user_id + event_type + entity_id)</code> (e.g. <code>SHA256(&quot;usr_99&quot; + &quot;ORDER_CONFIRMED&quot; + &quot;ord_10492&quot;)</code>).</p>
+<ol start="2"><li><strong>Distributed Redis Atomic Lock</strong>:</li></ol>
+<ul><li>Before queueing or dispatching, the worker executes:</li></ul>
+<p><code>SET notif:dedup:{key} &quot;PROCESSING&quot; NX EX 86400</code></p>
+<ul><li>If Redis returns <code>nil</code>, the key already exists and this event is a duplicate.</li></ul>
+<ol start="3"><li><strong>Provider Idempotency (when supported)</strong>:</li></ol>
+<ul><li>Provider idempotency mechanisms differ by product and endpoint. Check current API documentation before forwarding an idempotency key; do not assume a common header or behavior.</li></ul>
+
+      <figure><figcaption>Notification Consumer &amp; Idempotency Pipeline with Circuit Breaker</figcaption><pre><code class="language-typescript">interface NotificationEvent {
+  idempotencyKey: string;
+  userId: string;
+  channel: &quot;APNS&quot; | &quot;FCM&quot; | &quot;SMS&quot; | &quot;EMAIL&quot;;
+  priority: &quot;P0&quot; | &quot;P1&quot; | &quot;P2&quot;;
+  payload: {
+    title: string;
+    body: string;
+    metadata?: Record&lt;string, unknown&gt;;
+  };
+}
+
+export class NotificationDispatcher {
+  constructor(
+    private readonly redis: RedisClient,
+    private readonly vendorGateway: VendorGatewayClient,
+    private readonly deadLetterQueue: DlqProducer
+  ) {}
+
+  async processNotification(event: NotificationEvent): Promise&lt;void&gt; {
+    const dedupKey = `notif:dedup:${event.idempotencyKey}`;
+
+    // 1. Distributed Atomic Deduplication Check (24-hour TTL)
+    const acquired = await this.redis.set(dedupKey, &quot;PROCESSING&quot;, &quot;NX&quot;, &quot;EX&quot;, 86400);
+    if (!acquired) {
+      console.log(`[DEDUP] Dropping duplicate notification: ${event.idempotencyKey}`);
+      return; // Already dispatched or in progress
+    }
+
+    try {
+      // 2. Dispatch to Third-Party Provider (e.g. APNs, Twilio, SendGrid)
+      await this.vendorGateway.sendWithRetry({
+        channel: event.channel,
+        recipient: event.userId,
+        content: event.payload,
+        maxRetries: event.priority === &quot;P0&quot; ? 3 : 1,
+      });
+
+      // 3. Mark deduplication key as successfully completed
+      await this.redis.set(dedupKey, &quot;DELIVERED&quot;, &quot;KEEPTTL&quot;);
+    } catch (error) {
+      console.error(`[DISPATCH_ERROR] Delivery failed for key ${event.idempotencyKey}`, error);
+
+      // 4. Dead Letter Queue for engineering inspection and alerting
+      await this.deadLetterQueue.publish({
+        failedEvent: event,
+        failureReason: (error as Error).message,
+        timestamp: new Date().toISOString(),
+      });
+
+      // Release key to allow subsequent retry if transient
+      await this.redis.del(dedupKey);
+      throw error;
+    }
+  }
+}</code></pre></figure>
+      <aside><h3>Key Interview Takeaways</h3><ul><li>Use deterministic idempotency keys derived from business entities rather than random UUIDs.</li><li>Propagate idempotency keys where downstream APIs document support; otherwise deduplicate within the service and account for uncertain provider outcomes.</li></ul></aside>
+    </section>
+
+    <section id="worker-fleet-priority">
+      <h2>5. Worker Fleet Design, Priority Queues &amp; Vendor Rate Limiting</h2>
+      <p>Preventing rate limit throttling and managing delivery retries</p>
+      <h3 id="worker-fleet-priority-1-dedicated-priority-worker-fleets">1. Dedicated Priority Worker Fleets</h3>
+<p>Consider separating worker capacity for transactional and bulk workloads when their latency or isolation objectives differ:</p>
+<ul><li><strong>P0 Workers</strong>: Highly provisioned with minimal batch sizes for immediate dispatch.</li><li><strong>P2 Workers</strong>: Heavily batched consumers designed for maximum bulk throughput, configured to scale down automatically if downstream APIs show elevated error rates.</li></ul>
+<h3 id="worker-fleet-priority-2-vendor-rate-limiting-account-ceilings">2. Vendor Rate Limiting &amp; Account Ceilings</h3>
+<p>Third-party providers apply account- and product-specific throughput limits. Check current limits for the provider account and agreement; do not assume a universal rate.</p>
+<ul><li>If a provider-specific limit is exceeded, its documented throttling behavior applies; handle responses and retries according to that provider&#39;s guidance.</li><li><strong>Solution</strong>: Workers use a central Redis Token Bucket per vendor account to throttle dispatch rates across all worker nodes.</li></ul>
+<h3 id="worker-fleet-priority-3-exponential-backoff-with-jitter-dead-letter-queues-dlq">3. Exponential Backoff with Jitter &amp; Dead Letter Queues (DLQ)</h3>
+<p>When a vendor call fails:</p>
+<ul><li><strong>Transient Failures (HTTP 500, Network Timeout)</strong>: Retry with truncated exponential backoff and randomized jitter:</li></ul>
+<p>$\text{Delay} = \min(60, 2^{\text{attempt}} + \text{random\_jitter})$</p>
+<ul><li><strong>Permanent Failures (HTTP 400, Invalid Phone Number, Unregistered Device Token)</strong>: Do not retry. Route immediately to a <strong>Dead Letter Queue (DLQ)</strong> and deactivate the user&#39;s invalid device token in the database.</li></ul>
+
+
+      <aside><h3>Key Interview Takeaways</h3><ul><li>Isolate priority queues and worker capacity to reduce the effect of bulk traffic on time-sensitive messages, while monitoring shared bottlenecks.</li><li>Implement Token Bucket rate limiters to respect third-party vendor API quotas.</li></ul></aside>
+    </section>
+
+    <section id="user-preferences-compliance">
+      <h2>6. User Preferences, Quiet Hours &amp; Global Compliance</h2>
+      <p>TCPA, CAN-SPAM, GDPR, and localized quiet hours</p>
+      <p>Notification preference and compliance requirements depend on message type, jurisdiction, and channel. Treat the following as design considerations, not legal advice; verify requirements for the actual product and audience with qualified counsel. The <a href="https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business" target="_blank" rel="noopener noreferrer">FTC CAN-SPAM compliance guide</a> describes US commercial email requirements, while <a href="https://www.rfc-editor.org/rfc/rfc8058.html" target="_blank" rel="noopener noreferrer">RFC 8058</a> specifies a one-click unsubscribe mechanism for supported email-list use cases.</p>
+<h3 id="user-preferences-compliance-1-user-preference-data-model">1. User Preference Data Model</h3>
+<p>An example preference model can let users manage notification categories and channels. Which messages may be opted out of depends on the product, applicable law, and channel; do not treat security, billing, or transactional labels as a universal exemption.</p>
+<h3 id="user-preferences-compliance-2-timezone-aware-quiet-hours">2. Timezone-Aware Quiet Hours</h3>
+<p>Sending non-urgent marketing messages during a recipient&#39;s local quiet hours may be undesirable. A product can configure quiet-hour windows and evaluate them using the recipient&#39;s selected or otherwise appropriately determined timezone.</p>
+<h3 id="user-preferences-compliance-3-legal-compliance-regulations">3. Legal Compliance Regulations</h3>
+<p>For US commercial email, consult the FTC guidance for applicable sender identification, address, and opt-out requirements. RFC 8058 describes one-click unsubscribe signaling for mailing lists; it is not a blanket statement of requirements for every marketing email. SMS and privacy obligations also vary by jurisdiction and implementation, so confirm channel-specific handling and timing with qualified counsel and the selected provider.</p>
+
+
+      <aside><h3>Key Interview Takeaways</h3><ul><li>Respect recipient timezones for non-transactional marketing notifications.</li><li>Define and test channel-specific opt-out handling against applicable requirements and provider behavior.</li></ul></aside>
+    </section>
+  <section id="references"><h2>References &amp; Further Reading</h2><ul><li><a href="https://developer.apple.com/documentation/usernotifications/sending-notification-requests-to-apns" target="_blank" rel="noopener noreferrer">Sending notification requests to APNs</a> — Apple Developer Documentation</li><li><a href="https://firebase.google.com/docs/cloud-messaging/send/v1-api" target="_blank" rel="noopener noreferrer">Send a message using FCM HTTP v1 API</a> — Firebase Documentation</li></ul></section><section id="faqs"><h2>Frequently Asked Questions</h2><details><summary>How can a design reduce the chance that bulk notifications delay high-priority OTP traffic?</summary><p>Separate priority topics and worker capacity can reduce competition between bulk and urgent traffic. They do not guarantee zero delay: shared providers, partitions, databases, and infrastructure can still be bottlenecks, so define objectives and monitor end-to-end latency.</p></details><details><summary>How do you prevent users from receiving duplicate push notifications or SMS?</summary><p>Use an idempotency key and an atomic deduplication record with a retention period suited to the retry window. Provider support varies; do not assume an external messaging API honors arbitrary idempotency keys.</p></details><details><summary>How does the notification service integrate with APNs and FCM?</summary><p>The service maintains persistent HTTP/2 connections to Apple Push Notification service (APNs) using TLS provider certificates or JWT authentication tokens. For Android, it integrates with Firebase Cloud Messaging (FCM) v1 REST API. Device tokens are stored per user in the database, and when APNs/FCM returns Unregistered, the token is automatically deactivated.</p></details><details><summary>How do you handle third-party vendor rate limits and downtime (e.g., Twilio outage)?</summary><p>Use a distributed Token Bucket in Redis to throttle outbound worker dispatch rates to the vendor's agreed QPS limit. For vendor outages, configure circuit breakers with multi-vendor failover (e.g., if Twilio fails, route SMS through Infobip or AWS SNS) and retry transient errors with exponential backoff and jitter.</p></details><details><summary>What is the Dead Letter Queue (DLQ) strategy for failed notifications?</summary><p>When a notification exhausts its retry attempts (e.g., 3 retries with exponential backoff) or encounters a non-retryable error (e.g., invalid phone number or unparseable payload), it is moved to a Dead Letter Queue. DLQ messages trigger alerts and allow engineers to inspect, correct, and re-drive failed events.</p></details><details><summary>How do you implement localized quiet hours across global user timezones?</summary><p>Store the recipient's timezone or inferred location in their profile. Before queueing non-urgent marketing notifications, check if the recipient's current local time falls between quiet hours (e.g. 9 PM to 8 AM). If so, compute the delay until 8:01 AM local time and schedule delivery via a delayed queue or scheduled Redis sorted set.</p></details></section></main>
+        <nav aria-label="Related guides"><h2>Related Guides</h2><ul><li><a href="/guides/system-design-rate-limiter">System Design: How to Design an API Rate Limiter (Token Bucket vs Leaky Bucket)</a></li><li><a href="/guides/system-design-tinyurl">System Design: How to Design TinyURL (Architecture, Capacity &amp; SPOF)</a></li></ul></nav>
+        <p><a href="/system-design">Continue practicing with PrepVisor</a></p>
         <section class="mt-12 p-6 rounded-2xl bg-blue-50 border border-blue-200">
           <h3 class="text-xl font-bold text-slate-900">Practice this question on PrepVisor AI Studio</h3>
-          <p class="text-sm text-slate-600 mt-2">Get real-time scoring, code evaluation, and system design feedback.</p>
-          <a href="https://app.prepvisor.in/register?utm_source=organic_seo&utm_medium=guide&utm_campaign=system-design-notification-service" class="inline-block mt-4 px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl">Launch Practice Studio</a>
+          <p class="text-sm text-slate-600 mt-2">Explore a multi-channel notification architecture and work through priority, idempotency, and rate-limiting trade-offs in the system design studio.</p>
+          <a href="https://app.prepvisor.in/register?utm_source=organic_seo&amp;utm_medium=guide&amp;utm_campaign=system_design_notification_service" class="inline-block mt-4 px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl">Design Notification Service in Studio</a>
         </section>
       </article>
     </noscript>
-  
+
   </body>
 </html>

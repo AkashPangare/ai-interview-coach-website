@@ -1,3 +1,5 @@
+import type { GuideCategoryId } from "../config/guideCategories.ts"
+
 export interface GuideFaq {
   question: string;
   answer: string;
@@ -20,6 +22,12 @@ export interface GuideSection {
   };
 }
 
+export interface GuideReference {
+  title: string;
+  publisher: string;
+  url: string;
+}
+
 export interface GuideCta {
   heading: string;
   subtext: string;
@@ -34,18 +42,32 @@ export interface Guide {
   seoTitle: string;
   metaDescription: string;
   keywords: string[];
-  category: "System Design" | "Java" | "Data Structures" | "Backend Architecture";
+  primaryCategory: GuideCategoryId;
+  relatedGuideSlugs: string[];
+  productPath: "/system-design" | "/coding-practice" | "/mock-interview";
   readingTimeMinutes: number;
   difficulty: "Intermediate" | "Advanced" | "All Levels";
-  lastUpdated: string;
+  /** Manually update for meaningful content changes; do not infer on builds. */
+  dateModified: string;
+  /** Omit unless the original publication date is known and documented. */
+  datePublished?: string;
   author: {
     name: string;
     role: string;
   };
   summary: string;
+  quickAnswer?: string;
+  keyTakeaways?: string[];
+  references?: GuideReference[];
   sections: GuideSection[];
   faqs: GuideFaq[];
   cta: GuideCta;
+}
+
+export function isValidGuideDate(value: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const date = new Date(`${value}T00:00:00.000Z`);
+  return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value;
 }
 
 export const GUIDES: Guide[] = [
@@ -63,22 +85,29 @@ export const GUIDES: Guide[] = [
       "key generation service kgs",
       "system design interview questions",
     ],
-    category: "System Design",
+    primaryCategory: "system-design",
+    relatedGuideSlugs: ["system-design-rate-limiter", "system-design-notification-service"],
+    productPath: "/system-design",
     readingTimeMinutes: 20,
     difficulty: "Advanced",
-    lastUpdated: "2026-09-18",
+    dateModified: "2026-09-18",
     author: {
-      name: "PrepVisor Systems Engineering Team",
-      role: "Staff Infrastructure Engineers & Interview Evaluators",
+      name: "PrepVisor",
+      role: "Guide publisher",
     },
     summary:
-      "Designing a URL shortening service like TinyURL or Bitly is one of the most classic system design interview problems asked at Google, Meta, and Amazon. This guide walks you through requirements, capacity estimation formulas, database schema, Base62 key generation, caching strategies, and failover design.",
+      "This guide walks through a URL-shortening system design, including requirements, example capacity estimates, database schema, Base62 key generation, caching strategies, and failover trade-offs.",
+    references: [
+      { title: "HTTP Semantics (RFC 9110), Sections 15.4.2–15.4.3", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc9110.html" },
+      { title: "Scripting with Lua", publisher: "Redis Documentation", url: "https://redis.io/docs/latest/develop/programmability/eval-intro/" },
+      { title: "Scaling with Redis Cluster", publisher: "Redis Documentation", url: "https://redis.io/docs/latest/operate/oss_and_stack/management/scaling/" },
+    ],
     sections: [
       {
         id: "requirements",
         title: "1. Functional & Non-Functional Requirements",
         subtitle: "Clarifying scope before drawing a single box",
-        content: `In an interview, never jump into drawing architecture without clarifying requirements with the interviewer.
+        content: `In an interview, clarify requirements before drawing an architecture. Treat the values below as scenario targets to discuss with the interviewer, not measured service performance.
         
 **Functional Requirements:**
 1. **URL Shortening**: Given a long URL, generate a unique, short alias (e.g. \`https://prepvisor.in/u/a8F9k2Z\`).
@@ -86,14 +115,16 @@ export const GUIDES: Guide[] = [
 3. **Custom Aliases (Optional)**: Users should optionally pick a custom alias if available.
 4. **Link Expiration (Optional)**: Short URLs expire after a default TTL (e.g., 2 or 5 years) or custom user timestamp.
 
+For redirect status-code semantics, see [HTTP Semantics (RFC 9110), Sections 15.4.2–15.4.3](https://www.rfc-editor.org/rfc/rfc9110.html).
+
 **Non-Functional Requirements:**
-- **Ultra-Low Latency**: Redirection lookup must complete in under **20 milliseconds**.
-- **High Availability (99.99%)**: Redirection must never drop; reading is far more critical than writing.
-- **Read-Heavy System**: Assume a **100:1 to 500:1 read-to-write ratio**.
+- **Latency target (example)**: Set a target such as **under 20 milliseconds** and clarify how it is measured.
+- **Availability target (example)**: A scenario may specify **99.99%** availability; this is a requirement, not a guarantee.
+- **Read/write workload (assumption)**: Explore a **100:1 to 500:1 read-to-write ratio** as an input to the design.
 - **Non-Predictable URLs**: Short links must not be easily guessable to prevent enumeration attacks.`,
         keyTakeaways: [
-          "Always confirm read/write ratio early in the interview (100:1 or 500:1).",
-          "Distinguish HTTP 301 (Permanent Redirect - browser caches) vs HTTP 302 (Temporary Redirect - allows analytics tracking).",
+          "Confirm the read/write ratio with the interviewer; any ratio used here is an assumption until confirmed.",
+          "HTTP 301 denotes a permanent redirect and is heuristically cacheable; 302 denotes a temporary redirect. Explicit cache controls and client behavior affect caching and analytics.",
           "Ensure short tokens are non-guessable to protect private shared links.",
         ],
       },
@@ -101,7 +132,7 @@ export const GUIDES: Guide[] = [
         id: "capacity-estimation",
         title: "2. Capacity Estimation & Back-of-the-Envelope Calculations",
         subtitle: "Quantifying traffic, storage, and memory bottlenecks",
-        content: `Let's formulate realistic scale numbers for a 5-year production horizon:
+        content: `EXAMPLE / ASSUMPTION — The following arithmetic illustrates one hypothetical five-year workload. Replace every input with requirements agreed during the interview; these are not measured TinyURL or PrepVisor traffic figures.
 
 **Traffic Calculations:**
 - **Write QPS**: Assume **100 Million** new short URLs generated per month:
@@ -115,21 +146,21 @@ export const GUIDES: Guide[] = [
 - Assume average original URL size = 500 bytes; metadata + short key + timestamp = 100 bytes. Total per record = **600 bytes**.
 - Total Storage in 5 years:
   $$6\\text{ Billion} \\times 600 \\text{ Bytes} = 3.6 \\text{ Terabytes}$$
-  *(3.6 TB is easily manageable on modern distributed databases with replication).*
+  *(This estimate excludes replication, indexes, storage-engine overhead, backups, and growth headroom.)*
 
-**Cache Estimation (80/20 Rule):**
+**Cache Estimation (illustrative 80/20 assumption):**
 - 20% of the URLs generate 80% of read traffic.
 - Daily read requests = $4,000 \\times 86,400 \\approx 345 \\text{ Million requests/day}$.
 - Daily cache requirement (20% of daily reads):
   $$0.20 \\times 345\\text{M} \\times 600 \\text{ Bytes} \\approx 41.4 \\text{ GB RAM}$$
-  *(Can comfortably fit in a single Redis cluster node with 64 GB RAM).*`,
+  *(Payload estimate only: Redis object/allocator overhead, replication, fragmentation, and operational headroom are excluded. Validate deployment size.)*`,
         architectureCallout: {
           title: "Capacity Estimation Cheat Sheet",
           points: [
-            { label: "Write QPS", value: "~40 writes/sec (Normal), ~100 writes/sec (Peak)" },
+            { label: "Write QPS (example)", value: "~40 writes/sec normal, ~80 writes/sec at the assumed 2× peak" },
             { label: "Read QPS", value: "4,000 reads/sec (Normal), 8,000 reads/sec (Peak)" },
-            { label: "5-Year Storage", value: "3.6 TB (6 Billion URL records)" },
-            { label: "Redis Cache RAM", value: "~42 GB (80/20 rule, LRU eviction)" },
+            { label: "5-Year Storage (example)", value: "3.6 TB before indexes, replication, and overhead" },
+            { label: "Cache payload estimate (example)", value: "~42 GB under the stated 80/20 assumptions" },
             { label: "Read Bandwidth", value: "4,000 * 600 bytes = 2.4 MB/second" },
           ],
         },
@@ -137,20 +168,20 @@ export const GUIDES: Guide[] = [
       {
         id: "key-generation",
         title: "3. Key Generation Strategy: Base62 vs Hashing",
-        subtitle: "Why MD5/SHA-256 collisions fail and how a Key Generation Service (KGS) wins",
+        subtitle: "Hash-derived tokens and pre-generated keys: collision trade-offs",
         content: `A critical technical differentiator in this interview is how you generate the 7-character short token.
 
 ### Option A: Hashing (MD5 / SHA-256) + Base62
 - Hash long URL using MD5 $\\rightarrow$ 128-bit hash $\\rightarrow$ Base62 encode $\\rightarrow$ take first 7 chars.
-- **Flaw**: Two different URLs might collide on the first 7 characters. Handling collisions requires database lookups or appending salts, resulting in unpredictable write latencies.
+- **Trade-off**: Truncating a hash to a short token can produce collisions. The design needs collision detection and retry or another allocation strategy; the latency impact depends on implementation and workload.
 
 ### Option B: Dedicated Key Generation Service (KGS) with Pre-Generated Keys (Recommended)
-- **Why 7 characters?**
+- **Example token length:**
   Using Base62 characters (\`[a-z, A-Z, 0-9]\`):
   $$62^7 = 3,521,614,606,208 \\approx 3.52 \\text{ Trillion unique URLs}$$
-  *(Sufficient for hundreds of years of growth).*
+  This is the theoretical token space before reserved values or operational constraints; it is not a forecast of capacity or lifetime.
 - A standalone Key Generation Service generates random Base62 tokens offline and loads them in batches into memory.
-- When an API server needs keys, it requests a block of 10,000 keys from the KGS. Even if an API server crashes, at most a small block is orphaned without any collision risk!`,
+- When an API server needs keys, it may request a block (for example, 10,000) from the KGS. A crash can orphan unused keys. Preventing duplicate allocation requires a uniqueness-enforced key space and exclusive, durable allocation coordination.`,
         codeBlock: {
           language: "java",
           caption: "Base62 Encoding Utility in Java",
@@ -173,21 +204,23 @@ export const GUIDES: Guide[] = [
         },
         keyTakeaways: [
           "Base62 is preferred over Base64 because '+' and '/' require URL encoding in browser address bars.",
-          "Pre-generating keys with a KGS removes hash collision overhead and guarantees O(1) instantaneous writes.",
-          "Partitioning KGS keys across two tables ('used_keys' and 'unused_keys') ensures atomic allocations.",
+          "A pre-generated key pool can avoid hash-collision checks on the allocation path when key uniqueness and allocation are enforced correctly.",
+          "Partitioning KGS keys across used and unused stores is one possible allocation design; atomicity depends on its implementation.",
         ],
       },
       {
         id: "high-level-architecture",
         title: "4. High-Level Architecture & End-to-End Flow",
         subtitle: "Connecting Load Balancer, Application Nodes, Redis Cache & Database",
-        content: `### Read Flow (Redirection - 99% of Traffic):
+        content: `EXAMPLE / ASSUMPTION — This flow uses illustrative traffic proportions and response times, not measured production behavior.
+
+### Read Flow (illustrative read-heavy workload):
 1. User clicks \`https://prepvisor.in/u/x8Kp2L9\`.
 2. Request hits Route 53 (DNS) and resolves to an Application Load Balancer (ALB).
 3. ALB forwards to stateless **Redirection API Workers**.
 4. Worker checks **Redis Cache** by key \`x8Kp2L9\`:
-   - **Cache Hit (90%+)**: Returns 302 redirect with original URL in **< 5ms**.
-   - **Cache Miss (10%)**: Queries database replica, populates Redis, returns 302 redirect.
+   - **Cache hit (assumed 90%+)**: Returns a 302 response; measure latency in the target deployment.
+   - **Cache miss (assumed remainder)**: Queries a database replica, populates Redis, and returns a 302 response.
 
 ### Write Flow (Creating Short URL - 1% of Traffic):
 1. Client POSTs long URL to \`/api/v1/shorten\`.
@@ -228,10 +261,10 @@ CREATE INDEX idx_url_mappings_expires_at ON url_mappings(expires_at)
 WHERE expires_at IS NOT NULL;
 \`\`\`
 
-**Sharding Strategy:**
-- Since 3.6 TB exceeds standard single-node memory comfortably, we can shard by **Hash of Short Key**:
+**Sharding Strategy (one option for this example):**
+- Partition by a hash of the short key to distribute records across shards:
   $$\\text{Shard ID} = \\text{Murmur3}(\\text{short\\_key}) \\pmod N$$
-- This guarantees even distribution across $N$ database shards without hot spots.`,
+- Hash partitioning tends to spread keys, but does not guarantee uniform load or prevent hot spots for every workload.`,
       },
       {
         id: "fault-tolerance-spof",
@@ -240,16 +273,16 @@ WHERE expires_at IS NOT NULL;
         content: `A common interview pitfall is presenting a happy-path architecture without disaster recovery.
 
 1. **Redis Cache Crash**:
-   - If Redis fails, 4,000 QPS will flood the database and cause cascading failure.
+   - Under the illustrative 4,000-read-QPS workload, a cache failure can shift substantial read traffic to the database and risk overload.
    - **Mitigation**: Deploy Redis in Master-Replica Sentinel with auto-failover, and implement circuit breakers in API workers to gracefully throttle if DB connection pools saturate.
 2. **KGS Crash**:
-   - Standby KGS instance using ZooKeeper / Raft consensus takes over immediately.
+   - A standby KGS with an explicit leader/lease or allocation-coordination protocol can support failover; recovery time depends on the design.
 3. **Database Write Master Failure**:
-   - Multi-AZ automatic failover promotes read replica to master in under 30 seconds. Because reads continue from remaining replicas, redirection is unaffected!`,
+   - A database failover process may promote a replica. Recovery time and read availability depend on the database, replication mode, and application behavior; set and test a recovery objective.`,
         keyTakeaways: [
-          "Redirection must use HTTP 302 if you want server analytics (click count, geography, device type).",
-          "LRU (Least Recently Used) is the optimal cache eviction policy for viral URLs.",
-          "Lazy deletion is best for expired URLs: check expiry on lookup, rather than continuous full-table sweeps.",
+          "Redirect status, cache controls, and client behavior affect whether later requests reach the service for analytics; choose them to match the requirements.",
+          "LRU is one cache eviction policy; evaluate it against the workload and alternatives.",
+          "Lazy expiry checks are one option for expired URLs; periodic cleanup and retention requirements may also affect the design.",
         ],
       },
     ],
@@ -262,17 +295,17 @@ WHERE expires_at IS NOT NULL;
       {
         question: "Should TinyURL return HTTP 301 or HTTP 302 status code?",
         answer:
-          "HTTP 301 is a Permanent Redirect, which instructs browsers to cache the destination URL locally. This reduces server load, but prevents the URL shortener from tracking click analytics. HTTP 302 is a Temporary Redirect, which forces all clicks through your server, enabling real-time analytics, rate-limiting, and scam link deactivation.",
+          "HTTP 301 means the resource has moved permanently and is heuristically cacheable unless cache controls say otherwise. HTTP 302 means the move is temporary. Neither status alone guarantees analytics behavior: caching directives, clients, and the service's request flow affect whether later requests reach the origin. See RFC 9110, Sections 15.4.2–15.4.3.",
       },
       {
         question: "How do you handle expired short links efficiently?",
         answer:
-          "Rather than running continuous expensive background scans over billions of rows, use lazy deletion combined with a low-priority nightly batch job. When a user requests an expired link, verify the timestamp, return 404, and mark for cleanup.",
+          "For an illustrative large dataset, lazy expiry checks plus periodic cleanup are one option. On access, verify the timestamp, return the chosen expired-link response, and enqueue cleanup if appropriate.",
       },
       {
         question: "How do you prevent two users from receiving the same short URL?",
         answer:
-          "By employing a Key Generation Service (KGS) that pre-generates unique Base62 tokens offline and stores them in memory. API workers pull blocks of unique keys, guaranteeing zero collision and eliminating optimistic lock retries.",
+          "A KGS can allocate pre-generated unique Base62 tokens to workers. Uniqueness depends on how the service creates, reserves, and allocates keys; no collision guarantee follows from the pattern alone.",
       },
       {
         question: "How do you protect the service from malicious spam and DDoS?",
@@ -280,15 +313,15 @@ WHERE expires_at IS NOT NULL;
           "Implement Token Bucket rate limiting per IP address / API key, integrate Google Safe Browsing API on the write path to block phishing URLs, and enforce CAPTCHA on unauthenticated link creation.",
       },
       {
-        question: "What is the storage requirement for 6 billion short URLs?",
+        question: "How can you estimate storage for a URL shortener?",
         answer:
-          "At an average of 600 bytes per record (500 bytes for original URL + 100 bytes for short key, metadata, and timestamps), 6 billion URLs require approximately 3.6 Terabytes of total database storage.",
+          "Multiply the assumed record count by an estimated record size, then account separately for indexes, replication, backups, and storage-engine overhead. For example, 6 billion records at an assumed 600 bytes each yield 3.6 TB before those additional costs; this is scenario arithmetic, not a measured deployment size.",
       },
     ],
     cta: {
       heading: "Design TinyURL on PrepVisor AI Studio",
       subtext:
-        "Practice drawing this exact architecture on our interactive canvas. Get instant AI evaluation of your capacity math, SPOF bottlenecks, and latency.",
+        "Practice sketching this architecture on the interactive system design canvas and work through its capacity and failure-mode trade-offs.",
       buttonText: "Launch Interactive System Design Studio",
       actionUrl:
         "https://app.prepvisor.in/register?utm_source=organic_seo&utm_medium=guide&utm_campaign=system_design_tinyurl",
@@ -298,8 +331,8 @@ WHERE expires_at IS NOT NULL;
 
   {
     slug: "java-concurrency-interview-questions",
-    title: "Top 50 Java Concurrency Interview Questions (2026 Edition)",
-    seoTitle: "Top 50 Java Concurrency Interview Questions | 2026 Senior Developer Guide",
+    title: "Java Concurrency Interview Questions and Concepts",
+    seoTitle: "Java Concurrency Interview Guide | Core Concepts and Virtual Threads",
     metaDescription:
       "Master modern Java concurrency and multithreading interview questions. Explanations of JVM memory model, Virtual Threads, ThreadPoolExecutor, ReentrantLock, and thread-safety traps.",
     keywords: [
@@ -310,22 +343,32 @@ WHERE expires_at IS NOT NULL;
       "virtual threads java interview",
       "concurrenthashmap internal working",
     ],
-    category: "Java",
+    primaryCategory: "java-backend",
+    relatedGuideSlugs: ["spring-boot-microservices-interview-questions"],
+    productPath: "/coding-practice",
     readingTimeMinutes: 24,
     difficulty: "Intermediate",
-    lastUpdated: "2026-09-19",
+    dateModified: "2026-09-19",
     author: {
-      name: "PrepVisor Technical Curriculum Lead",
-      role: "Ex-Staff Engineer & Java Platform Specialist",
+      name: "PrepVisor",
+      role: "Guide publisher",
     },
     summary:
-      "Java concurrency is the #1 filter for intermediate and senior engineering candidates. This curated guide covers the Java Memory Model, happens-before consistency, synchronization internals, concurrent collections, and modern Virtual Threads in Java with verified code patterns.",
+      "Java concurrency is a useful topic for intermediate and senior backend interview preparation. This guide covers the Java Memory Model, happens-before consistency, synchronization, concurrent collections, and virtual threads, with code examples.",
+    references: [
+      { title: "JEP 444: Virtual Threads", publisher: "OpenJDK", url: "https://openjdk.org/jeps/444" },
+      { title: "Java Language Specification, Chapter 17: Threads and Locks", publisher: "Oracle Java Documentation", url: "https://docs.oracle.com/javase/specs/jls/se26/html/jls-17.html" },
+      { title: "Significant Changes in JDK 24: Synchronize Virtual Threads without Pinning", publisher: "Oracle Java Documentation", url: "https://docs.oracle.com/en/java/javase/24/migrate/significant-changes-jdk-24.html" },
+      { title: "ThreadPoolExecutor (Java SE API)", publisher: "Oracle Java Documentation", url: "https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html" },
+      { title: "ConcurrentHashMap (Java SE API)", publisher: "Oracle Java Documentation", url: "https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/ConcurrentHashMap.html" },
+      { title: "ConcurrentHashMap OpenJDK Source", publisher: "OpenJDK", url: "https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/concurrent/ConcurrentHashMap.java" },
+    ],
     sections: [
       {
         id: "jvm-memory-model",
         title: "1. Java Memory Model (JMM) & Thread Safety Fundamentals",
         subtitle: "Volatile, Atomicity, Visibility, and the Happens-Before Relationship",
-        content: `Understanding how modern CPU architectures (L1/L2/L3 caches) interact with the JVM is mandatory for senior technical interviews.
+        content: `The Java Language Specification defines the Java Memory Model's allowed visibility and ordering behaviors; it does not prescribe a particular hardware implementation. Interview answers should describe those guarantees rather than assume one mechanism. [JLS Chapter 17](https://docs.oracle.com/javase/specs/jls/se26/html/jls-17.html)
 
 ### Core Concepts You Must Explain:
 - **Visibility**: When Thread A updates a shared variable, Thread B may continue reading the stale value from its local CPU register or cache line unless a memory barrier is established.
@@ -432,7 +475,7 @@ public class BoundedBuffer<T> {
         id: "concurrenthashmap-internals",
         title: "4. ConcurrentHashMap Internal Working (Java 8+ vs Java 7)",
         subtitle: "From Segment Locks to CAS + Synchronized Node Bins",
-        content: `\`ConcurrentHashMap\` is the single most frequently asked collections question in Java interviews.
+        content: `\`ConcurrentHashMap\` is a useful case study for Java concurrent collections. The details below describe OpenJDK implementation choices, not guarantees of the public API; check the source for the specific JDK release. [OpenJDK ConcurrentHashMap source](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/concurrent/ConcurrentHashMap.java)
 
 ### Java 7 Architecture:
 - Used **Segment-level locking** (default 16 segments). Each segment was a subclass of \`ReentrantLock\`.
@@ -443,9 +486,9 @@ public class BoundedBuffer<T> {
 - Uses **CAS** (\`compareAndSwapObject\`) for insertion when the bucket head is null.
 - Uses fine-grained \`synchronized\` **only on the first node of the bucket** when resolving hash collisions.
 - Converts bucket from Linked List ($O(n)$) to a Red-Black Balanced Tree (\`TreeBin\` - $O(\\log n)$) when bucket threshold exceeds **8 elements** and total table capacity $\\ge 64$.
-- Reads (\`get()\`) are **100% lock-free** because node values and next pointers are marked \`volatile\`.`,
+- Retrievals generally do not entail locking; see the JDK API documentation for behavior and guarantees of the version in use.`,
         keyTakeaways: [
-          "ConcurrentHashMap never locks for read operations; volatile semantics guarantee visibility.",
+          "ConcurrentHashMap retrievals generally do not entail locking; see the JDK API documentation for version-specific behavior.",
           "Size calculation uses LongAdder (CounterCell array) to avoid CAS contention bottlenecks across threads.",
           "ConcurrentHashMap does not allow null keys or null values to eliminate ambiguity between absent keys and null values.",
         ],
@@ -453,12 +496,12 @@ public class BoundedBuffer<T> {
       {
         id: "virtual-threads-java21",
         title: "5. Virtual Threads (Project Loom) in Java",
-        subtitle: "How 1 Million lightweight user-mode threads change concurrency",
-        content: `In 2026, every senior Java interview will ask you about Virtual Threads.
+        subtitle: "Virtual threads for high-concurrency, mostly waiting workloads",
+        content: `Virtual threads became a permanent Java feature in JDK 21. They are useful to understand when evaluating thread-per-task designs; interview topics vary by role, team, and JDK version. [OpenJDK JEP 444](https://openjdk.org/jeps/444)
 
 ### Traditional Platform Threads vs Virtual Threads:
-- **Platform Threads**: 1:1 mapped to OS threads. Heavyweight (~1 MB stack memory each). Creating 5,000 threads will exhaust JVM memory and crash with \`OutOfMemoryError: unable to create native thread\`.
-- **Virtual Threads**: M:N mapped to carrier OS threads. Extremely lightweight (~few hundred bytes). You can comfortably run **1,000,000 virtual threads** on a standard laptop!
+- **Platform threads**: typically map to OS threads; achievable counts depend on operating system, runtime settings, and available resources.
+- **Virtual threads**: scheduled by the JDK over a smaller set of platform threads (M:N). They can make large numbers of mostly waiting tasks more practical, but feasible counts depend on workload, stack depth, heap, native resources, and the runtime.
 
 ### How Virtual Threads Work:
 - When a virtual thread executes blocking I/O (e.g. \`Socket.read()\`, \`Thread.sleep()\`), the JVM automatically **unmounts** the virtual thread from its carrier thread and parks its continuation in heap memory.
@@ -466,8 +509,8 @@ public class BoundedBuffer<T> {
 - When the I/O event completes, the JVM remounts the virtual thread onto an available carrier thread!
 
 ### Interview Warning: The Pinning Trap!
-- A virtual thread becomes **pinned** to its carrier thread if it blocks inside a \`synchronized\` block or calls a native JNI method.
-- **Rule for Java**: Replace \`synchronized\` with \`ReentrantLock\` in I/O-intensive codebases to avoid pinning carrier threads!`,
+- In JDK 21–23, blocking in some \`synchronized\` constructs could pin a virtual thread to its carrier; native/foreign calls also have version-dependent constraints. JDK 24 changed monitor behavior so virtual threads can unmount while blocked in synchronized code. [Oracle JDK 24 migration guide](https://docs.oracle.com/en/java/javase/24/migrate/significant-changes-jdk-24.html)
+- Diagnose pinning in the target JDK and workload before changing synchronization primitives; replacing \`synchronized\` with \`ReentrantLock\` is not a blanket requirement.`,
         codeBlock: {
           language: "java",
           caption: "Launching Virtual Threads using Java Structured Concurrency",
@@ -486,7 +529,7 @@ public class BoundedBuffer<T> {
       {
         question: "What is the difference between volatile and synchronized in Java?",
         answer:
-          "volatile guarantees visibility and ordering across threads by preventing CPU cache staleness and instruction reordering, but it does NOT provide atomicity for compound operations (e.g. count++). synchronized provides full mutual exclusion, guaranteeing atomicity, visibility, and ordering, but incurs thread blocking overhead.",
+          "Under the Java Memory Model, volatile reads and writes have defined visibility and ordering effects but do not make compound operations such as count++ atomic. synchronized provides mutual exclusion and happens-before relationships; its runtime costs depend on contention and implementation.",
       },
       {
         question: "Why does ConcurrentHashMap not allow null keys or null values?",
@@ -496,7 +539,7 @@ public class BoundedBuffer<T> {
       {
         question: "What is thread pinning in Java Virtual Threads?",
         answer:
-          "Thread pinning occurs when a virtual thread enters a synchronized block or calls a native method and then attempts blocking I/O. The JVM cannot unmount the virtual thread from its underlying OS carrier thread, blocking the carrier thread and limiting throughput. Use ReentrantLock instead of synchronized in virtual-thread applications.",
+          "Pinning behavior depends on the JDK release and blocking operation. In JDK 21–23, certain monitor and native/foreign interactions could pin a virtual thread; JDK 24 changed monitor behavior. Check the documentation and diagnostics for the deployed JDK before changing locks.",
       },
       {
         question: "What is the difference between CountDownLatch and CyclicBarrier?",
@@ -517,7 +560,7 @@ public class BoundedBuffer<T> {
     cta: {
       heading: "Practice Java Concurrency in PrepVisor AI Studio",
       subtext:
-        "Code multithreaded patterns, run concurrency unit tests, and receive real-time Big-O and thread-safety feedback from our AI evaluator.",
+        "Practice multithreaded code patterns in the coding studio and reason through thread-safety and complexity trade-offs.",
       buttonText: "Solve Concurrency Challenges Now",
       actionUrl:
         "https://app.prepvisor.in/register?utm_source=organic_seo&utm_medium=guide&utm_campaign=java_concurrency_top50",
@@ -539,51 +582,67 @@ public class BoundedBuffer<T> {
       "sliding window counter rate limit",
       "api gateway rate limiting envoy kong",
     ],
-    category: "System Design",
+    primaryCategory: "system-design",
+    relatedGuideSlugs: ["system-design-tinyurl", "system-design-notification-service"],
+    productPath: "/system-design",
     readingTimeMinutes: 22,
     difficulty: "Advanced",
-    lastUpdated: "2026-09-20",
+    dateModified: "2026-09-20",
     author: {
-      name: "PrepVisor Systems Engineering Team",
-      role: "Staff Infrastructure Engineers & Interview Evaluators",
+      name: "PrepVisor",
+      role: "Guide publisher",
     },
     summary:
-      "Designing a distributed API Rate Limiter is a staple system design interview question at Google, Stripe, Cloudflare, and Uber. This deep-dive covers core algorithms (Token Bucket, Leaky Bucket, Sliding Window Counter), distributed synchronization race conditions, Redis Lua script execution, memory capacity sizing, and fail-open resilience.",
+      "This guide explores a distributed API rate limiter design, including Token Bucket, Leaky Bucket, Sliding Window Counter, synchronization across gateways, Redis scripting, capacity estimation, and failure-mode trade-offs.",
+    quickAnswer:
+      "An API rate limiter controls request volume by client, IP, or endpoint. For distributed gateways, a Token Bucket backed by Redis can allow controlled bursts. Place checks at the API Gateway and use atomic Redis Lua updates to avoid race conditions. When a limit is exceeded, return HTTP 429 with Retry-After; choose fail-open or fail-closed behavior for outages based on system priorities.",
+    keyTakeaways: [
+      "Clarify whether limits apply globally, per user, per IP, or per endpoint.",
+      "Token Bucket permits controlled bursts; Leaky Bucket smooths output at a constant rate.",
+      "Place rate limiting at the API Gateway to reject throttled traffic before it consumes backend resources.",
+      "Use atomic Redis Lua scripts to avoid check-then-act races across gateway servers.",
+      "Choose fail-open or fail-closed behavior deliberately, and use Redis server time where token refill depends on time.",
+    ],
+    references: [
+      { title: "Scripting with Lua", publisher: "Redis Documentation", url: "https://redis.io/docs/latest/develop/programmability/eval-intro/" },
+      { title: "TIME command", publisher: "Redis Documentation", url: "https://redis.io/docs/latest/commands/time/" },
+      { title: "Scaling with Redis Cluster", publisher: "Redis Documentation", url: "https://redis.io/docs/latest/operate/oss_and_stack/management/scaling/" },
+      { title: "RFC 6585: Additional HTTP Status Codes", publisher: "RFC Editor", url: "https://www.rfc-editor.org/rfc/rfc6585.html" },
+    ],
     sections: [
       {
         id: "requirements",
         title: "1. Functional & Non-Functional Requirements",
         subtitle: "Clarifying limits, granularity, and failure modes",
-        content: `Before architecting a rate limiter, interviewers expect you to clearly pin down the granularity of limits and what happens when components fail.
+        content: `Before architecting a rate limiter, clarify the limit granularity and failure behavior. The numerical limits below are EXAMPLE / ASSUMPTION values for discussion, not universal tiers or measured service requirements.
 
 **Functional Requirements:**
 1. **Granular Rate Limiting**: Limit requests based on client identifier (authenticated user ID, API token) or IP address for unauthenticated traffic.
 2. **Configurable Tiers**: Support multiple rate limiting tiers (e.g. Free Tier: 100 req/min; Enterprise: 5,000 req/min; Login Endpoint: 5 attempts/min to prevent brute-force attacks).
-3. **Informative HTTP Headers**: Return standard headers on every request (\`X-RateLimit-Limit\`, \`X-RateLimit-Remaining\`, \`X-RateLimit-Reset\`).
-4. **Graceful Throttling**: When limits are breached, return **HTTP 429 (Too Many Requests)** accompanied by a \`Retry-After\` header specifying the cooldown period in seconds.
+3. **Informative HTTP Headers (design choice)**: Consider documenting quota and reset headers (for example, \`X-RateLimit-Limit\`, \`X-RateLimit-Remaining\`, and \`X-RateLimit-Reset\`) for clients.
+4. **Graceful Throttling**: When limits are breached, return **HTTP 429 (Too Many Requests)**; RFC 6585 permits a \`Retry-After\` header indicating how long to wait.
 
 **Non-Functional Requirements:**
-- **Sub-Millisecond Overhead**: The rate limiter sits directly in the critical path of every single request. Latency overhead must stay under **2 to 3 milliseconds**.
-- **Ultra-High Availability (99.999%)**: If the rate limiter is unavailable, legitimate users must not be locked out of the application.
+- **Latency target (example)**: A scenario might set an overhead target of **2 to 3 milliseconds**; define the measurement boundary and percentile.
+- **Availability target (example)**: A scenario might specify **99.999%** availability; this is a target, not a guarantee.
 - **Distributed State Synchronization**: Support hundreds of edge API gateway nodes querying a distributed, consistent token store.
-- **Memory Efficiency**: The system must track hundreds of millions of active IP addresses and user accounts within a bounded memory footprint.`,
+- **Memory efficiency (example scale assumption)**: A scenario could ask the design to track hundreds of millions of active IP addresses and user accounts; estimate state from the chosen key and data representation, then validate it against deployment limits.`,
         keyTakeaways: [
           "Always confirm whether rate limiting applies globally, per user, per IP, or per endpoint.",
           "Establish the failure policy upfront: fail-open (prioritize user experience) vs fail-closed (prioritize backend protection).",
-          "Ensure standard IETF rate-limiting response headers are returned to help client SDKs pace their retries.",
+          "Document any rate-limit headers your API returns so clients can interpret quotas and retry timing.",
         ],
       },
       {
         id: "algorithms",
         title: "2. Algorithm Comparison: Token Bucket vs Leaky Bucket vs Sliding Window",
-        subtitle: "Selecting the optimal rate limiting algorithm for the workload",
-        content: `Interviewers will ask you to compare different rate limiting algorithms. Here is how they stack up in production systems:
+        subtitle: "Selecting a rate-limiting algorithm for the workload",
+        content: `Compare rate-limiting algorithms against the traffic shape, state model, and failure requirements of the system being designed:
 
-### 1. Token Bucket (Industry Standard)
+### 1. Token Bucket
 - **Mechanism**: A bucket holds up to a maximum of $b$ tokens. Tokens are continuously added at a fixed rate of $r$ tokens per second. Each incoming request consumes 1 token. If the bucket is empty, the request is dropped (or throttled).
 - **Burst Behavior**: **Allows controlled bursts**. If the bucket is full, up to $b$ requests can be processed immediately in a single instant.
 - **Memory Footprint**: Extremely compact ($O(1)$ space). You only need to store two numbers per user: the remaining token count and the last refill timestamp.
-- **Used by**: Amazon Web Services, Stripe API, GitHub API.
 
 ### 2. Leaky Bucket (Traffic Shaping)
 - **Mechanism**: Incoming requests enter a FIFO queue of fixed capacity. Requests are pulled from the queue and processed at a constant, fixed rate (the 'leak'). If the queue is full, incoming requests overflow and are discarded.
@@ -596,24 +655,24 @@ public class BoundedBuffer<T> {
 
 ### 4. Sliding Window Log
 - **Mechanism**: Stores the epoch timestamp of every request in a sorted set (such as Redis ZSET). When a request arrives, all timestamps older than \`now - window_size\` are purged, and the remaining elements are counted.
-- **Trade-off**: Extremely accurate, zero boundary burst issue. However, memory consumption is $O(N)$ where $N$ is the number of requests in the window. A DDoS attack can exhaust memory rapidly.
+- **Trade-off**: Tracks requests in the configured rolling window without the fixed-window boundary approximation, but uses $O(N)$ state for the requests in that window. Size and protect the state store for the expected workload.
 
-### 5. Sliding Window Counter (Hybrid Best Practice)
+### 5. Sliding Window Counter (weighted estimate)
 - **Mechanism**: Combines the fixed window of the previous interval and the current interval using a weighted formula:
   $$\\text{Estimated Count} = \\text{Previous Window Count} \\times (1 - \\text{elapsed fraction}) + \\text{Current Window Count}$$
-- **Trade-off**: Extremely memory efficient ($O(1)$ space), smooths boundary spikes, and has less than 0.05% error rate in practice. Used extensively by Cloudflare.`,
+- **Trade-off**: Uses constant state per client for a fixed number of windows and estimates usage across a boundary. Accuracy depends on traffic distribution and assumptions; no universal error rate is implied here.`,
         architectureCallout: {
           title: "Rate Limiting Algorithm Comparison Summary",
           points: [
-            { label: "Token Bucket", value: "O(1) Memory | Permits Bursts | Best for REST APIs" },
-            { label: "Leaky Bucket", value: "Queue-Based | Constant Output Rate | Best for Egress Shaping" },
+            { label: "Token Bucket", value: "O(1) state per client | Permits configured bursts" },
+            { label: "Leaky Bucket", value: "Queue-based | Can shape output toward a configured rate" },
             { label: "Fixed Window", value: "O(1) Memory | Boundary Spike Flaw | Simple Counters Only" },
-            { label: "Sliding Window Counter", value: "O(1) Memory | Low Memory & Smooth Bursts | Cloudflare Standard" },
+            { label: "Sliding Window Counter", value: "Constant state per client for a fixed number of windows | Approximate count" },
           ],
         },
         keyTakeaways: [
-          "Token Bucket is the default recommendation for modern REST APIs because it natively supports user bursts.",
-          "Never choose Sliding Window Log for high-scale systems without acknowledging the memory vulnerability under DDoS bursts.",
+          "Token Bucket is one option when controlled bursts are part of the requirement; choose an algorithm based on the desired traffic behavior.",
+          "Consider the per-request state cost of a Sliding Window Log and its implications under high traffic.",
         ],
       },
       {
@@ -624,21 +683,21 @@ public class BoundedBuffer<T> {
 
 **Recommended Topology: Edge API Gateway with Distributed Cache**
 1. **Client Request**: The mobile app or third-party client makes an HTTPS call to \`api.prepvisor.in\`.
-2. **Reverse Proxy / API Gateway (Envoy / Kong / Cloudflare)**: Terminates TLS, authenticates JWT or API keys, and extracts the client identifier.
+2. **Reverse Proxy / API Gateway**: A selected gateway can terminate TLS, authenticate JWTs or API keys, and extract the client identifier.
 3. **Rate Limiter Middleware**: Before routing to backend microservices, the gateway queries an in-memory distributed cache cluster (**Redis Cluster**).
 4. **Decision Evaluation**:
    - **Allowed**: Gateway appends headers (\`X-RateLimit-Remaining: 42\`) and proxies the request to the upstream target service.
    - **Throttled**: Gateway immediately short-circuits with **HTTP 429 Too Many Requests**, payload \`{"error": "rate_limit_exceeded", "retry_after": 6}\`, saving backend compute.`,
         keyTakeaways: [
           "Placing rate limiting at the API Gateway prevents unauthorized or throttled traffic from saturating downstream backend databases.",
-          "Use connection pooling with HTTP/2 or gRPC between API Gateways and the Redis cluster to keep latency under 2ms.",
+          "Consider connection reuse between API gateways and Redis, then measure end-to-end latency in the target deployment.",
         ],
       },
       {
         id: "concurrency-lua",
         title: "4. Distributed Concurrency & The Race Condition Trap",
-        subtitle: "Why naive GET + SET fails and how Redis Lua scripts guarantee atomicity",
-        content: `The most common senior interview question on rate limiters is: **"What happens when two concurrent requests arrive at different gateway servers simultaneously?"**
+        subtitle: "Why naive GET + SET fails and Redis Lua scripts provide atomic execution",
+        content: `A useful concurrency question is: **"What happens when two concurrent requests arrive at different gateway servers simultaneously?"**
 
 ### The Race Condition Trap (Check-then-Act)
 Suppose a user has 1 token remaining.
@@ -646,13 +705,13 @@ Suppose a user has 1 token remaining.
 2. Server B receives Request 2, calls \`GET user:123\`, and also reads \`tokens = 1\`.
 3. Server A calculates \`tokens - 1 = 0\` and writes \`SET user:123 tokens=0\`.
 4. Server B calculates \`tokens - 1 = 0\` and writes \`SET user:123 tokens=0\`.
-**Result**: Both requests succeeded even though only 1 token was available. At 50,000 QPS, this concurrency bug allows massive quota overruns.
+**Result**: Both requests can succeed even though only 1 token was available. Under a high-throughput workload (for example, an assumed 50,000 requests/second), the race can cause quota overruns.
 
 ### The Solution: Redis Lua Scripts
-Redis executes Lua scripts **atomically in a single single-threaded event loop**. No other command or script can run while the script is active. Below is a production-grade Lua script for Token Bucket rate limiting:`,
+Redis guarantees atomic script execution: while a script runs, other server activity is blocked. Keep scripts short because they occupy the server during execution. The following is an illustrative Token Bucket script, not a production-ready implementation. [Redis scripting documentation](https://redis.io/docs/latest/develop/programmability/eval-intro/)`,
         codeBlock: {
           language: "lua",
-          caption: "Production-ready Redis Lua Script for Atomic Token Bucket Rate Limiting",
+          caption: "Illustrative Redis Lua Script for an Atomic Token Bucket Update",
           code: `-- KEYS[1]: rate limit key (e.g., "ratelimit:user_12345")
 -- ARGV[1]: bucket capacity (e.g., 100)
 -- ARGV[2]: refill rate per second (e.g., 10 tokens/sec)
@@ -709,8 +768,8 @@ end`,
       {
         id: "capacity-estimation",
         title: "5. Capacity Estimation & Redis Memory Sizing",
-        subtitle: "Back-of-the-envelope calculations for 100M users",
-        content: `Always demonstrate your ability to size distributed memory in senior interviews.
+        subtitle: "Back-of-the-envelope capacity calculation (example assumptions)",
+        content: `EXAMPLE / ASSUMPTION — The following values are hypothetical inputs for demonstrating a sizing method, not observed user counts, Redis object sizes, or benchmark results.
 
 **Assumptions:**
 - **Total User Base**: 100 Million registered accounts.
@@ -727,22 +786,22 @@ end`,
 **Total Memory for Active Working Set:**
 - If tracking all 100 Million users simultaneously:
   $$100{,}000{,}000 \\times 64 \\text{ bytes} = 6{,}400{,}000{,}000 \\text{ bytes} \\approx 6.4 \\text{ GB}$$
-- **Conclusion**: The entire rate limiting metadata for 100 million users fits comfortably in a single standard cloud Redis node (16 GB RAM) or a 3-shard Redis cluster with master-replica failover!
+- **Interpretation**: The simple estimate is 6.4 GB of payload under these assumptions. Redis overhead, allocator behavior, replication, and headroom are omitted, so this arithmetic does not establish a suitable node size.
 
 **Network Bandwidth:**
 - $50{,}000 \\text{ QPS} \\times 150 \\text{ bytes per Lua payload} \\approx 7.5 \\text{ MB/sec}$.
-- $7.5 \\text{ MB/sec} = 60 \\text{ Mbps}$, utilizing less than 1% of a standard 10 Gbps AWS EC2 network interface.`,
+- $7.5 \\text{ MB/sec} = 60 \\text{ Mbps}$ at the assumed inputs, excluding protocol overhead; network suitability depends on the deployment and competing traffic.`,
         architectureCallout: {
           title: "Rate Limiter Capacity Sizing Blueprint",
           points: [
-            { label: "Peak Ingress QPS", value: "50,000 requests/sec" },
-            { label: "Latency Overhead Target", value: "< 2.5 ms (Redis cluster pipeline)" },
-            { label: "Active Tracking Memory", value: "~6.4 GB for 100M active tracking keys" },
-            { label: "Network Bandwidth", value: "~7.5 MB/sec (60 Mbps)" },
+            { label: "Peak ingress (example)", value: "50,000 requests/sec assumed" },
+            { label: "Latency target (example)", value: "< 2.5 ms, to be measured" },
+            { label: "Payload estimate (example)", value: "~6.4 GB under stated assumptions, excluding overhead" },
+            { label: "Network payload (example)", value: "~7.5 MB/sec at assumed QPS and payload size" },
           ],
         },
         keyTakeaways: [
-          "Highlight to the interviewer that 6.4 GB of RAM is trivial for modern cloud infrastructure, proving the feasibility of the architecture.",
+          "Explain which overheads the estimate omits before drawing conclusions about deployment feasibility.",
           "Use Redis cluster sharding (hash slots based on client ID) to distribute QPS load across multiple Redis nodes.",
         ],
       },
@@ -750,24 +809,24 @@ end`,
         id: "edge-cases-resilience",
         title: "6. Edge Cases, Multi-Tier Limits & Failover Resilience",
         subtitle: "Bulletproofing against DDoS, clock drift, and cache outages",
-        content: `Staff-level interviewers grade you on your operational resilience and failure mode analysis:
+        content: `Discuss operational resilience and failure modes explicitly:
 
 ### 1. The Clock Skew Problem
 In distributed environments, server system clocks drift by milliseconds (NTP synchronization skew). If API Gateways pass their local machine timestamp to Redis, race conditions and negative time deltas can corrupt token refills.
-- **Solution**: Always fetch the canonical timestamp directly from the Redis server using \`redis.call('TIME')\` inside the Lua script.
+- **One option**: Use Redis \`TIME\` within the script to obtain a timestamp from the Redis server handling that operation. This avoids comparing gateway-supplied timestamps for the operation; it does not synchronize clocks across Redis nodes. [Redis TIME command](https://redis.io/docs/latest/commands/time/)
 
 ### 2. Multi-Tier Rate Limiting Defense
 A single rate limiter cannot solve all security and operational problems. Employ a multi-tier defense:
-1. **L1 Edge Rate Limiting (Cloudflare / AWS Shield)**: IP-based rate limiting and DDoS blocking at the edge before traffic enters your VPC.
+1. **L1 Edge Protection**: An edge provider or managed DDoS protection service may filter traffic before it reaches the application network.
 2. **L2 API Gateway Rate Limiting (Token Bucket in Redis)**: Per-user and per-API-key quotas to enforce billing plans.
 3. **L3 Service-Level Circuit Breakers**: Protect internal databases and microservices from cascading failures if a specific endpoint experiences unexpected load.
 
 ### 3. Cache Outage: Fail-Open vs Fail-Closed
 What happens if the Redis cluster crashes or network partitions occur?
-- **Fail-Closed**: Reject all incoming requests. **Problem**: A minor rate limiter glitch causes a complete system-wide outage for 100% of customers.
-- **Fail-Open (Recommended for Most Systems)**: If the Redis call times out (> 10ms) or errors, permit the request to proceed and trigger a high-priority PagerDuty alert. A temporary spike in backend traffic is vastly preferable to an unrecoverable full outage.`,
+- **Fail-Closed**: Reject requests when the limiter is unavailable; this preserves the configured limit but may deny legitimate requests.
+- **Fail-Open**: Allow requests when the limiter is unavailable; this favors availability but can expose downstream services to excess traffic. Choose per endpoint and risk model.`,
         keyTakeaways: [
-          "Always implement a circuit breaker (e.g. Resilience4j) around Redis calls with a fail-open policy for non-financial systems.",
+          "Consider a circuit breaker around Redis calls and select failure behavior according to endpoint security and availability requirements.",
           "Defend against clock drift by relying on Redis server time rather than gateway application clocks.",
         ],
       },
@@ -776,38 +835,38 @@ What happens if the Redis cluster crashes or network partitions occur?
       {
         question: "What is the primary difference between Token Bucket and Leaky Bucket?",
         answer:
-          "Token Bucket allows controlled traffic bursts up to the bucket capacity while maintaining an average rate, making it ideal for general web APIs. Leaky Bucket flattens traffic into a strictly constant output rate without burst tolerance, making it ideal for egress traffic shaping toward fragile downstream services.",
+          "Token Bucket can allow bursts up to its configured capacity while enforcing a longer-term refill rate. A Leaky Bucket can smooth output when paired with a queue; exact behavior depends on implementation and configuration.",
       },
       {
         question: "How do you prevent race conditions in a distributed rate limiter?",
         answer:
-          "Naive GET and SET operations in Redis suffer from check-then-act race conditions. In production, race conditions are eliminated by executing rate limit checks inside an atomic Redis Lua script, which runs to completion on Redis's single-threaded event loop without interleaving.",
+          "Separate Redis GET and SET operations can interleave and create check-then-act races. A short Redis Lua script can perform the check and update atomically; Redis blocks other server activity while the script runs. See Redis scripting documentation.",
       },
       {
-        question: "Where should the rate limiter be positioned in modern microservices?",
+        question: "Where can a rate limiter be positioned in a microservice architecture?",
         answer:
-          "The rate limiter should be positioned at the edge API Gateway (e.g. Envoy, Kong, Cloudflare) rather than inside individual application microservices. This blocks unauthorized or throttled requests before they consume application server CPU, thread pools, or database connections.",
+          "An edge gateway can reject requests before they consume application resources. Service-level limits may also be useful for internal calls or specific resources; place controls according to the threat model and architecture.",
       },
       {
         question: "What HTTP status code and response headers should be returned when rate limited?",
         answer:
-          "The server should return HTTP 429 (Too Many Requests) along with headers: X-RateLimit-Limit (total quota), X-RateLimit-Remaining (tokens left in current window), X-RateLimit-Reset (epoch timestamp when quota refreshes), and Retry-After (seconds until retry is permitted).",
+          "HTTP 429 indicates that the client has sent too many requests; RFC 6585 says a response may include Retry-After. Other rate-limit headers are design choices and should be documented consistently by the API.",
       },
       {
         question: "Should a rate limiter fail open or fail closed during a Redis outage?",
         answer:
-          "For standard web and mobile applications, the rate limiter should fail open with an active circuit breaker. If Redis times out, requests are allowed through while alerting DevOps, avoiding a total platform outage. For strict financial transaction or security-critical endpoints, a fail-closed policy may be chosen.",
+          "Choose fail-open or fail-closed behavior per endpoint. Fail-open favors availability but can expose downstream services to excess traffic; fail-closed preserves the limit but can reject legitimate traffic during an outage.",
       },
       {
         question: "How do you handle clock drift across distributed rate limiting servers?",
         answer:
-          "Server clocks drift due to NTP synchronization intervals. To eliminate skew, never use client or gateway application timestamps; instead, obtain the canonical time directly within Redis using the redis.call('TIME') command inside the Lua script.",
+          "Redis TIME returns the current time from the Redis server handling the command. It avoids relying on a gateway-provided timestamp for that operation, but it does not establish globally synchronized time across servers.",
       },
     ],
     cta: {
       heading: "Practice Rate Limiter System Design in PrepVisor Interactive Studio",
       subtext:
-        "Design scalable rate limiters, configure Token vs Leaky Bucket algorithms, and evaluate concurrency bottlenecks with our AI-powered system design mock interviewer.",
+        "Explore a distributed rate limiter design, compare bucket algorithms, and reason through concurrent request handling in the system design studio.",
       buttonText: "Design Rate Limiter in Studio",
       actionUrl:
         "https://app.prepvisor.in/register?utm_source=organic_seo&utm_medium=guide&utm_campaign=system_design_rate_limiter",
@@ -828,16 +887,25 @@ What happens if the Redis cluster crashes or network partitions occur?
       "spring boot 3 virtual threads java",
       "resilience4j circuit breaker interview",
     ],
-    category: "Backend Architecture",
+    primaryCategory: "java-backend",
+    relatedGuideSlugs: ["java-concurrency-interview-questions"],
+    productPath: "/system-design",
     readingTimeMinutes: 26,
     difficulty: "Advanced",
-    lastUpdated: "2026-09-20",
+    dateModified: "2026-09-20",
     author: {
-      name: "PrepVisor Backend Architecture Team",
-      role: "Staff Engineers & Technical Interview Panelists",
+      name: "PrepVisor",
+      role: "Guide publisher",
     },
     summary:
-      "For senior engineers with 3 to 6 years of experience, technical interviewers move beyond basic annotations to evaluate your mastery of Spring Boot 3 internals, proxy-based @Transactional traps, distributed transaction patterns (Saga vs 2PC), Resilience4j fault tolerance, and Java Virtual Threads concurrency.",
+      "This guide reviews Spring Boot and microservices topics, including proxy-based @Transactional behavior, distributed transaction patterns, resilience, tracing, and Java virtual threads.",
+    references: [
+      { title: "Using @Transactional", publisher: "Spring Framework Documentation", url: "https://docs.spring.io/spring-framework/reference/6.2/data-access/transaction/declarative/annotations.html" },
+      { title: "Rolling Back a Declarative Transaction", publisher: "Spring Framework Documentation", url: "https://docs.spring.io/spring-framework/reference/6.2/data-access/transaction/declarative/rolling-back.html" },
+      { title: "Virtual Threads", publisher: "OpenJDK", url: "https://openjdk.org/jeps/444" },
+      { title: "Core Features (Spring Boot 3.2)", publisher: "Spring Boot Documentation", url: "https://docs.spring.io/spring-boot/docs/3.2.5/reference/html/features.html" },
+      { title: "REST Clients", publisher: "Spring Framework Documentation", url: "https://docs.spring.io/spring-framework/reference/6.2/integration/rest-clients.html" },
+    ],
     sections: [
       {
         id: "spring-internals",
@@ -869,7 +937,7 @@ Understanding the exact lifecycle order is critical for troubleshooting initiali
       {
         id: "transactional-traps",
         title: "2. The @Transactional Traps & Rollback Mechanics",
-        subtitle: "The 4 most common production transaction pitfalls",
+        subtitle: "Four transaction pitfalls to understand",
         content: `The \`@Transactional\` annotation looks simple, but hides several subtle traps that frequently cause silent data corruption or database connection pool exhaustion in production.
 
 ### Trap 1: The Self-Invocation Proxy Bypass
@@ -878,21 +946,19 @@ If method \`saveUser()\` calls \`@Transactional public void updateUserRecords()\
 - **Fix**: Inject the service into itself via \`@Lazy\`, extract the transactional logic to a dedicated helper service, or use programmatic transactions via \`TransactionTemplate\`.
 
 ### Trap 2: Default Exception Rollback Behavior
-By default, Spring transactions **ONLY rollback for unchecked exceptions** (\`RuntimeException\` and \`Error\`). If your code throws a checked exception (e.g., \`IOException\`, \`SQLException\`, or custom \`BusinessValidationException extends Exception\`), Spring will commit the transaction!
-- **Fix**: Always explicitly declare:
+By default, Spring's declarative transaction infrastructure rolls back for unchecked exceptions (\`RuntimeException\`) and \`Error\`, but not checked exceptions. Rollback rules can be customized. [Spring rollback documentation](https://docs.spring.io/spring-framework/reference/6.2/data-access/transaction/declarative/rolling-back.html)
+- **Example override**: If checked exceptions should trigger rollback, declare an explicit rule such as:
   \`@Transactional(rollbackFor = Exception.class)\`
 
 ### Trap 3: Holding Connections During Remote I/O (Connection Starvation)
-Never perform external HTTP REST calls, gRPC calls, or file uploads inside a \`@Transactional\` block.
-- **Root Cause**: As soon as a \`@Transactional\` method begins, HikariCP leases an active JDBC connection from the database connection pool. If your 3rd-party payment gateway takes 3 seconds to respond, that database connection is held completely idle.
-- Under moderate traffic (100 concurrent requests), all database connections in the pool become exhausted, causing system-wide \`ConnectionTimeoutException\`.
+Long-running external HTTP, gRPC, or file operations inside a database transaction can extend resource-holding time. With common JDBC transaction setups, a connection is held once acquired; exact acquisition timing depends on the transaction manager and data-access behavior. A slow dependency can increase connection-pool pressure, so measure the workload and pool limits.
 
 ### Trap 4: Transaction Propagation Pitfalls
 - **\`REQUIRED\` (Default)**: Joins an existing transaction if one exists; creates a new one if not. If a child method throws a caught exception, the transaction is marked *rollback-only*, causing the parent method to fail with \`UnexpectedRollbackException\` on commit.
 - **\`REQUIRES_NEW\`**: Suspends the current outer transaction, opens an independent physical transaction, and acquires a **second** database connection from the pool. Using \`REQUIRES_NEW\` carelessly can cause deadlock in connection pools!`,
         keyTakeaways: [
-          "Always add rollbackFor = Exception.class to ensure checked exceptions trigger rollback.",
-          "Never execute external network I/O inside a @Transactional method to prevent HikariCP pool starvation.",
+          "Choose explicit rollback rules when checked-exception behavior requires them.",
+          "Keep long external I/O outside database transactions where practical; otherwise evaluate transaction duration and connection-pool pressure.",
         ],
       },
       {
@@ -901,8 +967,8 @@ Never perform external HTTP REST calls, gRPC calls, or file uploads inside a \`@
         subtitle: "Protecting distributed services from cascading failures",
         content: `In a microservices ecosystem, if Downstream Service C experiences high latency, Upstream Service B exhausts its thread pool waiting for responses, cascading the failure to Upstream Service A and taking down the entire system.
 
-### Why Resilience4j Replaced Netflix Hystrix
-Netflix announced Hystrix maintenance mode in 2018. Hystrix relied heavily on dedicated thread pools per command, causing excessive thread switching overhead. **Resilience4j** is lightweight, modular, and built on Java functional programming (Vavr) with zero external dependencies.
+### Circuit Breaker State and Trade-offs
+A circuit breaker can stop repeated calls to an unhealthy dependency and allow limited test calls after a configured wait. Library behavior, thresholds, and fallback handling depend on configuration.
 
 ### Circuit Breaker State Machine
 1. **CLOSED**: Normal state. All requests flow directly to the downstream service. Resilience4j tracks call outcomes (success/failure/slow call) in a sliding window (e.g., last 100 calls).
@@ -910,7 +976,7 @@ Netflix announced Hystrix maintenance mode in 2018. Hystrix relied heavily on de
 3. **HALF_OPEN**: After a configured duration (\`waitDurationInOpenState = 10s\`), the circuit enters HALF_OPEN. It allows a trial number of requests (e.g. 10 calls) to pass through. If they succeed, the circuit resets to CLOSED; if any fail, it reverts back to OPEN.`,
         keyTakeaways: [
           "Use sliding window metrics (count-based or time-based) to detect degradation before complete downstream failure.",
-          "Always provide sensible fallback responses (e.g. cached data or degraded functionality) in circuit breaker annotations.",
+          "Consider an explicit fallback or degraded response where it is safe for the operation.",
         ],
       },
       {
@@ -919,9 +985,8 @@ Netflix announced Hystrix maintenance mode in 2018. Hystrix relied heavily on de
         subtitle: "Maintaining data consistency across autonomous microservice databases",
         content: `In microservices, each service owns its private database. You cannot use a single SQL transaction across Order Service (PostgreSQL) and Payment Service (MongoDB).
 
-### Why 2-Phase Commit (2PC / XA) Fails at Scale
-2PC requires a centralized transaction coordinator that locks database rows across all services during Phase 1 (Prepare) and Phase 2 (Commit).
-- **Major Bottlenecks**: Blocking locks hold database resources for seconds, network latency kills throughput, and if the coordinator crashes during Phase 2, databases remain locked indefinitely. 2PC violates microservice autonomy.
+### 2-Phase Commit (2PC / XA) Trade-offs
+Two-phase commit coordinates a prepare and commit decision across transaction participants. If the coordinator or a participant becomes unavailable, prepared work may remain in doubt until recovery, depending on the resource manager and protocol implementation. This creates availability and operational trade-offs compared with local transactions and sagas.
 
 ### The Saga Pattern
 A Saga is a sequence of local transactions where each service updates its internal database and publishes a domain event. If any step fails, the Saga triggers **Compensating Transactions** that undo previous operations in reverse order.
@@ -932,9 +997,9 @@ A Saga is a sequence of local transactions where each service updates its intern
 | **Orchestration** | A centralized coordinator (e.g. OrderSagaManager) sends command messages to services. | Clear state machine, easy monitoring, explicit rollback logic. | Additional coordinator component to maintain. |
 
 ### The Transactional Outbox Pattern
-How do you guarantee that a database update and a Kafka message event are published atomically without dual-write inconsistencies?
+How can an application avoid a direct dual write between database state and a broker message?
 - Write both the business record and an outbox event into the **same local database transaction**.
-- A Change Data Capture (CDC) tool like **Debezium** or an asynchronous worker polls the outbox table and streams events to Kafka with guaranteed at-least-once delivery!`,
+- A change-data-capture tool or asynchronous relay publishes outbox events to the broker. Delivery, retry, ordering, and duplicate behavior depend on the relay and broker configuration.`,
         codeBlock: {
           language: "java",
           caption: "Transactional Outbox Pattern Implementation with Spring Boot 3 & Domain Events",
@@ -947,8 +1012,8 @@ public class OrderProcessingService {
     private final ObjectMapper objectMapper;
 
     /**
-     * Executes order creation and outbox event publishing within a single atomic local DB transaction.
-     * Guarantees zero dual-write inconsistencies between database state and event bus.
+     * Persists the business change and outbox row in the same local DB transaction.
+     * A separate relay publishes the committed outbox event to the broker.
      */
     @Transactional(rollbackFor = Exception.class)
     public OrderResponse createOrder(CreateOrderRequest request) {
@@ -1034,17 +1099,17 @@ In Spring Boot 2, distributed tracing was handled by Spring Cloud Sleuth. In Spr
 
 ### 1. Virtual Threads (Project Loom)
 In classic Spring Boot MVC, each HTTP request ties up one operating system (OS) platform thread. Under heavy I/O (waiting for database queries or REST APIs), 200 concurrent requests exhaust Tomcat's thread pool.
-In Spring Boot 3.2+, you can enable Virtual Threads with a single configuration property:
+In Spring Boot 3.2 with Java 21+, virtual threads can be enabled with this configuration property. Confirm the runtime requirements in the versioned [Spring Boot 3.2 documentation](https://docs.spring.io/spring-boot/docs/3.2.5/reference/html/features.html):
 \`\`\`properties
 spring.threads.virtual.enabled=true
 \`\`\`
-- Tomcat dispatches each HTTP request on a lightweight virtual thread managed by the JVM rather than the OS kernel.
-- Millions of virtual threads can run concurrently. When a virtual thread blocks on socket I/O, the JVM unmounts it from the underlying carrier OS thread, achieving WebFlux-level throughput with clean, sequential, synchronous blocking code!
+- The virtual-thread option changes the request-thread strategy; confirm the exact behavior and configuration for the Spring Boot version in use.
+- Virtual threads can improve resource use for workloads with many blocking operations, but do not remove CPU, connection-pool, downstream-service, or memory limits. They do not guarantee a particular concurrency level or throughput.
 
 ### 2. The Modern RestClient
-Spring 6.1 / Spring Boot 3.2 introduced \`RestClient\`, a modern, synchronous HTTP client with a fluent, intuitive API designed to replace the legacy \`RestTemplate\` without requiring the reactive overhead of \`WebClient\`.`,
+Spring Framework 6.1 introduced \`RestClient\`, a synchronous HTTP client with a fluent API. Select a client based on the application's requirements and framework version; this is not a blanket migration requirement. [Spring REST clients](https://docs.spring.io/spring-framework/reference/6.2/integration/rest-clients.html).`,
         keyTakeaways: [
-          "Virtual Threads provide high-throughput I/O concurrency without the cognitive overhead of reactive programming (Mono/Flux).",
+          "Virtual threads offer a thread-per-task programming model for suitable blocking workloads; evaluate them against the application's resource limits and framework version.",
           "Use RestClient for new synchronous HTTP integrations in Spring Boot 3.",
         ],
       },
@@ -1053,7 +1118,7 @@ Spring 6.1 / Spring Boot 3.2 introduced \`RestClient\`, a modern, synchronous HT
       {
         question: "Why doesn't @Transactional rollback when a checked exception is thrown?",
         answer:
-          "By default in Spring, transactions only roll back for unchecked exceptions (subclasses of RuntimeException) and Errors. Checked exceptions (subclasses of java.lang.Exception) indicate recoverable conditions according to EJB transaction design history. To roll back on all exceptions, configure @Transactional(rollbackFor = Exception.class).",
+          "By default, Spring rolls back for unchecked exceptions and Errors, but not checked exceptions. Configure explicit rollback rules when the application requires different behavior; verify the rules for the Spring version in use.",
       },
       {
         question: "What is the self-invocation issue in Spring @Transactional?",
@@ -1063,12 +1128,12 @@ Spring 6.1 / Spring Boot 3.2 introduced \`RestClient\`, a modern, synchronous HT
       {
         question: "How does the Saga pattern solve distributed transactions compared to 2PC?",
         answer:
-          "Two-Phase Commit (2PC) is a blocking protocol that locks database rows across multiple services, causing severe latency and availability bottlenecks. The Saga pattern breaks a distributed transaction into a sequence of autonomous local transactions. If one step fails, the Saga executes compensating transactions to undo previous steps, achieving eventual consistency without distributed locks.",
+          "Two-phase commit coordinates a commit decision across participants and can leave prepared work in doubt during failures until recovery. A Saga composes local transactions and may use compensating actions; it changes the consistency and recovery model rather than providing the same atomicity as a single database transaction.",
       },
       {
         question: "What is the Transactional Outbox pattern and why is it needed?",
         answer:
-          "The Transactional Outbox pattern solves the dual-write problem where an application must update a database and publish an event to a message broker (like Kafka). By writing the domain event to an 'outbox' table in the same local database transaction, and using a Change Data Capture (CDC) tool like Debezium to stream events, you guarantee at-least-once delivery with zero data inconsistencies.",
+          "A transactional outbox writes the domain event in the same local transaction as the state change, then a relay publishes it. This avoids a direct dual-write gap, but delivery guarantees, duplicate handling, and ordering depend on the relay and broker configuration.",
       },
       {
         question: "How does Resilience4j Circuit Breaker transition between CLOSED, OPEN, and HALF_OPEN?",
@@ -1078,13 +1143,13 @@ Spring 6.1 / Spring Boot 3.2 introduced \`RestClient\`, a modern, synchronous HT
       {
         question: "How does enabling Virtual Threads in Spring Boot 3.2 impact high-concurrency microservices?",
         answer:
-          "Setting spring.threads.virtual.enabled=true allows Tomcat to run each incoming HTTP request on an ultra-lightweight JVM virtual thread instead of an expensive OS platform thread. When blocking on database or HTTP calls, the carrier thread is freed to process other requests, scaling to tens of thousands of concurrent I/O requests without requiring reactive WebFlux.",
+          "In supported Spring Boot versions, spring.threads.virtual.enabled=true selects virtual threads for supported request handling. This can help with blocking workloads, but achievable concurrency depends on database pools, downstream services, CPU, memory, and the deployed JDK; it is not a throughput guarantee.",
       },
     ],
     cta: {
       heading: "Practice Spring Boot & Microservices in PrepVisor AI Studio",
       subtext:
-        "Tackle hands-on microservices architecture scenarios, debug @Transactional concurrency traps, and receive real-time senior evaluation from our AI evaluator.",
+        "Work through microservices architecture scenarios and examine transaction, resilience, and distributed-consistency trade-offs.",
       buttonText: "Start Microservices Mock Round",
       actionUrl:
         "https://app.prepvisor.in/register?utm_source=organic_seo&utm_medium=guide&utm_campaign=spring_boot_microservices_interview",
@@ -1094,9 +1159,9 @@ Spring 6.1 / Spring Boot 3.2 introduced \`RestClient\`, a modern, synchronous HT
   {
     slug: "lru-cache-implementation",
     title: "LRU Cache Implementation: Step-by-Step in Java, Python & C++",
-    seoTitle: "LRU Cache Implementation Guide | O(1) Operations in Java, Python & C++",
+    seoTitle: "LRU Cache Implementation Guide | Average O(1) Operations in Java, Python & C++",
     metaDescription:
-      "Complete step-by-step guide to implementing an LRU Cache with O(1) get and put operations. Includes Doubly Linked List + HashMap implementations in Java, Python, and C++.",
+      "Step-by-step guide to implementing an LRU cache with expected average O(1) get and put operations under typical hash-map assumptions. Includes doubly linked list and hash map implementations in Java, Python, and C++.",
     keywords: [
       "lru cache implementation",
       "lru cache java step by step",
@@ -1105,16 +1170,21 @@ Spring 6.1 / Spring Boot 3.2 introduced \`RestClient\`, a modern, synchronous HT
       "leetcode 146 lru cache solution",
       "thread safe lru cache implementation",
     ],
-    category: "Data Structures",
+    primaryCategory: "dsa",
+    relatedGuideSlugs: ["java-concurrency-interview-questions"],
+    productPath: "/coding-practice",
     readingTimeMinutes: 18,
     difficulty: "Intermediate",
-    lastUpdated: "2026-09-20",
+    dateModified: "2026-09-20",
     author: {
-      name: "PrepVisor Algorithms Team",
-      role: "Competitive Programmers & FAANG Interview Coaches",
+      name: "PrepVisor",
+      role: "Guide publisher",
     },
     summary:
-      "The LRU (Least Recently Used) Cache is one of the most frequently asked data structure questions at Meta, Google, Microsoft, and Apple (LeetCode 146). This guide provides step-by-step implementations in Java, Python, and C++ achieving strict O(1) time complexity, dummy sentinel node techniques, and thread-safety concurrency extensions.",
+      "This guide walks through an LRU cache implementation in Java, Python, and C++, using a hash map and a doubly linked list, with notes on complexity and thread-safety trade-offs.",
+    references: [
+      { title: "LinkedHashMap (Java SE API)", publisher: "Oracle Java Documentation", url: "https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/LinkedHashMap.html" },
+    ],
     sections: [
       {
         id: "problem-breakdown",
@@ -1123,7 +1193,7 @@ Spring 6.1 / Spring Boot 3.2 introduced \`RestClient\`, a modern, synchronous HT
         content: `The LRU Cache problem asks you to design a fixed-capacity data structure that supports two operations:
 - \`get(key)\`: Return the value if the key exists, otherwise return \`-1\`. Accessing an item marks it as the *most recently used*.
 - \`put(key, value)\`: Update the value if the key exists, or insert the key-value pair. If the number of keys exceeds \`capacity\`, evict the *least recently used* key.
-- **Core Constraint**: Both \`get\` and \`put\` must run in **strictly $O(1)$ average time complexity**.
+- **Typical target**: Both \`get\` and \`put\` can have expected average $O(1)$ time when hash-map operations are expected average $O(1)$ and list updates use known node references.
 
 ### Why Single Data Structures Fail
 - **Array / Dynamic List**: Provides $O(1)$ access by index, but search by key is $O(N)$ and moving an element to the front requires $O(N)$ shifts.
@@ -1131,9 +1201,9 @@ Spring 6.1 / Spring Boot 3.2 introduced \`RestClient\`, a modern, synchronous HT
 - **Standard Hash Map**: Provides $O(1)$ average key-value lookup, but maintains no sequential ordering of recency.
 
 ### The Dual Data Structure Solution
-To achieve strict $O(1)$ for both operations, we combine two distinct data structures:
-1. **Hash Map (\`Map<Key, Node>\`)**: Maps each key directly to its corresponding node memory pointer in the linked list, providing $O(1)$ lookup.
-2. **Doubly Linked List**: Keeps nodes in recency order. Because each node has both \`prev\` and \`next\` pointers, removing an arbitrary node given its reference is strictly $O(1)$!`,
+To get expected average $O(1)$ lookup plus constant-time list updates, combine two data structures:
+1. **Hash Map (\`Map<Key, Node>\`)**: Maps each key to its node in the linked list. Lookup is expected average $O(1)$ under typical hash distribution assumptions.
+2. **Doubly Linked List**: Keeps nodes in recency order. With a direct node reference, unlinking or moving that node takes constant time.`,
         architectureCallout: {
           title: "LRU Cache Architectural Blueprint",
           points: [
@@ -1151,14 +1221,14 @@ To achieve strict $O(1)$ for both operations, we combine two distinct data struc
       {
         id: "sentinel-nodes",
         title: "2. The Dummy Sentinel Node Technique (Head & Tail)",
-        subtitle: "How dummy sentinels eliminate 90% of pointer manipulation bugs",
-        content: `In a live coding interview, handling edge cases when inserting or removing nodes at the boundary of a linked list (empty list, 1 element, head eviction, tail eviction) leads to messy null checks:
+        subtitle: "How dummy sentinels simplify pointer manipulation",
+        content: `Handling edge cases when inserting or removing nodes at linked-list boundaries (empty list, one element, head eviction, tail eviction) can require additional null checks:
 \`\`\`java
 if (head == null) { ... }
 if (node == tail) { ... }
 if (node.prev != null) { ... }
 \`\`\`
-Under interview stress, candidates frequently introduce NullPointerExceptions here.
+Sentinel nodes provide permanent boundaries, which can simplify these cases and reduce conditional branches.
 
 ### The Sentinel Technique
 Initialize two permanent dummy nodes: \`head\` and \`tail\`.
@@ -1352,7 +1422,7 @@ public:
 };
 \`\`\``,
         keyTakeaways: [
-          "In C++, std::list::splice provides an O(1) zero-allocation node relocation primitive.",
+          "In C++, std::list::splice relocates list elements without copying their values; consult the selected standard-library documentation for complexity and allocator requirements.",
           "In Python, knowing both OrderedDict and the raw Doubly Linked List approach demonstrates senior depth.",
         ],
       },
@@ -1360,7 +1430,7 @@ public:
         id: "concurrency-thread-safety",
         title: "5. Concurrency & Thread-Safety Extensions",
         subtitle: "Scaling LRU Cache across multiple concurrent threads",
-        content: `In production services (like Google Guava or Caffeine cache), multiple threads access the cache concurrently. A naive \`synchronized\` wrapper on every method introduces a severe throughput bottleneck.
+        content: `Concurrent cache implementations need to coordinate concurrent access. A single \`synchronized\` wrapper can limit parallelism when those methods are contended; the impact depends on workload and implementation.
 
 ### The ReadWriteLock Trap in LRU Cache
 Many candidates suggest using \`ReentrantReadWriteLock\`, assuming \`get()\` can use the read lock while \`put()\` uses the write lock.
@@ -1368,13 +1438,12 @@ Many candidates suggest using \`ReentrantReadWriteLock\`, assuming \`get()\` can
 
 ### Scalable Concurrency Solutions
 1. **Segmented Locking (Striped Locks)**: Divide the key space into $S$ independent segments (like legacy \`ConcurrentHashMap\`). Each segment has its own capacity and independent lock.
-2. **Read Buffers & Asynchronous Eviction (The Caffeine Pattern)**:
-   - When a thread calls \`get()\`, it performs a concurrent read on the Hash Table without acquiring any linked list lock.
-   - The node access event is pushed onto a lightweight, lossy, lock-free ring buffer (MPSC queue).
-   - A single maintenance thread (or worker) drains the ring buffer in batches and updates the eviction list, achieving tens of millions of concurrent operations per second!`,
+2. **Buffered or approximate eviction maintenance**:
+   - Some cache designs separate key lookup from recency or eviction maintenance.
+   - Synchronization, buffering, and consistency guarantees vary by implementation; consult the selected library's current documentation and source.`,
         keyTakeaways: [
           "Never claim ReadWriteLock solves LRU cache concurrency without clarifying that get() mutates list pointers.",
-          "Mention Caffeine Cache's ring buffer approach to score top marks in senior FAANG interviews.",
+          "Discuss the synchronization and eviction trade-offs of the particular cache implementation being considered.",
         ],
       },
       {
@@ -1400,9 +1469,9 @@ How do you support cache keys that expire after a specified duration?
     ],
     faqs: [
       {
-        question: "Why is a Doubly Linked List required instead of a Singly Linked List for LRU Cache?",
+        question: "How does a Doubly Linked List enable constant-time LRU node updates?",
         answer:
-          "To achieve strict O(1) eviction and node repositioning, removing an arbitrary node in the middle of the list requires instant access to the preceding node (node.prev) so pointers can be reconnected. In a Singly Linked List, finding the previous node requires an O(N) traversal.",
+          "To unlink a known node in constant time, a doubly linked list stores its previous and next pointers. A singly linked list normally requires traversal to find the preceding node.",
       },
       {
         question: "How do dummy head and tail sentinel nodes simplify LRU cache pointer manipulation?",
@@ -1425,15 +1494,15 @@ How do you support cache keys that expire after a specified duration?
           "Add an expiresAt timestamp field to each cache node. Implement lazy expiration on get() (if current time exceeds expiresAt, delete the node and return -1) and active background expiration using a PriorityQueue (Min-Heap) sorted by expiresAt to periodically remove expired entries.",
       },
       {
-        question: "How does Caffeine Cache achieve high-performance lock-free concurrent caching in Java?",
+        question: "How can concurrent cache implementations separate lookup from eviction maintenance?",
         answer:
-          "Caffeine decouples reads from eviction mutations. Reads access a ConcurrentHashMap directly without locking. Node access events are recorded to a lock-free ring buffer (MPSC queue), which is drained in batches by a background maintenance thread to update eviction data structures without blocking concurrent client threads.",
+          "Some cache designs separate key lookup from recency or eviction maintenance, but synchronization and buffering are implementation-specific. Consult the chosen library's current documentation and source rather than assuming a particular design.",
       },
     ],
     cta: {
       heading: "Practice LRU Cache & Data Structure Drills in PrepVisor AI Studio",
       subtext:
-        "Code O(1) LRU and LFU caches, test concurrency extensions, and receive real-time Big-O and edge-case feedback from our AI coding evaluator.",
+        "Practice cache implementation exercises and reason through complexity, concurrency, and edge cases in the coding studio.",
       buttonText: "Solve LRU Cache Challenges",
       actionUrl:
         "https://app.prepvisor.in/register?utm_source=organic_seo&utm_medium=guide&utm_campaign=lru_cache_implementation",
@@ -1445,7 +1514,7 @@ How do you support cache keys that expire after a specified duration?
     title: "System Design: How to Design a Notification System at Scale (SMS, Push, Email)",
     seoTitle: "System Design: How to Design a Notification System | SMS, Push & Email at Scale",
     metaDescription:
-      "Architect a scalable, fault-tolerant notification service handling billions of notifications. Learn priority queues, idempotency, rate limiting, and third-party gateway integrations.",
+      "Explore a notification-service design for push, SMS, and email, including priority queues, idempotency, rate limiting, and provider integrations.",
     keywords: [
       "system design notification system",
       "notification service architecture",
@@ -1454,22 +1523,28 @@ How do you support cache keys that expire after a specified duration?
       "apple apns twilio sendgrid architecture",
       "kafka priority queue notification system",
     ],
-    category: "System Design",
+    primaryCategory: "system-design",
+    relatedGuideSlugs: ["system-design-rate-limiter", "system-design-tinyurl"],
+    productPath: "/system-design",
     readingTimeMinutes: 24,
     difficulty: "Advanced",
-    lastUpdated: "2026-09-20",
+    dateModified: "2026-09-20",
     author: {
-      name: "PrepVisor Systems Engineering Team",
-      role: "Staff Infrastructure Engineers & Interview Evaluators",
+      name: "PrepVisor",
+      role: "Guide publisher",
     },
     summary:
-      "Designing a distributed Notification Service capable of delivering millions of push notifications, transactional SMS, and marketing emails is a premier system design interview challenge. This guide covers multi-channel vendor routing (APNs, FCM, Twilio, SendGrid), Kafka priority queues, distributed idempotency deduplication, rate limiting, and regulatory compliance.",
+      "This guide explores a notification-service design for push, SMS, and email, including priority queues, idempotency, rate limiting, provider integrations, and operational trade-offs.",
+    references: [
+      { title: "Sending notification requests to APNs", publisher: "Apple Developer Documentation", url: "https://developer.apple.com/documentation/usernotifications/sending-notification-requests-to-apns" },
+      { title: "Send a message using FCM HTTP v1 API", publisher: "Firebase Documentation", url: "https://firebase.google.com/docs/cloud-messaging/send/v1-api" },
+    ],
     sections: [
       {
         id: "requirements",
         title: "1. Clarifying Requirements & Notification Types",
         subtitle: "Channel protocols, priority tiers, and delivery guarantees",
-        content: `A notification service is the central communication nervous system of any consumer or enterprise product. When designing it in an interview, clarify the multi-channel scope early:
+        content: `When designing a notification service, clarify the channels and delivery objectives first. The latency and scale values below are EXAMPLE / ASSUMPTION targets for a hypothetical interview scenario, not provider guarantees or measured system performance:
 
 **Supported Delivery Channels:**
 - **iOS Push Notifications**: Apple Push Notification service (APNs) using HTTP/2 persistent connections and TLS provider certificates.
@@ -1478,25 +1553,25 @@ How do you support cache keys that expire after a specified duration?
 - **Email**: SendGrid, Resend, Amazon SES.
 
 **Notification Priority Tiers:**
-1. **Critical Transactional (P0)**: One-Time Passwords (OTP), 2-Factor Authentication codes, fraudulent login alerts. **SLA: < 2 seconds delivery**, zero queuing behind non-urgent traffic.
-2. **Time-Sensitive Alerts (P1)**: Ride arrival updates, direct chat messages, flight gate changes. **SLA: < 30 seconds**.
-3. **Marketing & Promotions (P2)**: Flash sale announcements, weekly digests, engagement reminders. **SLA: Delivered within hours during active waking hours**.
+1. **Critical Transactional (P0)**: One-Time Passwords (OTP), 2-Factor Authentication codes, fraudulent login alerts. Example target: under **2 seconds** with no intentional queueing behind bulk traffic.
+2. **Time-Sensitive Alerts (P1)**: Ride arrival updates, direct chat messages, flight gate changes. Example target: under **30 seconds**.
+3. **Marketing & Promotions (P2)**: Flash sale announcements, weekly digests, engagement reminders. Example target: delivery within hours during configured recipient-local windows.
 
 **Non-Functional Requirements:**
-- **Scale**: Support **100 Million notifications per day** with sudden peak bursts.
-- **High Availability (99.99%)**: System must not drop notifications during vendor outages.
+- **Scale assumption**: Model **100 million notifications per day** with an explicitly selected peak multiplier.
+- **Availability objective (example)**: A scenario may target **99.99%** availability; queues and retries reduce some loss modes but do not guarantee delivery during provider outages.
 - **Idempotency & Deduplication**: Prevent users from receiving duplicate SMS or push alerts during network retries.
 - **User Preference Engine**: Strict adherence to user opt-outs, quiet hours, and legal regulations (GDPR, CAN-SPAM, TCPA).`,
         keyTakeaways: [
-          "Never treat all notifications equally: strict multi-tier priority isolation is the single most important design decision.",
-          "Distinguish between at-least-once delivery (standard message brokers) and effectively exactly-once delivery (achieved via client-side idempotency keys).",
+          "Priority tiers can separate time-sensitive and bulk traffic; the isolation strategy depends on latency, fairness, and cost objectives.",
+          "Idempotency can reduce duplicate processing, but it does not by itself guarantee exactly-once delivery across external providers.",
         ],
       },
       {
         id: "capacity-estimation",
         title: "2. Back-of-the-Envelope Capacity Estimation",
         subtitle: "Calculating throughput, storage, and network bandwidth",
-        content: `Always demonstrate concrete mathematical sizing to validate architectural choices.
+        content: `EXAMPLE / ASSUMPTION — These calculations illustrate one hypothetical workload. Substitute agreed scenario inputs and validate record sizes, provider limits, and measured latency for the chosen implementation.
 
 **Throughput Calculations:**
 - **Daily Volume**: 100 Million notifications/day.
@@ -1508,17 +1583,17 @@ How do you support cache keys that expire after a specified duration?
 **Storage Sizing:**
 - **Metadata Payload**: User ID (UUID 16 bytes) + Channel ID (2 bytes) + Timestamp (8 bytes) + Template ID (8 bytes) + Status (4 bytes) + Idempotency Key (32 bytes) + Variables JSON (approx. 500 bytes) $\\approx 1 \\text{ KB}$ per record.
 - **Daily Storage**: $100\\text{M} \\times 1 \\text{ KB} = 100 \\text{ GB/day}$.
-- **90-Day Operational Log Retention**: $100 \\text{ GB} \\times 90 = 9 \\text{ TB}$. Easily managed by Amazon DynamoDB, Cassandra, or PostgreSQL partitioned by date.
+- **90-Day Operational Log Retention (illustrative)**: $100 \\text{ GB} \\times 90 = 9 \\text{ TB}$ before replication, indexes, compression, and retention-policy effects. Suitability depends on the selected database and configuration.
 
 **Egress Network Bandwidth:**
-- At peak 11,600 notifications/sec $\\times 1 \\text{ KB} \\approx 11.6 \\text{ MB/sec} = 93 \\text{ Mbps}$. Network bandwidth will not be a bottleneck for the internal infrastructure.`,
+- At the assumed peak of 11,600 notifications/sec and 1 KB payload, payload bandwidth is approximately 11.6 MB/sec (about 93 Mbps), excluding protocol overhead. Whether this is a bottleneck depends on the deployment and competing traffic.`,
         architectureCallout: {
           title: "Notification Platform Capacity Sizing",
           points: [
-            { label: "Daily Notification Volume", value: "100 Million notifications / day" },
-            { label: "Peak Ingress Throughput", value: "~11,600 notifications / second" },
-            { label: "OTP Delivery SLA", value: "< 1.5 seconds end-to-end" },
-            { label: "Operational Log Storage", value: "~9 TB (90-day retention in Cassandra/DynamoDB)" },
+            { label: "Daily notification volume (example)", value: "100 million/day assumed" },
+            { label: "Peak ingress (example)", value: "~11,600 notifications/second under 10× peak assumption" },
+            { label: "OTP latency target (example)", value: "< 1.5 seconds end-to-end, to be measured" },
+            { label: "Log storage estimate (example)", value: "~9 TB before database overhead" },
           ],
         },
         keyTakeaways: [
@@ -1530,7 +1605,7 @@ How do you support cache keys that expire after a specified duration?
         id: "high-level-architecture",
         title: "3. High-Level Architecture & End-to-End Flow",
         subtitle: "Decoupled microservice architecture with message brokers",
-        content: `A direct synchronous call from microservices to third-party vendors (Twilio, SendGrid) is an anti-pattern. If Twilio's API experiences 500ms latency, upstream services hang and exhaust connection pools.
+        content: `A direct synchronous call from microservices to third-party vendors (Twilio, SendGrid) can couple upstream availability and latency to the provider. For example, a delayed provider response can hold upstream request and connection-pool resources.
 
 ### The Decoupled Event-Driven Flow
 1. **Client / Upstream Services**: Services (Order Service, Auth Service) send a notification request to the **Notification Gateway API**.
@@ -1545,8 +1620,8 @@ How do you support cache keys that expire after a specified duration?
 7. **Specialized Worker Fleets**: Independent consumer worker groups pull messages from dedicated topics and call the respective vendor adapters (APNs, FCM, Twilio, SendGrid).
 8. **Vendor Webhook Collectors**: Receives delivery receipts and bounce events from third-party vendors and updates analytics tables asynchronously.`,
         keyTakeaways: [
-          "Decoupling the ingestion gateway from delivery workers using message queues guarantees zero notification loss even if third-party providers suffer outages.",
-          "Use separate worker pools for different priorities to ensure marketing bulk jobs never starve transactional OTPs.",
+          "Durable queues and retries can reduce loss from transient failures, but delivery depends on persistence, retry policy, provider behavior, and dead-letter handling.",
+          "Separate worker pools can reduce competition between priorities; shared downstream dependencies can still delay urgent notifications.",
         ],
       },
       {
@@ -1564,8 +1639,8 @@ How do you support cache keys that expire after a specified duration?
    - Before queueing or dispatching, the worker executes:
      \`SET notif:dedup:{key} "PROCESSING" NX EX 86400\`
    - If Redis returns \`nil\`, the key already exists and this event is a duplicate.
-3. **Downstream Gateway Idempotency**:
-   - Major providers like Stripe, SendGrid, and Twilio support an \`Idempotency-Key\` HTTP header. Pass the same key downstream so vendor network retries do not trigger duplicate charges.`,
+3. **Provider Idempotency (when supported)**:
+   - Provider idempotency mechanisms differ by product and endpoint. Check current API documentation before forwarding an idempotency key; do not assume a common header or behavior.`,
         codeBlock: {
           language: "typescript",
           caption: "Notification Consumer & Idempotency Pipeline with Circuit Breaker",
@@ -1628,7 +1703,7 @@ export class NotificationDispatcher {
         },
         keyTakeaways: [
           "Use deterministic idempotency keys derived from business entities rather than random UUIDs.",
-          "Pass idempotency keys all the way through to third-party vendor APIs.",
+          "Propagate idempotency keys where downstream APIs document support; otherwise deduplicate within the service and account for uncertain provider outcomes.",
         ],
       },
       {
@@ -1636,13 +1711,13 @@ export class NotificationDispatcher {
         title: "5. Worker Fleet Design, Priority Queues & Vendor Rate Limiting",
         subtitle: "Preventing rate limit throttling and managing delivery retries",
         content: `### 1. Dedicated Priority Worker Fleets
-Never share worker threads between transactional OTPs and marketing campaigns:
+Consider separating worker capacity for transactional and bulk workloads when their latency or isolation objectives differ:
 - **P0 Workers**: Highly provisioned with minimal batch sizes for immediate dispatch.
 - **P2 Workers**: Heavily batched consumers designed for maximum bulk throughput, configured to scale down automatically if downstream APIs show elevated error rates.
 
 ### 2. Vendor Rate Limiting & Account Ceilings
-Third-party providers enforce strict throughput caps (e.g. Twilio may restrict an account to 500 SMS/sec; SendGrid may limit email dispatch to 1,000/sec).
-- If your workers exceed this, vendors return HTTP 429 and drop subsequent requests.
+Third-party providers apply account- and product-specific throughput limits. Check current limits for the provider account and agreement; do not assume a universal rate.
+- If a provider-specific limit is exceeded, its documented throttling behavior applies; handle responses and retries according to that provider's guidance.
 - **Solution**: Workers use a central Redis Token Bucket per vendor account to throttle dispatch rates across all worker nodes.
 
 ### 3. Exponential Backoff with Jitter & Dead Letter Queues (DLQ)
@@ -1651,7 +1726,7 @@ When a vendor call fails:
   $$\\text{Delay} = \\min(60, 2^{\\text{attempt}} + \\text{random\\_jitter})$$
 - **Permanent Failures (HTTP 400, Invalid Phone Number, Unregistered Device Token)**: Do not retry. Route immediately to a **Dead Letter Queue (DLQ)** and deactivate the user's invalid device token in the database.`,
         keyTakeaways: [
-          "Isolate priority queues so marketing emails never delay time-critical password reset OTPs.",
+          "Isolate priority queues and worker capacity to reduce the effect of bulk traffic on time-sensitive messages, while monitoring shared bottlenecks.",
           "Implement Token Bucket rate limiters to respect third-party vendor API quotas.",
         ],
       },
@@ -1659,35 +1734,32 @@ When a vendor call fails:
         id: "user-preferences-compliance",
         title: "6. User Preferences, Quiet Hours & Global Compliance",
         subtitle: "TCPA, CAN-SPAM, GDPR, and localized quiet hours",
-        content: `A world-class notification architecture must treat legal compliance and user privacy as first-class citizens:
+        content: `Notification preference and compliance requirements depend on message type, jurisdiction, and channel. Treat the following as design considerations, not legal advice; verify requirements for the actual product and audience with qualified counsel. The [FTC CAN-SPAM compliance guide](https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business) describes US commercial email requirements, while [RFC 8058](https://www.rfc-editor.org/rfc/rfc8058.html) specifies a one-click unsubscribe mechanism for supported email-list use cases.
 
 ### 1. User Preference Data Model
-Users can toggle notifications per category (Product Updates, Security Alerts, Billing, Marketing) and per channel (Email, SMS, Push). Security alerts are non-opt-outable.
+An example preference model can let users manage notification categories and channels. Which messages may be opted out of depends on the product, applicable law, and channel; do not treat security, billing, or transactional labels as a universal exemption.
 
 ### 2. Timezone-Aware Quiet Hours
-Sending a marketing push notification at 3:00 AM local time causes immediate app uninstalls and negative app store ratings.
-- The User Preferences Filter evaluates the recipient's timezone.
-- If current recipient time is between 9:00 PM and 8:00 AM, marketing notifications are placed in a scheduled queue and delayed until 8:01 AM local time.
+Sending non-urgent marketing messages during a recipient's local quiet hours may be undesirable. A product can configure quiet-hour windows and evaluate them using the recipient's selected or otherwise appropriately determined timezone.
 
 ### 3. Legal Compliance Regulations
-- **TCPA (Telephone Consumer Protection Act)**: In the US, SMS recipients who text "STOP" or "UNSUBSCRIBE" must be unsubscribed immediately. Process Twilio inbound webhooks synchronously to flip opt-out flags.
-- **CAN-SPAM & GDPR**: Every marketing email must include a physical mailing address and an RFC 8058 compliant \`List-Unsubscribe\` one-click header.`,
+For US commercial email, consult the FTC guidance for applicable sender identification, address, and opt-out requirements. RFC 8058 describes one-click unsubscribe signaling for mailing lists; it is not a blanket statement of requirements for every marketing email. SMS and privacy obligations also vary by jurisdiction and implementation, so confirm channel-specific handling and timing with qualified counsel and the selected provider.`,
         keyTakeaways: [
           "Respect recipient timezones for non-transactional marketing notifications.",
-          "Process carrier STOP webhooks immediately to remain compliant with telecom regulations.",
+          "Define and test channel-specific opt-out handling against applicable requirements and provider behavior.",
         ],
       },
     ],
     faqs: [
       {
-        question: "How do you guarantee high-priority OTP notifications are never delayed by marketing campaigns?",
+        question: "How can a design reduce the chance that bulk notifications delay high-priority OTP traffic?",
         answer:
-          "Separate notifications into dedicated priority Kafka topics (e.g. notifications.p0.transactional vs notifications.p2.marketing) consumed by isolated worker fleets. Even if marketing topics have millions of pending messages, transactional workers pull exclusively from the P0 topic with zero latency contention.",
+          "Separate priority topics and worker capacity can reduce competition between bulk and urgent traffic. They do not guarantee zero delay: shared providers, partitions, databases, and infrastructure can still be bottlenecks, so define objectives and monitor end-to-end latency.",
       },
       {
         question: "How do you prevent users from receiving duplicate push notifications or SMS?",
         answer:
-          "Implement client-driven idempotency keys stored in a distributed Redis cache with atomic SET NX and a 24-hour TTL. In addition, pass the idempotency key to downstream vendor APIs (like Stripe, Twilio, SendGrid) so that transient network retries do not trigger duplicate dispatches.",
+          "Use an idempotency key and an atomic deduplication record with a retention period suited to the retry window. Provider support varies; do not assume an external messaging API honors arbitrary idempotency keys.",
       },
       {
         question: "How does the notification service integrate with APNs and FCM?",
@@ -1713,7 +1785,7 @@ Sending a marketing push notification at 3:00 AM local time causes immediate app
     cta: {
       heading: "Practice Notification System Design in PrepVisor Interactive Studio",
       subtext:
-        "Design scalable multi-channel notification architectures, configure Kafka priority queues, and solve idempotency race conditions in our AI-powered interview studio.",
+        "Explore a multi-channel notification architecture and work through priority, idempotency, and rate-limiting trade-offs in the system design studio.",
       buttonText: "Design Notification Service in Studio",
       actionUrl:
         "https://app.prepvisor.in/register?utm_source=organic_seo&utm_medium=guide&utm_campaign=system_design_notification_service",
@@ -1726,49 +1798,4 @@ export function getGuideBySlug(slug: string): Guide | undefined {
   return GUIDES.find((g) => g.slug === slug);
 }
 
-export function generateArticleJsonLd(guide: Guide): Record<string, any> {
-  return {
-    "@context": "https://schema.org",
-    "@type": "TechArticle",
-    headline: guide.title,
-    description: guide.metaDescription,
-    image: "https://prepvisor.in/logo.png",
-    author: {
-      "@type": "Organization",
-      name: guide.author.name,
-      jobTitle: guide.author.role,
-      url: "https://prepvisor.in",
-    },
-    publisher: {
-      "@type": "Organization",
-      name: "PrepVisor",
-      url: "https://prepvisor.in",
-      logo: {
-        "@type": "ImageObject",
-        url: "https://prepvisor.in/logo.png",
-      },
-    },
-    datePublished: `${guide.lastUpdated}T08:00:00+05:30`,
-    dateModified: `${guide.lastUpdated}T08:00:00+05:30`,
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": `https://prepvisor.in/guides/${guide.slug}`,
-    },
-    keywords: guide.keywords.join(", "),
-  };
-}
-
-export function generateFaqJsonLd(guide: Guide): Record<string, any> {
-  return {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: guide.faqs.map((faq) => ({
-      "@type": "Question",
-      name: faq.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: faq.answer,
-      },
-    })),
-  };
-}
+export { generateArticleJsonLd, generateFaqJsonLd } from "../lib/structuredData.ts";
