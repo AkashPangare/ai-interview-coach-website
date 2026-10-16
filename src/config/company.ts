@@ -18,6 +18,7 @@ export interface AddOnPack {
   id: string
   name: string
   priceINR: number
+  priceUSD: number
   description: string
   boostAmount: number
   featureKey: string
@@ -99,7 +100,7 @@ export const COMPANY_CONFIG = {
       priceINR: PAID_PLAN_PRICES[0].priceINR,
       priceUSD: PAID_PLAN_PRICES[0].priceUSD,
       originalPriceINR: 399,
-      originalPriceUSD: 8,
+      originalPriceUSD: 0,
       features: [
         "7-Day Focused Preparation Pass",
         "3 Active Target Roadmaps",
@@ -120,7 +121,7 @@ export const COMPANY_CONFIG = {
       priceINR: PAID_PLAN_PRICES[1].priceINR,
       priceUSD: PAID_PLAN_PRICES[1].priceUSD,
       originalPriceINR: 699,
-      originalPriceUSD: 14,
+      originalPriceUSD: 0,
       recommended: true,
       features: [
         "14-Day Comprehensive Preparation Pass",
@@ -143,7 +144,7 @@ export const COMPANY_CONFIG = {
       priceINR: PAID_PLAN_PRICES[2].priceINR,
       priceUSD: PAID_PLAN_PRICES[2].priceUSD,
       originalPriceINR: 999,
-      originalPriceUSD: 20,
+      originalPriceUSD: 0,
       features: [
         "30-Day Full Career Accelerator Pass",
         "15 Active Target Roadmaps",
@@ -166,7 +167,7 @@ export const COMPANY_CONFIG = {
       priceINR: PAID_PLAN_PRICES[3].priceINR,
       priceUSD: PAID_PLAN_PRICES[3].priceUSD,
       originalPriceINR: 2599,
-      originalPriceUSD: 50,
+      originalPriceUSD: 0,
       features: [
         "90-Day Multi-Company Mastery Pass",
         "30 Active Target Roadmaps",
@@ -187,6 +188,7 @@ export const COMPANY_CONFIG = {
       id: "coach-booster-100",
       name: "Coach Booster Pack",
       priceINR: 99,
+      priceUSD: 3,
       description: "Add 100 in-depth AI Coach messages to your active plan.",
       boostAmount: 100,
       featureKey: "FEAT_COACH_MESSAGES",
@@ -195,6 +197,7 @@ export const COMPANY_CONFIG = {
       id: "mock-pack-10",
       name: "Mock Interview Pack",
       priceINR: 100,
+      priceUSD: 5,
       description: "Add 10 complete multi-turn mock interview sessions.",
       boostAmount: 10,
       featureKey: "FEAT_MOCK_SESSIONS",
@@ -203,6 +206,7 @@ export const COMPANY_CONFIG = {
       id: "assessment-pack-5",
       name: "Technical Assessment Pack",
       priceINR: 100,
+      priceUSD: 4,
       description: "Add 5 complete timed technical assessment evaluations.",
       boostAmount: 5,
       featureKey: "FEAT_TECHNICAL_ASSESSMENTS",
@@ -211,6 +215,7 @@ export const COMPANY_CONFIG = {
       id: "extra-roadmap-1",
       name: "Extra Roadmap Slot",
       priceINR: 79,
+      priceUSD: 2,
       description: "Unlock 1 additional active target roadmap for multi-company prep.",
       boostAmount: 1,
       featureKey: "FEAT_ROADMAPS_CREATED",

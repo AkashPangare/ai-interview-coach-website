@@ -4,6 +4,7 @@ import { Target, Award, Code, Sparkles, ArrowRight, MapPin, Mail, ShieldCheck } 
 import { COMPANY_CONFIG } from "@/config/company"
 import { usePageSeo } from "@/hooks/usePageSeo"
 import { SEO_ROUTES } from "@/config/seo"
+import { formatPrice, usePricingCurrency } from "@/lib/pricingCurrency"
 import { trackEvent } from "@/lib/analytics"
 
 interface AboutPageProps {
@@ -11,8 +12,9 @@ interface AboutPageProps {
 }
 
 export const AboutPage: React.FC<AboutPageProps> = () => {
+  const { currency } = usePricingCurrency()
   const minimumPaidPrice = Math.min(
-    ...COMPANY_CONFIG.pricing.filter((plan) => plan.priceINR > 0).map((plan) => plan.priceINR),
+    ...COMPANY_CONFIG.pricing.filter((plan) => plan.priceINR > 0).map((plan) => currency === "INR" ? plan.priceINR : plan.priceUSD),
   )
   usePageSeo(SEO_ROUTES.about)
 
@@ -133,7 +135,7 @@ export const AboutPage: React.FC<AboutPageProps> = () => {
               </div>
               <h3 className="text-sm font-semibold text-slate-900">Transparent & Affordable</h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                One-time preparation passes start at ₹{minimumPaidPrice}.
+                One-time preparation passes start at {formatPrice(minimumPaidPrice, currency)}.
               </p>
             </div>
           </div>

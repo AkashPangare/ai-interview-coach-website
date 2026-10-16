@@ -25,6 +25,7 @@ import {
 } from "lucide-react"
 import { usePageSeo } from "@/hooks/usePageSeo"
 import { SEO_ROUTES } from "@/config/seo"
+import { formatPrice, usePricingCurrency } from "@/lib/pricingCurrency"
 import { COMPANY_CONFIG } from "@/config/company"
 import { decorateUrlWithUtms, trackEvent } from "@/lib/analytics"
 import { PRODUCT_PAGE_INTROS } from "@/config/seo"
@@ -77,6 +78,8 @@ const TARGET_ROLES: RoleOption[] = [
 ]
 
 export const RoadmapPage: React.FC<RoadmapPageProps> = () => {
+  const { currency } = usePricingCurrency()
+  const startingPrice = formatPrice(currency === "INR" ? 199 : 5, currency)
   usePageSeo(SEO_ROUTES.roadmap)
 
   // State for interactive pacing calculator
@@ -388,7 +391,7 @@ export const RoadmapPage: React.FC<RoadmapPageProps> = () => {
     },
     {
       q: "What is included in the Free Forever tier vs Paid Preparation Passes?",
-      a: "Our Free Forever tier includes 1 active personalized roadmap with a structured day-by-day task sequence, 3 full AI voice mock interviews, 1 technical diagnostic assessment, and foundational pacing with zero credit card required. Paid Preparation Passes (from ₹199) unlock dynamic 1-click schedule rebalancing, multiple simultaneous target role tracks, our interactive Cloud IDE stdout runner in 9 languages, the System Design whiteboard canvas, and up to 15+ voice mock interviews.",
+      a: `Our Free Forever tier includes 1 active personalized roadmap with a structured day-by-day task sequence, 3 full AI voice mock interviews, 1 technical diagnostic assessment, and foundational pacing with zero credit card required. Paid Preparation Passes (from ${startingPrice}) unlock dynamic 1-click schedule rebalancing, multiple simultaneous target role tracks, our interactive Cloud IDE stdout runner in 9 languages, the System Design whiteboard canvas, and up to 15+ voice mock interviews.`,
     },
     {
       q: "Can I prepare on an intensive short timeline (7 to 14 days)?",
@@ -433,7 +436,7 @@ export const RoadmapPage: React.FC<RoadmapPageProps> = () => {
               to="/pricing"
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-3.5 text-xs sm:text-sm font-medium text-slate-700 hover:bg-slate-50 transition w-full sm:w-auto shadow-xs"
             >
-              <span>View Passes (From ₹199)</span>
+              <span>View Passes (From {startingPrice})</span>
             </Link>
           </div>
           <div className="pt-2 flex items-center justify-center gap-4 text-xs text-slate-500 font-medium">
@@ -650,7 +653,7 @@ export const RoadmapPage: React.FC<RoadmapPageProps> = () => {
           <div className="flex items-center gap-2 p-3.5 rounded-xl bg-blue-50/50 border border-blue-200 text-xs text-slate-700">
             <Zap className="h-4 w-4 text-blue-600 shrink-0" />
             <span>
-              <strong>Curriculum Tier Clarity:</strong> PrepVisor’s Free Tier provides 1 active roadmap with full daily task pacing, 3 voice mock interviews, and 1 diagnostic assessment. Prepaid passes (from ₹199) unlock extended mock interview quotas, unlimited cloud stdout execution, and 1-click dynamic schedule rebalancing.
+              <strong>Curriculum Tier Clarity:</strong> PrepVisor’s Free Tier provides 1 active roadmap with full daily task pacing, 3 voice mock interviews, and 1 diagnostic assessment. Prepaid passes (from {startingPrice}) unlock extended mock interview quotas, unlimited cloud stdout execution, and 1-click dynamic schedule rebalancing.
             </span>
           </div>
 
@@ -1143,7 +1146,7 @@ export const RoadmapPage: React.FC<RoadmapPageProps> = () => {
               to="/pricing"
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-7 py-3.5 text-xs sm:text-sm font-medium text-slate-700 hover:bg-slate-50 transition w-full sm:w-auto shadow-xs"
             >
-              <span>View Prep Passes (From ₹199)</span>
+              <span>View Prep Passes (From {startingPrice})</span>
             </Link>
           </div>
           <p className="text-xs text-slate-500 font-mono">

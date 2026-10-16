@@ -17,6 +17,7 @@ import { COMPANY_CONFIG, type PricingTier, type AddOnPack } from "@/config/compa
 import { decorateUrlWithUtms, trackEvent } from "../lib/analytics"
 import { usePageSeo } from "@/hooks/usePageSeo"
 import { SEO_ROUTES } from "@/config/seo"
+import { formatPrice, usePricingCurrency } from "@/lib/pricingCurrency"
 
 interface PricingPageProps {
   onOpenWaitlistWithPlan?: (planId: string) => void
@@ -81,6 +82,7 @@ const PRICING_FAQS: FAQItem[] = [
 
 export const PricingPage: React.FC<PricingPageProps> = () => {
   usePageSeo(SEO_ROUTES.pricing)
+  const { currency, selectCurrency } = usePricingCurrency()
 
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
 
@@ -120,6 +122,14 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
           </div>
         </div>
 
+        <div className="flex flex-col items-center gap-2 text-center text-xs text-slate-600">
+          <label htmlFor="pricing-currency" className="font-semibold">Prices for your region</label>
+          <select id="pricing-currency" value={currency} onChange={(event) => selectCurrency(event.target.value as "INR" | "USD")} className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900">
+            <option value="INR">India · INR</option><option value="USD">Outside India · USD</option>
+          </select>
+          {currency === "USD" && <p>USD prices are for reference. Global checkout is coming soon; you can start with the Free plan now.</p>}
+        </div>
+
         {/* Pricing Cards Grid */}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 items-stretch">
           {COMPANY_CONFIG.pricing.map((tier: PricingTier) => {
@@ -127,7 +137,9 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
             const baseRegisterUrl = isFree
               ? `${COMPANY_CONFIG.appUrl}/register`
               : `${COMPANY_CONFIG.appUrl}/register?plan=${tier.id}`
-            const registerUrl = decorateUrlWithUtms(baseRegisterUrl)
+            const registerUrl = decorateUrlWithUtms(currency === "USD" ? `${COMPANY_CONFIG.appUrl}/register` : baseRegisterUrl)
+            const price = currency === "INR" ? tier.priceINR : tier.priceUSD
+            const originalPrice = currency === "INR" ? tier.originalPriceINR : tier.originalPriceUSD
 
             return (
               <article
@@ -162,16 +174,16 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
                   <div className="border-t border-slate-100 pt-4">
                     <div className="flex items-baseline gap-2">
                       <span className="text-3xl font-semibold text-slate-900 font-mono tracking-tight">
-                        {isFree ? "Free" : `₹${tier.priceINR}`}
+                        {isFree ? "Free" : formatPrice(price, currency)}
                       </span>
-                      {tier.originalPriceINR > 0 && (
+                      {originalPrice > 0 && (
                         <span className="text-xs font-mono text-slate-400 line-through">
-                          ₹{tier.originalPriceINR}
+                          {formatPrice(originalPrice, currency)}
                         </span>
                       )}
-                      {tier.originalPriceINR > 0 && (
+                      {originalPrice > 0 && (
                         <span className="rounded-md bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 text-[10px] font-mono text-emerald-700 font-semibold">
-                          -{Math.round(((tier.originalPriceINR - tier.priceINR) / tier.originalPriceINR) * 100)}%
+                          -{Math.round(((originalPrice - price) / originalPrice) * 100)}%
                         </span>
                       )}
                     </div>
@@ -181,7 +193,7 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
                       </p>
                     )}
                     <p className={`${isFree ? "mt-1" : "mt-0.5"} text-[10px] text-emerald-700 font-mono font-medium`}>
-                      {isFree ? "Full feature exploration" : "(Inclusive of all taxes)"}
+                      {isFree ? "Full feature exploration" : currency === "INR" ? "(Inclusive of all taxes)" : "Taxes, if applicable, shown at future checkout"}
                     </p>
                   </div>
 
@@ -205,6 +217,8 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
                         plan_id: tier.id,
                         plan_name: tier.name,
                         price_inr: tier.priceINR,
+                        display_currency: currency,
+                        display_price: price,
                         is_free: isFree,
                       })
                     }
@@ -214,11 +228,11 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
                         : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900 shadow-xs"
                     }`}
                   >
-                    <span>{isFree ? "Start Free" : "Get Started"}</span>
+                    <span>{isFree || currency === "USD" ? "Start Free" : "Get Started"}</span>
                     <ArrowRight className="h-3.5 w-3.5" />
                   </a>
                   <p className="mt-1.5 text-center text-[10px] font-mono text-slate-500">
-                    {isFree ? "Instant access upon signup" : "Instant activation upon payment"}
+                    {isFree ? "Instant access upon signup" : currency === "USD" ? "USD checkout coming soon" : "Instant activation upon payment"}
                   </p>
                 </div>
               </article>
@@ -256,7 +270,7 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
                     <h4 className="text-sm font-semibold text-slate-900">{pack.name}</h4>
-                    <span className="text-sm font-mono font-bold text-blue-600">₹{pack.priceINR}</span>
+                    <span className="text-sm font-mono font-bold text-blue-600">{formatPrice(currency === "INR" ? pack.priceINR : pack.priceUSD, currency)}</span>
                   </div>
                   <p className="text-xs text-slate-600 leading-relaxed">
                     {pack.description}
@@ -379,7 +393,7 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
                     )}
                   </button>
                   <div id={`pricing-faq-answer-${index}`} role="region" hidden={!isOpen} className="px-5 pb-5 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-200 pt-3 bg-slate-50/40">
-                      {faq.answer}
+                      {currency === "USD" && faq.question === "Which payment modes are accepted?" ? "USD checkout is coming soon. You can start with the Free plan now." : faq.answer}
                   </div>
                 </div>
               )
@@ -390,7 +404,7 @@ export const PricingPage: React.FC<PricingPageProps> = () => {
         {/* Legal & Statutory Note */}
         <div className="text-center border-t border-slate-200 pt-8 max-w-2xl mx-auto space-y-1.5">
           <p className="text-xs text-slate-500 font-mono">
-            All prices are listed in Indian Rupees (INR) and are inclusive of all applicable statutory taxes.
+            {currency === "INR" ? "India prices are in INR and include applicable taxes." : "Outside India prices are displayed in USD. USD checkout is not available yet."}
           </p>
           <p className="text-[11px] text-slate-400">
             Operated by {COMPANY_CONFIG.legalEntity} · Bengaluru, Karnataka, India · Governed by the Laws of India.

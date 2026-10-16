@@ -23,6 +23,7 @@ import { COMPANY_CONFIG } from "@/config/company"
 import { decorateUrlWithUtms, trackEvent } from "../lib/analytics"
 import { usePageSeo } from "@/hooks/usePageSeo"
 import { SEO_ROUTES } from "@/config/seo"
+import { formatPrice, usePricingCurrency } from "@/lib/pricingCurrency"
 
 interface HomePageProps {
   onOpenWaitlist?: () => void
@@ -31,6 +32,8 @@ interface HomePageProps {
 type StudioTab = "pacing" | "dsa" | "system-design" | "behavioral"
 
 export const HomePage: React.FC<HomePageProps> = () => {
+  const { currency } = usePricingCurrency()
+  const startingPrice = formatPrice(currency === "INR" ? 199 : 5, currency)
   usePageSeo(SEO_ROUTES.home)
 
   const [activeStudioTab, setActiveStudioTab] = useState<StudioTab>("pacing")
@@ -1139,7 +1142,7 @@ export const HomePage: React.FC<HomePageProps> = () => {
               to="/pricing"
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-7 py-3.5 text-xs sm:text-sm font-medium text-slate-700 hover:bg-slate-50 transition w-full sm:w-auto shadow-xs"
             >
-              <span>View Passes (From ₹199)</span>
+              <span>View Passes (From {startingPrice})</span>
             </Link>
           </div>
           <p className="text-xs text-slate-500 font-mono pt-2">
