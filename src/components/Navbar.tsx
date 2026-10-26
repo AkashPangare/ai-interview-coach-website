@@ -67,9 +67,12 @@ export const Navbar: React.FC<NavbarProps> = () => {
 
         {/* Mobile Hamburger Toggle */}
         <button
+          type="button"
           onClick={() => setOpen(!open)}
           className="p-2 text-slate-700 hover:text-slate-900 xl:hidden"
           aria-label="Toggle menu"
+          aria-expanded={open}
+          aria-controls="mobile-site-navigation"
         >
           {open ? <X /> : <Menu />}
         </button>
@@ -77,7 +80,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
 
       {/* Mobile Drawer */}
       {open && (
-        <nav className="space-y-1.5 border-t border-slate-200 bg-white px-4 py-4 xl:hidden shadow-xl">
+        <nav id="mobile-site-navigation" className="max-h-[calc(100dvh-4rem)] space-y-1.5 overflow-y-auto overscroll-contain border-t border-slate-200 bg-white px-4 py-4 shadow-xl xl:hidden">
           {links.map((link) => (
             <Link
               key={link.to}
