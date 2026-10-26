@@ -2,6 +2,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { Target, Award, Code, Sparkles, ArrowRight, MapPin, Mail, ShieldCheck } from "lucide-react"
 import { COMPANY_CONFIG } from "@/config/company"
+import { PRICING_PREVIEW } from "@/config/pricingPreview"
 import { usePageSeo } from "@/hooks/usePageSeo"
 import { SEO_ROUTES } from "@/config/seo"
 import { trackEvent } from "@/lib/analytics"
@@ -12,7 +13,7 @@ interface AboutPageProps {
 
 export const AboutPage: React.FC<AboutPageProps> = () => {
   const minimumPaidPrice = Math.min(
-    ...COMPANY_CONFIG.pricing.filter((plan) => plan.priceINR > 0).map((plan) => plan.priceINR),
+    ...PRICING_PREVIEW.map((plan) => plan.priceINR),
   )
   usePageSeo(SEO_ROUTES.about)
 
@@ -34,7 +35,7 @@ export const AboutPage: React.FC<AboutPageProps> = () => {
             About PrepVisor
           </h1>
           <p className="text-sm text-slate-600 leading-relaxed">
-            An interview-preparation product with interactive practice tools and supporting guides.
+            A connected workspace for resume creation and interview preparation.
           </p>
         </div>
 
@@ -45,10 +46,10 @@ export const AboutPage: React.FC<AboutPageProps> = () => {
           </h2>
           <div className="space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed">
             <p>
-              <strong className="text-slate-900 font-semibold">{COMPANY_CONFIG.brandName}</strong> is an online interview-preparation product. Its preparation roadmap, coding practice, system design workspace, and mock interview tools bring several forms of interview practice together.
+              <strong className="text-slate-900 font-semibold">{COMPANY_CONFIG.brandName}</strong> brings together <Link className="text-blue-700 underline" to="/resume-studio">Resume Studio</Link> and Interview Prep. You can build a career profile, tailor and review a resume, then use a matched job and resume to guide interview preparation.
             </p>
             <p>
-              The product is designed to help candidates organize preparation and practice technical and behavioral interview skills. The available features and pass durations are described on the <Link className="text-blue-700 underline" to="/pricing">pricing page</Link>.
+              Interview Prep also works on its own, with a preparation roadmap, coding practice, system design workspace and mock interviews. The available features and pass durations are described on the <Link className="text-blue-700 underline" to="/pricing">pricing page</Link>.
             </p>
             <p>
               The <Link className="text-blue-700 underline" to="/guides">PrepVisor guides</Link> are educational reading material that supports preparation alongside the interactive product; they are not a substitute for checking current framework or platform documentation.
@@ -133,7 +134,7 @@ export const AboutPage: React.FC<AboutPageProps> = () => {
               </div>
               <h3 className="text-sm font-semibold text-slate-900">Transparent & Affordable</h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                One-time preparation passes start at ₹{minimumPaidPrice}.
+                One-time Resume Studio and Interview Prep passes start at ₹{minimumPaidPrice}.
               </p>
             </div>
           </div>

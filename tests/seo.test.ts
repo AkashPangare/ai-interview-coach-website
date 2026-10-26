@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { COMPANY_CONFIG } from "../src/config/company.ts";
+import { PRICING_PREVIEW } from "../src/config/pricingPreview.ts";
 import { absoluteSiteUrl, SEO_ROUTES, seoForGuide } from "../src/config/seo.ts";
 import { GUIDES } from "../src/data/guides.ts";
 import { generateCoreStructuredData } from "../src/lib/structuredData.ts";
@@ -43,7 +43,7 @@ test("Central SEO metadata and structured data", async (t) => {
     const graph = generateCoreStructuredData()["@graph"] as Array<Record<string, any>>;
     const software = graph.find((entity) => entity["@type"] === "SoftwareApplication");
     const offers = software?.offers;
-    const paidPlans = COMPANY_CONFIG.pricing.filter((plan) => plan.priceINR > 0);
+    const paidPlans = PRICING_PREVIEW;
     assert.equal(offers["@type"], "AggregateOffer");
     assert.equal(offers.lowPrice, Math.min(...paidPlans.map((plan) => plan.priceINR)));
     assert.equal(offers.highPrice, Math.max(...paidPlans.map((plan) => plan.priceINR)));

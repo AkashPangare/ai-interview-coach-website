@@ -168,7 +168,7 @@ export const RoadmapPage: React.FC<RoadmapPageProps> = () => {
         },
         {
           day: "Day 7",
-          phase: "Sprint Polish & Readiness",
+          phase: "Final Polish & Readiness",
           tasks: [
             "Rapid review of high-yield algorithmic edge cases",
             "Company-specific interview cheat-sheet synthesis",
@@ -305,7 +305,7 @@ export const RoadmapPage: React.FC<RoadmapPageProps> = () => {
       ]
     }
 
-    // Default 30-Day Pro
+    // Default 30-day preparation timeline
     return [
       {
         day: "Days 1–3",
@@ -388,11 +388,11 @@ export const RoadmapPage: React.FC<RoadmapPageProps> = () => {
     },
     {
       q: "What is included in the Free Forever tier vs Paid Preparation Passes?",
-      a: "Our Free Forever tier includes 1 active personalized roadmap with a structured day-by-day task sequence, 3 full AI voice mock interviews, 1 technical diagnostic assessment, and foundational pacing with zero credit card required. Paid Preparation Passes (from ₹199) unlock dynamic 1-click schedule rebalancing, multiple simultaneous target role tracks, our interactive Cloud IDE stdout runner in 9 languages, the System Design whiteboard canvas, and up to 15+ voice mock interviews.",
+      a: "Our Free Forever tier includes 1 active personalized roadmap with a structured day-by-day task sequence, 3 full AI voice mock interviews, 1 technical diagnostic assessment, and foundational pacing with zero credit card required. Paid Preparation Passes (from ₹349) unlock dynamic 1-click schedule rebalancing, multiple simultaneous target role tracks, our interactive Cloud IDE stdout runner in 9 languages, the System Design whiteboard canvas, and up to 15+ voice mock interviews.",
     },
     {
       q: "Can I prepare on an intensive short timeline (7 to 14 days)?",
-      a: "Yes. Our 7-Day Sprint and 14-Day Grind tracks dynamically compress the curriculum to focus strictly on highest-frequency tier-1 patterns, critical architecture blueprints (like Rate Limiter and TinyURL), and high-yield voice mock interviews to maximize interview readiness in high-pressure crunch periods.",
+      a: "Yes. Our 14-day preparation pass can compress the curriculum to focus on frequent interview patterns, critical architecture blueprints (like Rate Limiter and TinyURL), and high-yield voice mock interviews for a short preparation window.",
     },
     {
       q: "Does the curriculum adapt between Junior, Senior, and Staff roles?",
@@ -433,7 +433,7 @@ export const RoadmapPage: React.FC<RoadmapPageProps> = () => {
               to="/pricing"
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-3.5 text-xs sm:text-sm font-medium text-slate-700 hover:bg-slate-50 transition w-full sm:w-auto shadow-xs"
             >
-              <span>View Passes (From ₹199)</span>
+              <span>View Prep Passes (From ₹349)</span>
             </Link>
           </div>
           <div className="pt-2 flex items-center justify-center gap-4 text-xs text-slate-500 font-medium">
@@ -523,9 +523,9 @@ export const RoadmapPage: React.FC<RoadmapPageProps> = () => {
                 </div>
                 <div className="grid grid-cols-4 gap-2">
                   {[
-                    { days: 7, label: "7 Days", sub: "Sprint" },
-                    { days: 14, label: "14 Days", sub: "Grind" },
-                    { days: 30, label: "30 Days", sub: "Pro" },
+                    { days: 7, label: "7 Days", sub: "Intensive" },
+                    { days: 14, label: "14 Days", sub: "Focused" },
+                    { days: 30, label: "30 Days", sub: "Standard" },
                     { days: 60, label: "60 Days", sub: "Mastery" },
                   ].map((item) => (
                     <button
@@ -650,7 +650,7 @@ export const RoadmapPage: React.FC<RoadmapPageProps> = () => {
           <div className="flex items-center gap-2 p-3.5 rounded-xl bg-blue-50/50 border border-blue-200 text-xs text-slate-700">
             <Zap className="h-4 w-4 text-blue-600 shrink-0" />
             <span>
-              <strong>Curriculum Tier Clarity:</strong> PrepVisor’s Free Tier provides 1 active roadmap with full daily task pacing, 3 voice mock interviews, and 1 diagnostic assessment. Prepaid passes (from ₹199) unlock extended mock interview quotas, unlimited cloud stdout execution, and 1-click dynamic schedule rebalancing.
+              <strong>Curriculum Tier Clarity:</strong> PrepVisor’s Free Tier provides 1 active roadmap with full daily task pacing, 3 voice mock interviews, and 1 diagnostic assessment. Interview Prep passes (from ₹349) unlock extended mock interview quotas, cloud stdout execution, and 1-click dynamic schedule rebalancing.
             </span>
           </div>
 
@@ -720,7 +720,7 @@ export const RoadmapPage: React.FC<RoadmapPageProps> = () => {
             </p>
             <div className="pt-2 flex items-center gap-2 text-xs text-slate-500">
               <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0" />
-              <span>Included on all paid preparation passes (7-Day Sprint, 14-Day Grind, 30-Day Pro).</span>
+              <span>Included on 14-, 30-, and 90-day Interview Prep passes.</span>
             </div>
           </div>
 
@@ -1143,7 +1143,7 @@ export const RoadmapPage: React.FC<RoadmapPageProps> = () => {
               to="/pricing"
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-7 py-3.5 text-xs sm:text-sm font-medium text-slate-700 hover:bg-slate-50 transition w-full sm:w-auto shadow-xs"
             >
-              <span>View Prep Passes (From ₹199)</span>
+              <span>View Prep Passes (From ₹349)</span>
             </Link>
           </div>
           <p className="text-xs text-slate-500 font-mono">

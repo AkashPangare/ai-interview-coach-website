@@ -4,6 +4,7 @@ import fs from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 import { COMPANY_CONFIG } from "../src/config/company.ts"
+import { PLAN_DURATIONS, PRICING_PREVIEW, RESUME_ALLOWANCES } from "../src/config/pricingPreview.ts"
 import { SEO_ROUTES, seoForGuide } from "../src/config/seo.ts"
 import { GUIDE_HUB_CATEGORIES } from "../src/config/guideCategories.ts"
 import { GUIDES } from "../src/data/guides.ts"
@@ -73,7 +74,7 @@ test("Phase 7 production readiness regressions", async (t) => {
     const types = core["@graph"].map((item: Record<string, any>) => item["@type"])
     assert.deepEqual(types, ["Organization", "WebSite", "SoftwareApplication"])
     const software = core["@graph"].find((item: Record<string, any>) => item["@type"] === "SoftwareApplication")
-    const paid = COMPANY_CONFIG.pricing.filter((plan) => plan.priceINR > 0)
+    const paid = PRICING_PREVIEW
     assert.equal(software.offers.lowPrice, Math.min(...paid.map((plan) => plan.priceINR)))
     assert.equal(software.offers.highPrice, Math.max(...paid.map((plan) => plan.priceINR)))
     assert.equal(software.offers.offerCount, paid.length)
@@ -88,30 +89,41 @@ test("Phase 7 production readiness regressions", async (t) => {
     assert.doesNotMatch(JSON.stringify([core, article]), /aggregateRating|reviewCount|"@type":"Person"/)
   })
 
-  await t.test("prerendered pricing stays in parity with shared and React pricing configuration", () => {
+  await t.test("pricing page stays in parity and every pass links to app pricing", () => {
     const pricingHtml = read("pricing")
     const reactPage = fs.readFileSync(path.join(root, "src/pages/PricingPage.tsx"), "utf8")
     const escapeHtml = (value: string) => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;")
     const renderedPlanIds = [...pricingHtml.matchAll(/<article data-plan-id="([^"]+)"/g)].map((match) => match[1])
-    assert.deepEqual(renderedPlanIds, COMPANY_CONFIG.pricing.map((plan) => plan.id))
-    assert.match(reactPage, /COMPANY_CONFIG\.pricing\.map\(\(tier: PricingTier\)/, "React cards derive from shared pricing config")
-    assert.match(reactPage, /tier\.features\.map/)
+    assert.deepEqual(renderedPlanIds, PRICING_PREVIEW.map((plan) => plan.id))
+    assert.match(reactPage, /PRICING_PREVIEW\.filter/, "React cards derive from shared preview config")
+    assert.deepEqual(PLAN_DURATIONS, [14, 30, 90])
+    assert.deepEqual(PLAN_DURATIONS.map((days) => PRICING_PREVIEW.filter((plan) => plan.days === days).map((plan) => plan.priceINR)), [
+      [249, 349, 499],
+      [399, 499, 699],
+      [999, 1299, 1799],
+    ])
+    for (const days of PLAN_DURATIONS) {
+      const [resume, interview, bundle] = PRICING_PREVIEW.filter((plan) => plan.days === days)
+      assert.deepEqual([resume.kind, interview.kind, bundle.kind], ["resume", "interview", "bundle"])
+      assert.ok(bundle.priceINR < resume.priceINR + interview.priceINR, `${days}-day bundle must save money`)
+    }
 
-    for (const plan of COMPANY_CONFIG.pricing) {
+    for (const plan of PRICING_PREVIEW) {
       assert.ok(pricingHtml.includes(`id="pricing-plan-${plan.id}"`), `${plan.id}: title target exists`)
       assert.ok(pricingHtml.includes(`>${escapeHtml(plan.name)}</h2>`), `${plan.id}: name matches`)
       assert.ok(pricingHtml.includes(escapeHtml(plan.subtitle)), `${plan.id}: description matches`)
-      assert.ok(pricingHtml.includes(plan.priceINR === 0 ? ">Free</span>" : `>₹${plan.priceINR}</span>`), `${plan.id}: price matches`)
-      if (plan.days > 0) assert.ok(pricingHtml.includes(`One-time · ${plan.days}-day access pass`), `${plan.id}: duration matches`)
-      for (const feature of plan.features) assert.ok(pricingHtml.includes(escapeHtml(feature)), `${plan.id}: ${feature}`)
-      assert.ok(pricingHtml.includes(`href="${COMPANY_CONFIG.appUrl}/register${plan.priceINR === 0 ? "" : `?plan=${plan.id}`}"`), `${plan.id}: CTA destination matches`)
+      assert.ok(pricingHtml.includes(`>₹${plan.priceINR}</span>`), `${plan.id}: price matches`)
+      assert.ok(pricingHtml.includes(`One-time · ${plan.days}-day access pass`), `${plan.id}: duration matches`)
+      assert.ok(pricingHtml.includes(`href="${COMPANY_CONFIG.appUrl}/pricing?days=${plan.days}"`), `${plan.id}: app pricing link is present`)
     }
+    assert.ok(!pricingHtml.includes("Resume Studio Boost"))
+    assert.deepEqual(RESUME_ALLOWANCES[30], { generations: 10, savedJobs: 20, matches: 20, qualityChecks: 10, recruiterReviews: 5, gapAnalyses: 5, optimizations: 10 })
 
     assert.ok(pricingHtml.includes(`<link rel="canonical" href="${SEO_ROUTES.pricing.canonicalUrl}" />`))
-    assert.ok(pricingHtml.includes(`<title>${SEO_ROUTES.pricing.title}</title>`))
+    assert.ok(pricingHtml.includes(`<title>${escapeHtml(SEO_ROUTES.pricing.title)}</title>`))
     const core = extractSchemas(pricingHtml).find((schema) => schema["@graph"])
     const software = core["@graph"].find((entity: Record<string, any>) => entity["@type"] === "SoftwareApplication")
-    const paid = COMPANY_CONFIG.pricing.filter((plan) => plan.priceINR > 0)
+    const paid = PRICING_PREVIEW
     assert.equal(software.offers.offerCount, paid.length, "free plan remains excluded from paid offer count")
     assert.equal(software.offers.highPrice, Math.max(...paid.map((plan) => plan.priceINR)))
     assert.equal(software.offers.lowPrice, Math.min(...paid.map((plan) => plan.priceINR)))

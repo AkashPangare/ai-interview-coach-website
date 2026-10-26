@@ -38,7 +38,7 @@ export const RefundPolicyPage: React.FC = () => {
           <section className="space-y-2">
             <h2 className="text-base font-semibold text-slate-900">1. One-Time Prepaid Passes (Zero Auto-Renewals)</h2>
             <p>
-              All PrepVisor paid plans are one-time prepaid digital access passes for the selected duration (7, 14, 30, or 90 days). There are no automatic renewals, recurring debits, or surprise charges.
+              New PrepVisor paid passes are one-time prepaid digital access passes for 14, 30, or 90 days. Previously purchased 7-day passes remain valid through their expiry. There are no automatic renewals, recurring debits, or surprise charges.
             </p>
             <p>
               Your pass expires automatically at the end of its prepaid period unless you explicitly purchase another pass. If you wish to discontinue using the platform, no cancellation action is required since you will never be billed automatically.

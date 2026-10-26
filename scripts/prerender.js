@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { GUIDES } from "../src/data/guides.ts";
 import { SEO_ROUTES, seoForGuide, PRODUCT_PAGE_INTROS } from "../src/config/seo.ts";
 import { COMPANY_CONFIG } from "../src/config/company.ts";
+import { PRICING_PREVIEW, RESUME_ALLOWANCES, PLAN_DURATIONS } from "../src/config/pricingPreview.ts";
 import { GUIDE_CATEGORIES, GUIDE_CATEGORY_BY_ID, GUIDE_HUB_CATEGORIES } from "../src/config/guideCategories.ts";
 import { generateArticleJsonLd, generateBreadcrumbJsonLd, generateFaqJsonLd, generateGuideCategoryJsonLd } from "../src/lib/structuredData.ts";
 import { guideTocEntries, parseGuideMarkdown, renderGuideMarkdownHtml, renderGuideReferencesHtml } from "../src/lib/guideMarkdown.ts";
@@ -297,20 +298,26 @@ function generateHomeHtml() {
     <noscript>
       <main class="p-8 max-w-6xl mx-auto font-sans">
         <header class="mb-12 text-center">
-          <p class="text-xs font-bold text-blue-600 uppercase tracking-widest">The Technical Interview Workbench</p>
-          <h1 class="text-5xl font-black text-slate-900 mt-3 leading-tight">AI Interview Preparation for Software Engineers</h1>
-          <p class="text-2xl font-semibold text-blue-700 mt-2">Engineered for the final round.</p>
+          <p class="text-xs font-bold text-blue-600 uppercase tracking-widest">Resume Studio + Interview Prep</p>
+          <h1 class="text-5xl font-black text-slate-900 mt-3 leading-tight">Build your resume. Prepare for what comes next.</h1>
+          <p class="text-2xl font-semibold text-blue-700 mt-2">Two connected ways to move forward.</p>
           <p class="text-xl text-slate-600 mt-4 leading-relaxed max-w-3xl mx-auto">
-            Prepare for software engineering interviews with personalized study roadmaps, DSA coding practice, system design simulations and AI mock interviews. Start free.
+            Create and tailor a resume, review how it matches a job, then turn the gaps into focused interview practice. Use either workflow on its own or connect them.
           </p>
           <div class="mt-8 flex justify-center gap-4">
             <a href="https://app.prepvisor.in/register?source=home_ssg" class="px-8 py-3.5 bg-blue-600 text-white font-bold rounded-xl shadow-sm">Get Your Free Interview Roadmap →</a>
+            <a href="/resume-studio" class="px-8 py-3.5 border border-slate-300 bg-white text-slate-700 font-semibold rounded-xl">Explore Resume Studio</a>
             <a href="/pricing" class="px-8 py-3.5 border border-slate-300 bg-white text-slate-700 font-semibold rounded-xl">View Pricing Plans</a>
           </div>
           <p class="text-xs text-slate-500 mt-4">✓ No credit card required • ✓ Free forever tier (3 mock interviews) • ✓ Instant electronic access</p>
         </header>
 
         <section class="mt-16 space-y-12">
+          <div class="p-8 rounded-2xl border border-slate-200 bg-white">
+            <h2 class="text-2xl font-bold text-slate-900">Resume Studio: career profile, tailored resumes and job matching</h2>
+            <p class="text-slate-600 mt-2">Create a career profile from a resume or manual entry, review resume versions, compare stated job requirements with evidence, and check resume quality and recruiter readability.</p>
+            <a href="/resume-studio">Explore Resume Studio</a>
+          </div>
           <div class="p-8 rounded-2xl border border-slate-200 bg-white">
             <h2 class="text-2xl font-bold text-slate-900">Pillar 1: Time-Aware Daily Pacing & 1-Click Rebalance Schedule</h2>
             <p class="text-slate-600 mt-2">Dynamic day-by-day preparation curriculum calibrated around your interview date (7 to 60+ days) and commitments (1 to 4 hrs/day).</p>
@@ -355,24 +362,28 @@ function generateHomeHtml() {
   return pageHtml;
 }
 
+function generateResumeStudioHtml() {
+  return template.replace(/<div id="root"><\/div>/, `<div id="root"></div>
+    <noscript><main class="p-8 max-w-6xl mx-auto font-sans">
+      <h1>Resume Studio — Build and review your resume</h1>
+      <p>Create a career profile by uploading a resume or entering details manually. Generate and edit tailored resume versions, then export a PDF.</p>
+      <section><h2>Compare your resume with a job description</h2><p>Review which requirements are supported by evidence, partly supported, or not evidenced in a saved resume version.</p></section>
+      <section><h2>Review resume quality and recruiter feedback</h2><p>Check extractable PDF text, formatting and content. Read an evidence backed recruiter content review. These checks do not predict ATS approval or hiring decisions.</p></section>
+      <section><h2>Continue into Interview Prep</h2><p>Use the matched job and resume context to build an interview preparation plan, or use Interview Prep independently.</p><a href="/roadmap">Explore Interview Prep</a></section>
+      <a href="${escapeAttribute(COMPANY_CONFIG.appUrl)}/register?source=resume_studio">Open PrepVisor</a>
+    </main></noscript>`);
+}
+
 function generatePricingHtml() {
   let pageHtml = template;
-  const pricingCards = COMPANY_CONFIG.pricing.map((plan) => {
-    const isFree = plan.priceINR === 0;
-    const registerUrl = `${COMPANY_CONFIG.appUrl}/register${isFree ? "" : `?plan=${encodeURIComponent(plan.id)}`}`;
-    const badge = plan.badge ? `<span class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-slate-100 px-3 py-0.5 text-[10px] font-mono uppercase tracking-wider text-slate-700">${escapeHtml(plan.badge)}</span>` : "";
-    const originalPrice = plan.originalPriceINR > 0
-      ? `<span class="text-xs font-mono text-slate-400 line-through">₹${plan.originalPriceINR}</span><span class="rounded-md bg-emerald-50 px-1.5 py-0.5 text-[10px] font-mono text-emerald-700">-${Math.round(((plan.originalPriceINR - plan.priceINR) / plan.originalPriceINR) * 100)}%</span>`
-      : "";
-    const duration = isFree ? "" : `<p class="mt-1 text-[11px] font-mono text-slate-500">One-time · ${plan.days}-day access pass</p>`;
-    const inclusions = plan.features.map((feature) => `<li>${escapeHtml(feature)}</li>`).join("");
-    return `<article data-plan-id="${escapeHtml(plan.id)}" aria-labelledby="pricing-plan-${escapeHtml(plan.id)}" class="relative flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6">
-      ${badge}
-      <div class="space-y-4"><div><h2 id="pricing-plan-${escapeHtml(plan.id)}" class="text-xl font-bold text-slate-900">${escapeHtml(plan.name)}</h2><p class="mt-1 text-xs leading-relaxed text-slate-600">${escapeHtml(plan.subtitle)}</p></div>
-      <div class="border-t border-slate-100 pt-4"><div class="flex items-baseline gap-2"><span class="text-2xl font-black text-slate-900">${isFree ? "Free" : `₹${plan.priceINR}`}</span>${originalPrice}</div>${duration}<p class="mt-1 text-[10px] text-emerald-700">${isFree ? "Full feature exploration" : "Inclusive of all taxes"}</p></div>
-      <ul class="space-y-2 border-t border-slate-100 pt-4 text-xs text-slate-700">${inclusions}</ul></div>
-      <a href="${escapeHtml(registerUrl)}" aria-label="${isFree ? "Start Free" : `Get started with ${escapeHtml(plan.name)}`}" class="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-blue-600 py-2.5 text-xs font-semibold text-white">${isFree ? "Start Free" : "Get Started"}</a>
-    </article>`;
+  const pricingCards = PRICING_PREVIEW.map((plan) => {
+    const interview = COMPANY_CONFIG.pricing.find((tier) => tier.id === `PLAN_${plan.days}`);
+    const a = RESUME_ALLOWANCES[plan.days];
+    const features = plan.kind === "interview"
+      ? interview.features
+      : [`${a.generations} AI-tailored resume generations`, `${a.matches} resume–JD matches`, `${a.qualityChecks} quality checks`, `${a.recruiterReviews} recruiter reviews`, `${a.gapAnalyses} gap analyses`, `${a.optimizations} JD optimizations`, ...(plan.kind === "bundle" ? [`All ${plan.days}-day Interview Prep benefits`] : [])];
+    const cta = `<a href="${escapeHtml(COMPANY_CONFIG.appUrl)}/pricing?days=${plan.days}">Choose in app</a>`;
+    return `<article data-plan-id="${escapeHtml(plan.id)}"><h2 id="pricing-plan-${escapeHtml(plan.id)}">${escapeHtml(plan.name)}</h2><p>${escapeHtml(plan.subtitle)}</p><p><span>₹${plan.priceINR}</span> · One-time · ${plan.days}-day access pass</p><ul>${features.map((feature) => `<li>${escapeHtml(feature)}</li>`).join("")}</ul>${cta}</article>`;
   }).join("\n");
   const staticContent = `
     <div id="root"></div>
@@ -380,12 +391,16 @@ function generatePricingHtml() {
       <main class="p-8 max-w-5xl mx-auto font-sans">
         <header class="mb-10 text-center">
           <p class="text-xs font-bold text-blue-600 uppercase tracking-widest">Transparent & Honest Pricing</p>
-          <h1 class="text-4xl font-black text-slate-900 mt-2">PrepVisor Pricing Plans & Preparation Passes</h1>
+          <h1 class="text-4xl font-black text-slate-900 mt-2">PrepVisor Pricing Plans</h1>
           <p class="text-lg text-slate-600 mt-4 leading-relaxed max-w-2xl mx-auto">
-            Choose a preparation plan that fits your interview timeline. Instant electronic digital access with zero hidden auto-renewals.
+            Choose a one-time Resume Studio, Interview Prep, or Complete Journey pass.
           </p>
+          <p>Choose ${PLAN_DURATIONS.map((days) => `${days} days`).join(", ")}.</p>
         </header>
-        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">${pricingCards}</div>
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
+          <article><h2>Free</h2><p>₹0 forever · No credit card required</p><ul><li>1 roadmap, 3 mock interviews, 1 assessment, and 10 AI Coach messages</li><li>1 career profile and 1 saved resume version</li><li>1 AI-tailored generation and 1 PDF export</li><li>1 JD match, 1 quality check, 1 recruiter review, and 1 gap analysis</li></ul><a href="${escapeHtml(COMPANY_CONFIG.appUrl)}/register">Start free</a></article>
+          ${pricingCards}
+        </div>
       </main>
     </noscript>
   `;
@@ -536,6 +551,11 @@ const cpDir = path.resolve(distPath, "coding-practice");
 fs.mkdirSync(cpDir, { recursive: true });
 writePage(path.resolve(cpDir, "index.html"), generateCodingPracticeHtml(), "codingPractice");
 console.log("✓ Pre-rendered: dist/coding-practice/index.html");
+
+const resumeStudioDir = path.resolve(distPath, "resume-studio");
+fs.mkdirSync(resumeStudioDir, { recursive: true });
+writePage(path.resolve(resumeStudioDir, "index.html"), generateResumeStudioHtml(), "resumeStudio");
+console.log("✓ Pre-rendered: dist/resume-studio/index.html");
 
 // 3. Pre-render Pricing, Roadmap, About, Contact
 const pricingDir = path.resolve(distPath, "pricing");

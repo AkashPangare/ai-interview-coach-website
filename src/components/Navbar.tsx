@@ -15,6 +15,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
 
   const links = [
     { to: "/", label: "Home" },
+    { to: "/resume-studio", label: "Resume Studio" },
     { to: "/roadmap", label: "Roadmap" },
     { to: "/system-design", label: "System Design" },
     { to: "/mock-interview", label: "Mock Interview" },
@@ -30,7 +31,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
         <BrandLogo to="/" />
 
         {/* Desktop Nav Links */}
-        <nav className="hidden items-center gap-5 lg:gap-7 md:flex">
+        <nav className="hidden items-center gap-4 xl:flex">
           {links.map((link) => (
             <Link
               key={link.to}
@@ -45,7 +46,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
         </nav>
 
         {/* Desktop Auth Action Buttons */}
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-3 xl:flex">
           <a
             href={decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/login`)}
             onClick={() => trackEvent("landing_cta_clicked", { cta: "navbar_login", location: "desktop_navbar" })}
@@ -67,7 +68,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
         {/* Mobile Hamburger Toggle */}
         <button
           onClick={() => setOpen(!open)}
-          className="p-2 text-slate-700 hover:text-slate-900 md:hidden"
+          className="p-2 text-slate-700 hover:text-slate-900 xl:hidden"
           aria-label="Toggle menu"
         >
           {open ? <X /> : <Menu />}
@@ -76,7 +77,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
 
       {/* Mobile Drawer */}
       {open && (
-        <nav className="space-y-1.5 border-t border-slate-200 bg-white px-4 py-4 md:hidden shadow-xl">
+        <nav className="space-y-1.5 border-t border-slate-200 bg-white px-4 py-4 xl:hidden shadow-xl">
           {links.map((link) => (
             <Link
               key={link.to}

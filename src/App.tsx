@@ -1,10 +1,9 @@
-import { lazy, Suspense, useState, useEffect } from "react"
+import { lazy, Suspense, useEffect } from "react"
 import { Routes, Route, useLocation } from "react-router-dom"
 import { Navbar } from "@/components/Navbar"
 import { Footer } from "@/components/Footer"
 import { trackPageView } from "@/lib/analytics"
 
-const EarlyAccessModal = lazy(() => import("@/components/EarlyAccessModal").then((module) => ({ default: module.EarlyAccessModal })))
 const HomePage = lazy(() => import("@/pages/HomePage").then((module) => ({ default: module.HomePage })))
 const PricingPage = lazy(() => import("@/pages/PricingPage").then((module) => ({ default: module.PricingPage })))
 const ContactPage = lazy(() => import("@/pages/ContactPage").then((module) => ({ default: module.ContactPage })))
@@ -19,6 +18,7 @@ const SystemDesignLandingPage = lazy(() => import("@/pages/SystemDesignLandingPa
 const MockInterviewLandingPage = lazy(() => import("@/pages/MockInterviewLandingPage").then((module) => ({ default: module.MockInterviewLandingPage })))
 const CodingPracticeLandingPage = lazy(() => import("@/pages/CodingPracticeLandingPage").then((module) => ({ default: module.CodingPracticeLandingPage })))
 const RoadmapPage = lazy(() => import("@/pages/RoadmapPage").then((module) => ({ default: module.RoadmapPage })))
+const ResumeStudioPage = lazy(() => import("@/pages/ResumeStudioPage").then((module) => ({ default: module.ResumeStudioPage })))
 const NotFoundPage = lazy(() => import("@/pages/NotFoundPage").then((module) => ({ default: module.NotFoundPage })))
 
 function RouteLoadingFallback() {
@@ -50,26 +50,10 @@ function RouteTracker() {
 }
 
 export function App() {
-  // Early access modal state
-  const [isWaitlistOpen, setIsWaitlistOpen] = useState(false)
-  const [selectedPlanId, setSelectedPlanId] = useState("accelerator")
-
-  const handleOpenWaitlist = () => {
-    setSelectedPlanId("accelerator")
-    setIsWaitlistOpen(true)
-  }
-
-  const handleOpenWaitlistWithPlan = (planId: string) => {
-    setSelectedPlanId(planId)
-    setIsWaitlistOpen(true)
-  }
-
   return (
     <div className="flex min-h-screen flex-col bg-[#fafbfc] text-slate-900 selection:bg-blue-600 selection:text-white">
       <RouteTracker />
-      <Navbar
-        onOpenWaitlist={handleOpenWaitlist}
-      />
+      <Navbar />
 
       <main className="flex-1">
         <Suspense fallback={<RouteLoadingFallback />}>
@@ -77,36 +61,26 @@ export function App() {
           <Route
             path="/"
             element={
-              <HomePage
-                onOpenWaitlist={handleOpenWaitlist}
-              />
+              <HomePage />
             }
           />
-          <Route
-            path="/pricing"
-            element={
-              <PricingPage
-                onOpenWaitlistWithPlan={handleOpenWaitlistWithPlan}
-              />
-            }
-          />
+          <Route path="/pricing" element={<PricingPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/refund-policy" element={<RefundPolicyPage />} />
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route
             path="/about"
-            element={<AboutPage onOpenWaitlist={handleOpenWaitlist} />}
+            element={<AboutPage />}
           />
           <Route path="/system-design" element={<SystemDesignLandingPage />} />
           <Route path="/mock-interview" element={<MockInterviewLandingPage />} />
           <Route path="/coding-practice" element={<CodingPracticeLandingPage />} />
+          <Route path="/resume-studio" element={<ResumeStudioPage />} />
           <Route
             path="/roadmap"
             element={
-              <RoadmapPage
-                onOpenWaitlist={handleOpenWaitlist}
-              />
+              <RoadmapPage />
             }
           />
           <Route path="/guides" element={<GuidesHubPage />} />
@@ -125,16 +99,6 @@ export function App() {
 
       <Footer />
 
-      {/* Early Access Modal */}
-      {isWaitlistOpen && (
-        <Suspense fallback={<div className="sr-only" role="status" aria-live="polite">Loading sign-up form…</div>}>
-          <EarlyAccessModal
-            isOpen={isWaitlistOpen}
-            onClose={() => setIsWaitlistOpen(false)}
-            selectedPlanId={selectedPlanId}
-          />
-        </Suspense>
-      )}
     </div>
   )
 }

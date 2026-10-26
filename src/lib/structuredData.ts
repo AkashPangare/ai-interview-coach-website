@@ -1,4 +1,5 @@
 import { COMPANY_CONFIG } from "../config/company.ts"
+import { PRICING_PREVIEW } from "../config/pricingPreview.ts"
 import { absoluteSiteUrl } from "../config/seo.ts"
 import type { GuideCategoryDefinition } from "../config/guideCategories.ts"
 import type { Guide } from "../data/guides.ts"
@@ -12,7 +13,7 @@ export const SCHEMA_IDS = {
 } as const
 
 export function generateCoreStructuredData(): JsonLd {
-  const paidPlans = COMPANY_CONFIG.pricing.filter((plan) => plan.priceINR > 0)
+  const paidPlans = PRICING_PREVIEW
   const paidPrices = paidPlans.map((plan) => plan.priceINR)
   const organization = {
     "@type": "Organization",

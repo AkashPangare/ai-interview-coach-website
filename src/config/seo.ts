@@ -4,6 +4,7 @@ import { GUIDE_HUB_CATEGORIES } from "./guideCategories.ts"
 
 export type RouteSeoKey =
   | "home"
+  | "resumeStudio"
   | "roadmap"
   | "codingPractice"
   | "systemDesign"
@@ -68,17 +69,21 @@ export function resolveSeoMetadata(definition: SeoDefinition): ResolvedSeoMetada
   }
 }
 
-const minimumPaidPrice = Math.min(
-  ...COMPANY_CONFIG.pricing.filter((plan) => plan.priceINR > 0).map((plan) => plan.priceINR),
-)
-
 const routeDefinitions: Record<RouteSeoKey, SeoDefinition> = {
   home: {
     pathname: "/",
     title: "AI Interview Preparation for Software Engineers | PrepVisor",
-    description: "Prepare for software engineering interviews with personalized study roadmaps, DSA coding practice, system design simulations and AI mock interviews. Start free.",
+    description: "Build tailored resumes, compare them with job descriptions, and prepare for software engineering interviews with roadmaps, coding practice, system design and AI mock interviews.",
     canonicalPath: "/",
     keywords: "AI tech interview coach, system design interview simulator, DSA coding practice terminal stdout, voice mock interview STAR method, tech interview study roadmap, Java interview prep, software engineer mock interview, PrepVisor",
+    indexable: true,
+  },
+  resumeStudio: {
+    pathname: "/resume-studio",
+    title: "Resume Studio — Build, Tailor & Review Your Resume | PrepVisor",
+    description: "Create a career profile, tailor resume versions to target jobs, review requirement evidence and resume quality, then turn gaps into an interview preparation plan.",
+    canonicalPath: "/resume-studio",
+    keywords: "resume builder, tailored resume, job description resume match, resume quality check, recruiter screen, career profile, PrepVisor Resume Studio",
     indexable: true,
   },
   roadmap: {
@@ -115,10 +120,10 @@ const routeDefinitions: Record<RouteSeoKey, SeoDefinition> = {
   },
   pricing: {
     pathname: "/pricing",
-    title: `PrepVisor Pricing — One-Time AI Interview Prep Passes from ₹${minimumPaidPrice}`,
-    description: `Transparent, one-time prepaid interview passes from ₹${minimumPaidPrice}. Compare plan durations and included preparation features.`,
+    title: "PrepVisor Pricing — Resume Studio & Interview Prep Plans",
+    description: "Compare 14-, 30-, and 90-day Resume Studio, Interview Prep, and Complete Journey passes, with clear allowances and one-time pricing.",
     canonicalPath: "/pricing",
-    keywords: "prepvisor pricing, tech interview prep cost, interview preparation passes, coding interview cost, system design practice pricing",
+    keywords: "prepvisor pricing, resume studio pricing, interview preparation passes, combined resume and interview plan",
     indexable: true,
   },
   about: {

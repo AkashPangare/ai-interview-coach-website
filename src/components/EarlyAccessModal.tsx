@@ -84,7 +84,7 @@ export const EarlyAccessModal: React.FC<EarlyAccessModalProps> = ({
           "Customer Name": name,
           "Email Address": email,
           "Mobile Number": `+91 ${phone}`,
-          "Selected Plan": `${selectedTier.name} (${selectedTier.days} Days)`,
+          "Selected Plan": selectedTier.name,
           "Payable Amount": `₹${selectedTier.priceINR} (All taxes incl.)`,
           "Target Role": effectiveRole,
           "Submission Time": new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
@@ -129,7 +129,7 @@ export const EarlyAccessModal: React.FC<EarlyAccessModalProps> = ({
               <div>
                 <span className="text-[11px] font-mono uppercase tracking-wider text-blue-700 font-semibold">Selected Plan:</span>
                 <p className="text-sm font-bold text-slate-900 mt-0.5">
-                  {selectedTier.name} ({selectedTier.days} Days)
+                  {selectedTier.name}
                 </p>
                 <p className="text-[11px] text-slate-500 mt-0.5">
                   One-time payment · Instant digital access
@@ -277,7 +277,7 @@ export const EarlyAccessModal: React.FC<EarlyAccessModalProps> = ({
               </div>
               <div className="flex justify-between border-b border-slate-200 pb-2">
                 <span className="text-slate-500">Plan & Validity:</span>
-                <span className="font-semibold text-slate-900">{selectedTier.name} ({selectedTier.days} Days)</span>
+                <span className="font-semibold text-slate-900">{selectedTier.name}</span>
               </div>
               <div className="flex justify-between border-b border-slate-200 pb-2">
                 <span className="text-slate-500">Amount:</span>

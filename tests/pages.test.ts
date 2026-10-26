@@ -19,6 +19,7 @@ test("Website Pillar Pages & SEO Architecture Suite", async (t) => {
     assert.ok(content.includes("https://prepvisor.in/mock-interview"), "Must include /mock-interview");
     assert.ok(content.includes("https://prepvisor.in/coding-practice"), "Must include /coding-practice");
     assert.ok(content.includes("https://prepvisor.in/roadmap"), "Must include /roadmap");
+    assert.ok(content.includes("https://prepvisor.in/resume-studio"), "Must include /resume-studio");
     assert.ok(content.includes("https://prepvisor.in/pricing"), "Must include /pricing");
     assert.ok(content.includes("https://prepvisor.in/guides"), "Must include /guides");
     for (const category of ["system-design", "java-backend", "dsa"]) {
@@ -65,6 +66,7 @@ test("Website Pillar Pages & SEO Architecture Suite", async (t) => {
     assert.ok(fs.existsSync(path.resolve(distPath, "system-design/index.html")), "dist/system-design/index.html must exist");
     assert.ok(fs.existsSync(path.resolve(distPath, "mock-interview/index.html")), "dist/mock-interview/index.html must exist");
     assert.ok(fs.existsSync(path.resolve(distPath, "coding-practice/index.html")), "dist/coding-practice/index.html must exist");
+    assert.ok(fs.existsSync(path.resolve(distPath, "resume-studio/index.html")), "dist/resume-studio/index.html must exist");
     assert.ok(fs.existsSync(path.resolve(distPath, "pricing/index.html")), "dist/pricing/index.html must exist");
     assert.ok(fs.existsSync(path.resolve(distPath, "roadmap/index.html")), "dist/roadmap/index.html must exist");
     assert.ok(fs.existsSync(path.resolve(distPath, "about/index.html")), "dist/about/index.html must exist");
@@ -80,6 +82,10 @@ test("Website Pillar Pages & SEO Architecture Suite", async (t) => {
     const roadmapContent = fs.readFileSync(path.resolve(distPath, "roadmap/index.html"), "utf-8");
     assert.ok(roadmapContent.includes("https://prepvisor.in/roadmap"), "Roadmap page must have canonical URL");
     assert.ok(roadmapContent.includes("Dynamic Daily Pacing Engine"), "Roadmap headline pre-rendered");
+
+    const resumeStudioContent = fs.readFileSync(path.resolve(distPath, "resume-studio/index.html"), "utf-8");
+    assert.ok(resumeStudioContent.includes("https://prepvisor.in/resume-studio"), "Resume Studio page must have canonical URL");
+    assert.ok(resumeStudioContent.includes("Build and review your resume"), "Resume Studio content pre-rendered");
 
     const pricingContent = fs.readFileSync(path.resolve(distPath, "pricing/index.html"), "utf-8");
     assert.ok(pricingContent.includes("https://prepvisor.in/pricing"), "Pricing page must have canonical URL");

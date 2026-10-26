@@ -10,13 +10,14 @@ export const Footer: React.FC = () => (
       <div className="space-y-3 max-w-xs">
         <BrandLogo to="/" />
         <p className="text-xs leading-relaxed text-slate-600">
-          The technical interview workbench. Calibrated daily pacing, live DSA terminal stdout, and interactive system design whiteboard.
+          Build a stronger resume, understand job requirements, and prepare for interviews with one connected workspace.
         </p>
       </div>
       <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 text-xs text-slate-600">
         <div>
           <p className="font-semibold text-slate-900 mb-3 uppercase tracking-wider text-[11px]">Studios</p>
           <ul className="space-y-2">
+            <li><Link to="/resume-studio" className="hover:text-blue-600 transition-colors">Resume Studio</Link></li>
             <li><Link to="/system-design" className="hover:text-blue-600 transition-colors">System Design</Link></li>
             <li><Link to="/mock-interview" className="hover:text-blue-600 transition-colors">Voice Mock AI</Link></li>
             <li><Link to="/coding-practice" className="hover:text-blue-600 transition-colors">DSA Coding Arena</Link></li>

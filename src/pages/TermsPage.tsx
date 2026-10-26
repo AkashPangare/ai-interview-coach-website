@@ -43,9 +43,9 @@ export const TermsPage: React.FC = () => {
           </section>
 
           <section className="space-y-2">
-            <h2 className="text-base font-semibold text-slate-900">3. Subscriptions & Cancellation Policy</h2>
+            <h2 className="text-base font-semibold text-slate-900">3. Paid Passes & Refunds</h2>
             <p>
-              Paid access to PrepVisor is provided via recurring subscriptions or fixed-duration access passes. Subscribers may cancel auto-renewal at any time prior to their next billing date. All refund requests, eligibility rules, and dispute timelines are governed by our dedicated{" "}
+              Paid access to PrepVisor is provided through one-time, fixed-duration passes. Passes do not renew automatically. Refund requests, eligibility rules, and dispute timelines are governed by our dedicated{" "}
               <Link to="/refund-policy" className="text-blue-600 hover:underline font-medium">
                 Cancellation &amp; Refund Policy
               </Link>.
@@ -55,7 +55,7 @@ export const TermsPage: React.FC = () => {
           <section className="space-y-2">
             <h2 className="text-base font-semibold text-slate-900">4. Early Access & Free Features</h2>
             <p>
-              Joining our early-access list or using free practice tiers does not create a financial commitment. Commercial subscription terms apply only when paid checkout is completed.
+              Joining our early-access list or using free features does not create a financial commitment. Paid pass terms apply only when checkout is completed.
             </p>
           </section>
 

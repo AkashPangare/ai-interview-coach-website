@@ -15,6 +15,7 @@ import {
   HelpCircle,
   Play,
   Sparkles,
+  FileText,
   Timer,
   CheckCircle2,
   AlertCircle,
@@ -40,14 +41,11 @@ export const HomePage: React.FC<HomePageProps> = () => {
     setOpenFaqIndex(openFaqIndex === index ? null : index)
   }
 
-  const scrollToWorkbench = () => {
-    const el = document.getElementById("workbench")
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" })
-    }
-  }
-
   const faqs = [
+    {
+      q: "Can I use Resume Studio without starting interview preparation?",
+      a: "Yes. Build a career profile, create and review resume versions, compare one with a job description, and use the resume quality and recruiter content checks. If you want to prepare for that job later, you can carry the matched resume and job context into Interview Prep.",
+    },
     {
       q: "How does PrepVisor organize interview practice?",
       a: "PrepVisor brings together a personalized preparation roadmap, coding and system design practice, mock interviews, and technical interview guides. The roadmap uses your target role, interview timeline, and available study hours to organize daily preparation.",
@@ -82,7 +80,7 @@ export const HomePage: React.FC<HomePageProps> = () => {
     },
     {
       q: "Are the paid plans recurring subscriptions or one-time prepaid passes?",
-      a: "All PrepVisor paid plans are 100% prepaid, one-time digital access passes for the specific duration selected (7, 14, 30, or 90 days). There are zero automatic renewals, zero recurring debits, and zero hidden charges.",
+      a: "All new PrepVisor paid plans are prepaid, one-time digital access passes for 14, 30, or 90 days. There are no automatic renewals or recurring debits. Previously purchased 7-day passes remain valid until they expire.",
     },
   ]
 
@@ -99,18 +97,18 @@ export const HomePage: React.FC<HomePageProps> = () => {
           <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs font-semibold text-slate-700 shadow-xs">
             <span className="flex h-2 w-2 rounded-full bg-blue-600 animate-pulse" />
             <Sparkles className="h-3.5 w-3.5 text-blue-600" />
-            <span>The Technical Interview Workbench</span>
+            <span>Resume Studio + Interview Prep</span>
           </div>
 
           {/* Main Title */}
           <h1 className="mx-auto max-w-4xl text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-[-0.03em] text-slate-900 leading-[1.12]">
-            AI Interview Preparation for Software Engineers
+            Build your resume. Prepare for what comes next.
           </h1>
-          <p className="text-2xl sm:text-3xl font-semibold tracking-[-0.02em] text-blue-700">Engineered for the final round.</p>
+          <p className="text-2xl sm:text-3xl font-semibold tracking-[-0.02em] text-blue-700">One workspace, from application to interview.</p>
 
           {/* Subtitle */}
           <p className="mx-auto max-w-2xl text-base sm:text-lg leading-relaxed text-slate-600 font-normal">
-            PrepVisor organizes your preparation around your target role and interview date. Practice DSA with a live terminal stdout console, design distributed systems with real-time scale math, and master behavioral rounds with voice AI.
+            Create and tailor a resume, review how it matches a job, then turn the gaps into focused interview practice. Use either Resume Studio or Interview Prep on its own, or connect the two when you need both.
           </p>
 
           {/* Hero CTAs */}
@@ -123,14 +121,13 @@ export const HomePage: React.FC<HomePageProps> = () => {
               <span>Get Your Free Interview Roadmap →</span>
               <ArrowRight className="h-4 w-4" />
             </a>
-            <button
-              type="button"
-              onClick={scrollToWorkbench}
+            <Link
+              to="/resume-studio"
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-3.5 text-xs sm:text-sm font-medium text-slate-700 transition hover:bg-slate-50 hover:text-slate-900 w-full sm:w-auto shadow-xs"
             >
-              <span>Watch It Work ↓</span>
-              <ChevronDown className="h-4 w-4 text-slate-500" />
-            </button>
+              <span>Explore Resume Studio</span>
+              <ArrowRight className="h-4 w-4 text-slate-500" />
+            </Link>
           </div>
 
           {/* Trust Micro-Copy */}
@@ -230,7 +227,7 @@ export const HomePage: React.FC<HomePageProps> = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
                   <div>
                     <span className="text-[11px] font-mono uppercase tracking-wider text-blue-600 font-semibold">Mission Control Schedule</span>
-                    <h3 className="text-lg font-semibold text-slate-900 mt-0.5">Day 4 of 14 · Sprint Preparation Track</h3>
+                    <h3 className="text-lg font-semibold text-slate-900 mt-0.5">Day 4 of 14 · Interview Preparation Track</h3>
                     <p className="text-xs text-slate-600">Target Role: Senior Backend Engineer (Java / Distributed Systems) · 2.0 hrs/day</p>
                   </div>
                   <div className="flex items-center gap-3">
@@ -690,14 +687,22 @@ export const HomePage: React.FC<HomePageProps> = () => {
           <div className="text-center space-y-3 max-w-2xl mx-auto">
             <span className="text-xs font-mono uppercase tracking-widest text-blue-600 font-semibold">The PrepVisor Workbench</span>
             <h2 className="text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-slate-900">
-              One place for structured interview practice
+              Two ways to move your career forward
             </h2>
             <p className="text-sm text-slate-600">
-              Build a preparation plan, practice technical topics, and review your progress across the available studios.
+              Start with a stronger resume, structured interview practice, or move from one to the other.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-6 rounded-2xl border border-blue-200 bg-blue-50/40 hover:border-blue-300 hover:shadow-md transition space-y-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white border border-blue-200 text-blue-600"><FileText className="h-5 w-5" /></div>
+              <div>
+                <h3 className="text-base font-semibold text-slate-900">Build and review your resume</h3>
+                <p className="text-sm text-slate-600 leading-relaxed mt-2">Create a career profile, tailor resume versions, compare them with job requirements, and review quality and recruiter feedback.</p>
+              </div>
+              <Link to="/resume-studio" className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline">Explore Resume Studio <ArrowRight className="h-3.5 w-3.5" /></Link>
+            </div>
             <div className="p-6 rounded-2xl border border-slate-200 bg-[#fafbfc] hover:border-blue-300 hover:shadow-md transition space-y-4">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 border border-blue-200 text-blue-600"><Calendar className="h-5 w-5" /></div>
               <div>
@@ -737,10 +742,10 @@ export const HomePage: React.FC<HomePageProps> = () => {
           <div className="text-center space-y-3 max-w-2xl mx-auto">
             <span className="text-xs font-mono uppercase tracking-widest text-blue-600 font-semibold">What PrepVisor includes</span>
             <h2 className="text-3xl sm:text-4xl font-semibold tracking-[-0.02em] text-slate-900">
-              How PrepVisor supports interview preparation
+              How PrepVisor supports your next step
             </h2>
             <p className="text-sm text-slate-600">
-              Explore the core activities available across PrepVisor’s roadmap, practice studios, and preparation guides.
+              Explore resume creation, job matching, interview practice, and preparation guides.
             </p>
           </div>
 
@@ -755,6 +760,12 @@ export const HomePage: React.FC<HomePageProps> = () => {
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {[
+                  {
+                    feature: "Resume Studio",
+                    details: "Build a career profile, create tailored resume versions, review requirement evidence and check resume quality.",
+                    link: "/resume-studio",
+                    linkLabel: "Resume Studio",
+                  },
                   {
                     feature: "Roadmap planning",
                     details: "Build a daily plan around your target role, interview timeline, and available hours.",
@@ -1139,7 +1150,7 @@ export const HomePage: React.FC<HomePageProps> = () => {
               to="/pricing"
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-7 py-3.5 text-xs sm:text-sm font-medium text-slate-700 hover:bg-slate-50 transition w-full sm:w-auto shadow-xs"
             >
-              <span>View Passes (From ₹199)</span>
+              <span>View Passes (From ₹249)</span>
             </Link>
           </div>
           <p className="text-xs text-slate-500 font-mono pt-2">
