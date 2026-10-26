@@ -3,23 +3,60 @@ import { Routes, Route, useLocation } from "react-router-dom"
 import { Navbar } from "@/components/Navbar"
 import { Footer } from "@/components/Footer"
 import { trackPageView } from "@/lib/analytics"
+import { commonRoutePaths, preloadRoute, routeModules } from "@/lib/routeModules"
 
-const HomePage = lazy(() => import("@/pages/HomePage").then((module) => ({ default: module.HomePage })))
-const PricingPage = lazy(() => import("@/pages/PricingPage").then((module) => ({ default: module.PricingPage })))
-const ContactPage = lazy(() => import("@/pages/ContactPage").then((module) => ({ default: module.ContactPage })))
-const RefundPolicyPage = lazy(() => import("@/pages/RefundPolicyPage").then((module) => ({ default: module.RefundPolicyPage })))
-const PrivacyPolicyPage = lazy(() => import("@/pages/PrivacyPolicyPage").then((module) => ({ default: module.PrivacyPolicyPage })))
-const TermsPage = lazy(() => import("@/pages/TermsPage").then((module) => ({ default: module.TermsPage })))
-const AboutPage = lazy(() => import("@/pages/AboutPage").then((module) => ({ default: module.AboutPage })))
-const GuidesHubPage = lazy(() => import("@/pages/GuidesHubPage").then((module) => ({ default: module.GuidesHubPage })))
-const GuideCategoryPage = lazy(() => import("@/pages/GuideCategoryPage").then((module) => ({ default: module.GuideCategoryPage })))
-const GuideDetailPage = lazy(() => import("@/pages/GuideDetailPage").then((module) => ({ default: module.GuideDetailPage })))
-const SystemDesignLandingPage = lazy(() => import("@/pages/SystemDesignLandingPage").then((module) => ({ default: module.SystemDesignLandingPage })))
-const MockInterviewLandingPage = lazy(() => import("@/pages/MockInterviewLandingPage").then((module) => ({ default: module.MockInterviewLandingPage })))
-const CodingPracticeLandingPage = lazy(() => import("@/pages/CodingPracticeLandingPage").then((module) => ({ default: module.CodingPracticeLandingPage })))
-const RoadmapPage = lazy(() => import("@/pages/RoadmapPage").then((module) => ({ default: module.RoadmapPage })))
-const ResumeStudioPage = lazy(() => import("@/pages/ResumeStudioPage").then((module) => ({ default: module.ResumeStudioPage })))
-const NotFoundPage = lazy(() => import("@/pages/NotFoundPage").then((module) => ({ default: module.NotFoundPage })))
+const HomePage = lazy(() => routeModules.home().then((module) => ({ default: module.HomePage })))
+const PricingPage = lazy(() => routeModules.pricing().then((module) => ({ default: module.PricingPage })))
+const ContactPage = lazy(() => routeModules.contact().then((module) => ({ default: module.ContactPage })))
+const RefundPolicyPage = lazy(() => routeModules.refundPolicy().then((module) => ({ default: module.RefundPolicyPage })))
+const PrivacyPolicyPage = lazy(() => routeModules.privacyPolicy().then((module) => ({ default: module.PrivacyPolicyPage })))
+const TermsPage = lazy(() => routeModules.terms().then((module) => ({ default: module.TermsPage })))
+const AboutPage = lazy(() => routeModules.about().then((module) => ({ default: module.AboutPage })))
+const GuidesHubPage = lazy(() => routeModules.guidesHub().then((module) => ({ default: module.GuidesHubPage })))
+const GuideCategoryPage = lazy(() => routeModules.guideCategory().then((module) => ({ default: module.GuideCategoryPage })))
+const GuideDetailPage = lazy(() => routeModules.guideDetail().then((module) => ({ default: module.GuideDetailPage })))
+const SystemDesignLandingPage = lazy(() => routeModules.systemDesign().then((module) => ({ default: module.SystemDesignLandingPage })))
+const MockInterviewLandingPage = lazy(() => routeModules.mockInterview().then((module) => ({ default: module.MockInterviewLandingPage })))
+const CodingPracticeLandingPage = lazy(() => routeModules.codingPractice().then((module) => ({ default: module.CodingPracticeLandingPage })))
+const RoadmapPage = lazy(() => routeModules.roadmap().then((module) => ({ default: module.RoadmapPage })))
+const ResumeStudioPage = lazy(() => routeModules.resumeStudio().then((module) => ({ default: module.ResumeStudioPage })))
+const NotFoundPage = lazy(() => routeModules.notFound().then((module) => ({ default: module.NotFoundPage })))
+
+function RoutePreloader() {
+  useEffect(() => {
+    const warmLink = (event: Event) => {
+      const target = event.target
+      if (!(target instanceof Element)) return
+      const link = target.closest<HTMLAnchorElement>('a[href^="/"]')
+      if (link) preloadRoute(new URL(link.href).pathname)
+    }
+    document.addEventListener("pointerover", warmLink, { passive: true })
+    document.addEventListener("focusin", warmLink)
+    document.addEventListener("touchstart", warmLink, { passive: true })
+
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection
+    let idleId: number | undefined
+    let scheduledAsIdle = false
+    if (!connection?.saveData && connection?.effectiveType !== "2g" && connection?.effectiveType !== "slow-2g") {
+      if (typeof window.requestIdleCallback === "function") {
+        idleId = window.requestIdleCallback(() => commonRoutePaths.forEach(preloadRoute), { timeout: 2500 })
+        scheduledAsIdle = true
+      } else {
+        idleId = setTimeout(() => commonRoutePaths.forEach(preloadRoute), 1500)
+      }
+    }
+    return () => {
+      document.removeEventListener("pointerover", warmLink)
+      document.removeEventListener("focusin", warmLink)
+      document.removeEventListener("touchstart", warmLink)
+      if (idleId !== undefined) {
+        if (scheduledAsIdle) window.cancelIdleCallback(idleId)
+        else clearTimeout(idleId)
+      }
+    }
+  }, [])
+  return null
+}
 
 function RouteLoadingFallback() {
   return (
@@ -53,6 +90,7 @@ export function App() {
   return (
     <div className="flex min-h-screen flex-col bg-[#fafbfc] text-slate-900 selection:bg-blue-600 selection:text-white">
       <RouteTracker />
+      <RoutePreloader />
       <Navbar />
 
       <main className="flex-1">

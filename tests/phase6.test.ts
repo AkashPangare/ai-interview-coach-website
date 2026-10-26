@@ -25,9 +25,11 @@ test("Phase 6 lazy loading preserves lightweight guide listings and prerendered 
 
   await t.test("page modules are lazy imports and resolve to source files", () => {
     const app = fs.readFileSync(path.join(root, "src/App.tsx"), "utf8")
-    const pages = [...app.matchAll(/import\("@\/pages\/([^\"]+)"\)/g)].map((match) => match[1])
+    const routeModules = fs.readFileSync(path.join(root, "src/lib/routeModules.ts"), "utf8")
+    const pages = [...routeModules.matchAll(/import\("@\/pages\/([^\"]+)"\)/g)].map((match) => match[1])
     assert.ok(pages.length >= 15, `Expected route-level dynamic imports, found ${pages.length}`)
     assert.equal(app.includes('from "@/pages/'), false, "App must not eagerly import route modules")
+    assert.match(app, /lazy\(\(\) => routeModules\./, "Routes still load lazily")
     for (const page of pages) assert.ok(fs.existsSync(path.join(root, "src/pages", `${page}.tsx`)), `${page} import resolves`)
   })
 
