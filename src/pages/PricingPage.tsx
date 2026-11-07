@@ -67,7 +67,8 @@ export function PricingPage() {
               <a href={decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/register`)} onClick={() => trackEvent("landing_cta_clicked", { cta: "pricing_free", location: "pricing" })} className="mt-6 inline-flex items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-5 py-3 text-sm font-semibold text-blue-700 hover:bg-blue-100">Start free <ArrowRight className="h-4 w-4" /></a>
             </article>
             {plans.map((plan) => {
-              const checkoutUrl = decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/pricing?days=${plan.days}`)
+              const planCode = plan.kind === "interview" ? `PLAN_${plan.days}` : `${plan.kind}-${plan.days}`
+              const checkoutUrl = decorateUrlWithUtms(`${COMPANY_CONFIG.appUrl}/register?plan=${planCode}`)
               return <article key={plan.id} className={`flex flex-col rounded-2xl bg-white p-6 shadow-xs ${plan.kind === "bundle" ? "border-2 border-blue-600" : "border border-slate-200"}`}>
                 <div className="flex items-start justify-between gap-3">
                   <div><h3 className="text-xl font-semibold">{plan.name}</h3><p className="mt-1 text-sm text-slate-600">{plan.subtitle}</p></div>

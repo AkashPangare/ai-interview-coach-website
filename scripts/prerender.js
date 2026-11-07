@@ -382,7 +382,8 @@ function generatePricingHtml() {
     const features = plan.kind === "interview"
       ? interview.features
       : [`${a.generations} AI-tailored resume generations`, `${a.matches} resume–JD matches`, `${a.qualityChecks} quality checks`, `${a.recruiterReviews} recruiter reviews`, `${a.gapAnalyses} gap analyses`, `${a.optimizations} JD optimizations`, ...(plan.kind === "bundle" ? [`All ${plan.days}-day Interview Prep benefits`] : [])];
-    const cta = `<a href="${escapeHtml(COMPANY_CONFIG.appUrl)}/pricing?days=${plan.days}">Choose in app</a>`;
+    const planCode = plan.kind === "interview" ? `PLAN_${plan.days}` : `${plan.kind}-${plan.days}`;
+    const cta = `<a href="${escapeHtml(COMPANY_CONFIG.appUrl)}/register?plan=${planCode}">Choose in app</a>`;
     return `<article data-plan-id="${escapeHtml(plan.id)}"><h2 id="pricing-plan-${escapeHtml(plan.id)}">${escapeHtml(plan.name)}</h2><p>${escapeHtml(plan.subtitle)}</p><p><span>₹${plan.priceINR}</span> · One-time · ${plan.days}-day access pass</p><ul>${features.map((feature) => `<li>${escapeHtml(feature)}</li>`).join("")}</ul>${cta}</article>`;
   }).join("\n");
   const staticContent = `

@@ -114,7 +114,8 @@ test("Phase 7 production readiness regressions", async (t) => {
       assert.ok(pricingHtml.includes(escapeHtml(plan.subtitle)), `${plan.id}: description matches`)
       assert.ok(pricingHtml.includes(`>₹${plan.priceINR}</span>`), `${plan.id}: price matches`)
       assert.ok(pricingHtml.includes(`One-time · ${plan.days}-day access pass`), `${plan.id}: duration matches`)
-      assert.ok(pricingHtml.includes(`href="${COMPANY_CONFIG.appUrl}/pricing?days=${plan.days}"`), `${plan.id}: app pricing link is present`)
+      const planCode = plan.kind === "interview" ? `PLAN_${plan.days}` : `${plan.kind}-${plan.days}`
+      assert.ok(pricingHtml.includes(`href="${COMPANY_CONFIG.appUrl}/register?plan=${planCode}"`), `${plan.id}: app register link is present`)
     }
     assert.ok(!pricingHtml.includes("Resume Studio Boost"))
     assert.deepEqual(RESUME_ALLOWANCES[30], { generations: 10, savedJobs: 20, matches: 20, qualityChecks: 10, recruiterReviews: 5, gapAnalyses: 5, optimizations: 10 })
